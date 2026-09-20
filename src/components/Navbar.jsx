@@ -122,7 +122,7 @@ const Navbar = memo(function Navbar() {
         >
 
           <span className={`text-sm font-black tracking-[0.16em] md:tracking-[0.2em] uppercase transition-colors duration-300 ${isOnDarkSection ? 'text-white' : 'text-black'}`}>
-            Zickrian
+            Ritik
           </span>
         </div>
       </Magnetic>

@@ -232,4 +232,4 @@ on direct load.
 
 ## License
 
-Licensed under the [MIT License](LICENSE). Copyright (c) 2026 Firdaus Zickrian.
+Licensed under the [MIT License](LICENSE). Copyright (c) 2026 Ritik.

@@ -170,10 +170,10 @@ const AboutSection = memo(function AboutSection() {
                 <div className="absolute inset-0 bg-black/[0.12] group-hover:bg-transparent transition-colors duration-700 z-10 mix-blend-multiply pointer-events-none" />
 
                 <picture>
-                  <source srcSet="/profilee.webp" type="image/webp" />
+                  <source srcSet="/ritik_portfolio.webp" type="image/webp" />
                   <img
-                    src="/profilee.webp"
-                    alt="Firdaus Zickrian"
+                    src="/ritik_portfolio.webp"
+                    alt="Ritik Kumar"
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover object-top grayscale-[25%] group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
@@ -183,7 +183,7 @@ const AboutSection = memo(function AboutSection() {
                 {/* Name plate at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 px-5 pt-10 pb-4 bg-gradient-to-t from-black/65 via-black/30 to-transparent z-20">
                   <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/50 mb-0.5">Name</p>
-                  <p className="text-white font-bold text-[15px] tracking-wide leading-snug">Firdaus Zickrian</p>
+                  <p className="text-white font-bold text-[15px] tracking-wide leading-snug">Ritik Kumar</p>
                 </div>
 
                 {/* Corner brackets */}
@@ -207,7 +207,7 @@ const AboutSection = memo(function AboutSection() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-black/32 mb-1.5">Location</p>
                 <div className="flex items-center gap-1.5">
                   <MapPin size={11} className="text-black/38 shrink-0" />
-                  <span className="text-[13px] font-bold text-black">Indonesia</span>
+                  <span className="text-[13px] font-bold text-black">India</span>
                 </div>
               </div>
             </div>
@@ -238,17 +238,17 @@ const AboutSection = memo(function AboutSection() {
             >
               {/* Eyebrow */}
               <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-black/30 mb-5">
-                Based in Indonesia — Open to Work
+                Based in India — Open to Work
               </p>
 
               {/* Main title */}
               <h2 className="font-display font-bold tracking-[-0.025em] leading-[1.08] text-black">
                 <span className="block text-[44px] sm:text-[56px] lg:text-[64px] xl:text-[72px]">
-                  AI Engineer
+                  Data Engineer
                 </span>
 
                 <span className="block text-[22px] sm:text-[26px] lg:text-[30px] xl:text-[34px] font-medium tracking-[-0.01em] text-black/55 mt-2">
-                  with Full-Stack Product Delivery
+                  Scalable Data Pipeline Engineering
                 </span>
               </h2>
             </Gsap.div>
@@ -263,7 +263,7 @@ const AboutSection = memo(function AboutSection() {
             >
 
               <span className="font-mono text-[10px] md:text-[10.5px] uppercase tracking-[0.2em] text-black/35">
-                Computer Vision · LLM Systems · Full-Stack Delivery
+                SQL · Python · ETL Pipelines · Data Modeling
               </span>
             </Gsap.div>
 
@@ -276,10 +276,10 @@ const AboutSection = memo(function AboutSection() {
               className="space-y-4 text-[15px] md:text-[15.5px] font-light text-black/60 leading-[1.88] max-w-[580px]"
             >
               <p>
-                I'm <strong className="text-black font-semibold">Firdaus Zickrian</strong>, an AI Engineer focused on building intelligent systems that are not only innovative, but production-ready and measurable in real-world environments.
+                I'm <strong className="text-black font-semibold">Ritik Kumar</strong>, a Data Engineer with a strong interest in AI and Machine Learning.
               </p>
               <p>
-                I specialize in Computer Vision and LLM-powered products, with full-stack delivery as a supporting strength to move ideas from prototype to reliable digital products.
+                I enjoy working with data:building reliable pipelines, cleaning and transforming raw data, and shaping it into something structured and useful for analytics and intelligent applications. My focus areas include SQL, Python, ETL and ELT pipelines, data modeling, databases, and cloud-based data engineering.
               </p>
             </Gsap.div>
 

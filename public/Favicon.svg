@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="512" height="512" viewBox="0 0 512 512"
+     role="img" aria-labelledby="title desc">
+  <title id="title">Ritik Portfolio R Mark</title>
+  <desc id="desc">A minimalist neon-green geometric letter R on a black background.</desc>
+
+  <rect width="512" height="512" fill="#000000"/>
+
+  <path fill="#A3E635" d="
+    M119 121
+    H302
+    C355 121 388 148 388 196
+    C388 228 373 249 345 261
+    L389 330
+    H320
+    L281 270
+    H198
+    V389
+    H119
+    Z
+
+    M198 181
+    V211
+    H296
+    C307 211 313 206 313 196
+    C313 186 307 181 296 181
+    Z
+  "/>
+
+  <path fill="#000000" d="
+    M198 181
+    V211
+    H296
+    C307 211 313 206 313 196
+    C313 186 307 181 296 181
+    Z
+  "/>
+</svg>

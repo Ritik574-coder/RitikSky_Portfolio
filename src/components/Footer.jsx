@@ -183,7 +183,7 @@ const Footer = memo(function Footer() {
           </div>
 
           <div className="font-mono text-[10px] md:text-xs text-white/40 uppercase tracking-[0.14em] md:tracking-[0.2em] text-center md:text-right">
-            &copy; {new Date().getFullYear()} ZICKRIAN. ALL RIGHTS RESERVED.
+            &copy; {new Date().getFullYear()} RITIK KUMAR. ALL RIGHTS RESERVED.
           </div>
         </div>
 
