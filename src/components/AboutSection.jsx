@@ -170,9 +170,9 @@ const AboutSection = memo(function AboutSection() {
                 <div className="absolute inset-0 bg-black/[0.12] group-hover:bg-transparent transition-colors duration-700 z-10 mix-blend-multiply pointer-events-none" />
 
                 <picture>
-                  <source srcSet="/ritik_portfolio.webp" type="image/webp" />
+                  <source srcSet={`${import.meta.env.BASE_URL}ritik_portfolio.webp`} type="image/webp" />
                   <img
-                    src="/ritik_portfolio.webp"
+                    src={`${import.meta.env.BASE_URL}ritik_portfolio.webp`}
                     alt="Ritik Kumar"
                     loading="lazy"
                     decoding="async"
