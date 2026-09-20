@@ -17,179 +17,279 @@ const LocationTimeBadge = () => {
   const timeRef = useRef(null);
 
   useEffect(() => {
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Asia/Kolkata',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    });
-
     const update = () => {
-      if (timeRef.current) timeRef.current.textContent = formatter.format(new Date());
+      if (timeRef.current) {
+        timeRef.current.textContent = jakartaFormatter.format(new Date());
+      }
     };
-
     update();
     const timer = setInterval(update, 1000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="flex items-center gap-3 sm:gap-5 font-mono text-xs uppercase tracking-[0.15em] text-white/55">
-      <span className="font-bold text-white/75">Based in India</span>
-      <span className="w-px h-3 bg-white/20" />
-      <span className="tabular-nums"><span className="hidden sm:inline text-white/35">LOCAL: </span><span ref={timeRef} className="font-bold text-white/70" /></span>
+    <div className="flex items-center justify-center gap-3 sm:gap-5 font-mono text-xs uppercase tracking-[0.15em] text-black/50">
+      <div className="flex items-center gap-2">
+        <span className="font-bold text-black/70">Based in Indonesia</span>
+      </div>
+      <div className="w-[1px] h-3 bg-black/15" />
+      <div className="flex items-center gap-1.5 tabular-nums">
+        <span className="text-black/40 hidden sm:inline">LOCAL:</span>
+        <span ref={timeRef} className="font-bold text-black/70" />
+      </div>
     </div>
   );
 };
 
-const OrbitingDecoration = ({ icon: Icon, className }) => (
-  <div className={\`absolute hidden sm:flex items-center justify-center w-11 h-11 lg:w-12 lg:h-12 rounded-full border border-lime-400/15 bg-black/35 backdrop-blur-md shadow-[0_10px_30px_rgba(163,230,53,0.08)] \${className}\`}>
-    <Icon size={18} className="text-white/65" />
-  </div>
+// === DECORATIVE ORBITING ELEMENTS (Left & Right) ===
+const OrbitingDecoration = ({ icon: Icon, delay, className, isRevealed, enableAmbientMotion }) => (
+  <Gsap.div
+    initial={false}
+    animate={
+      isRevealed
+        ? { opacity: 1, y: 0, scale: 1 }
+        : { opacity: 0, y: 12, scale: 0.9 }
+    }
+    transition={{
+      opacity: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
+      y: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
+      scale: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
+    }}
+    className={`absolute flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-lime-500/20 bg-white/60 backdrop-blur-lg shadow-[0_10px_30px_rgba(132,204,22,0.12)] ${className}`}
+    style={enableAmbientMotion && isRevealed ? {
+      animation: `hero-float 5.8s ${delay + 0.35}s ease-in-out infinite`,
+      willChange: 'transform',
+    } : undefined}
+  >
+    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-lime-300/25 to-transparent" />
+    <Icon size={18} className="relative text-black/65" />
+  </Gsap.div>
 );
 
+// === MAIN COMPONENT ===
 const HeroSection = memo(function HeroSection({ isRevealed = true }) {
   const containerRef = useRef(null);
   const reduceMotion = useGsapReducedMotion();
   const [enableParallax, setEnableParallax] = useState(false);
+  const [enableAmbientMotion, setEnableAmbientMotion] = useState(false);
 
   const { scrollYProgress } = useGsapScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
-  const bgY = useGsapTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
-  const contentY = useGsapTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  // Subtle scroll parallax
+  const bgY = useGsapTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const contentY = useGsapTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
   useEffect(() => {
     if (typeof window === 'undefined' || reduceMotion) {
       setEnableParallax(false);
+      setEnableAmbientMotion(false);
       return;
     }
 
-    const mq = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
-    const update = () => setEnableParallax(mq.matches);
-    update();
-    mq.addEventListener?.('change', update);
-    return () => mq.removeEventListener?.('change', update);
+    const parallaxMedia = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+    const updateParallax = () => {
+      setEnableParallax(parallaxMedia.matches);
+      setEnableAmbientMotion(parallaxMedia.matches);
+    };
+
+    updateParallax();
+
+    if (parallaxMedia.addEventListener) {
+      parallaxMedia.addEventListener('change', updateParallax);
+    } else {
+      parallaxMedia.addListener(updateParallax);
+    }
+
+    return () => {
+      if (parallaxMedia.removeEventListener) {
+        parallaxMedia.removeEventListener('change', updateParallax);
+      } else {
+        parallaxMedia.removeListener(updateParallax);
+      }
+    };
   }, [reduceMotion]);
 
   return (
     <header
       ref={containerRef}
       id="hero-section"
-      className="min-h-[100svh] w-full relative overflow-hidden bg-[#071008] text-white flex flex-col items-center justify-center pt-20 pb-12"
+      className="min-h-[100svh] w-full relative bg-[#FAF9F6] selection:bg-lime-300 selection:text-black overflow-hidden flex flex-col items-center justify-center pt-16 pb-16"
     >
+      {/* ── BACKGROUND ENGINEERING Grid & Dynamic Glow ── */}
       <Gsap.div
+        initial={false}
+        animate={isRevealed ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         style={enableParallax ? { y: bgY } : undefined}
-        className="absolute inset-0 z-0 pointer-events-none"
+        className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center"
       >
-        <img
-          src="/hero-ritik-horse.webp"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[64%_center] opacity-[0.96]"
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(163,230,53,0.12),transparent_48%),linear-gradient(to_bottom,rgba(163,230,53,0.04),transparent_48%)]" />
+
+        {/* 1. Base Moving Grid */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            ...(enableAmbientMotion && isRevealed ? { animation: 'hero-grid-scroll 14s linear infinite' } : {}),
+          }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,10,6,0.96)_0%,rgba(4,10,6,0.84)_38%,rgba(4,10,6,0.30)_62%,rgba(4,10,6,0.10)_100%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_48%,rgba(126,173,55,0.16),transparent_42%),linear-gradient(to_bottom,rgba(0,0,0,0.18),rgba(0,0,0,0.46))]" />
-        <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(to_right,rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.22)_1px,transparent_1px)] [background-size:40px_40px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_24%,rgba(0,0,0,0.40)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#071008] to-transparent" />
+
+        {/* 2. Plus/Cross Pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M40 38v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z' fill='%23000000' fill-opacity='1' fill-rule='nonzero'/%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundPosition: 'center center'
+          }}
+        />
+
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 18% 18%, rgba(163, 230, 53, 0.14), transparent 44%), radial-gradient(circle at 82% 15%, rgba(132, 204, 22, 0.1), transparent 42%), radial-gradient(circle at 50% 85%, rgba(190, 242, 100, 0.09), transparent 50%), linear-gradient(135deg, rgba(163, 230, 53, 0.02), rgba(234, 179, 8, 0.01))'
+          }}
+        />
+
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] max-w-[920px] max-h-[920px] rounded-full border border-lime-500/10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vw] max-w-[720px] max-h-[720px] rounded-full border border-lime-500/10" />
+
+        {/* 3. Dynamic Organic Glowing Orbs — CSS animations for zero JS overhead */}
+        <div
+          className="absolute top-1/2 left-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-lime-300 rounded-full blur-[90px] lg:blur-[130px] opacity-[0.1]"
+          style={enableAmbientMotion && isRevealed ? {
+            animation: 'hero-orb-1 10s ease-in-out infinite',
+            willChange: 'transform',
+          } : { transform: 'translate3d(-50%, -50%, 0)' }}
+        />
+        <div
+          className="absolute top-1/4 right-[20%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] bg-lime-400 rounded-full blur-[90px] lg:blur-[120px] opacity-[0.06]"
+          style={enableAmbientMotion && isRevealed ? {
+            animation: 'hero-orb-2 12s 2s ease-in-out infinite',
+            willChange: 'transform',
+          } : undefined}
+        />
+        <div
+          className="absolute bottom-[10%] left-[20%] w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] bg-lime-200 rounded-full blur-[100px] lg:blur-[130px] opacity-[0.08]"
+          style={enableAmbientMotion && isRevealed ? {
+            animation: 'hero-orb-3 15s 1s ease-in-out infinite',
+            willChange: 'transform',
+          } : undefined}
+        />
+
+        {/* 4. Radial Vignette to blend gracefully with section edges */}
+        <div className="absolute inset-0 bg-[#FAF9F6] [mask-image:radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-75" />
+
+        {/* Soft bottom fade */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#FAF9F6] to-transparent pointer-events-none" />
       </Gsap.div>
 
+      {/* ── MAIN CONTENT (PERFECTLY CENTERED) ── */}
+      {/* Parallax wrapper (scroll-driven y only) */}
       <Gsap.div
         style={enableParallax ? { y: contentY } : undefined}
-        className="relative z-10 w-full max-w-[1380px] px-6 md:px-10 lg:px-16 flex items-center min-h-[calc(100svh-100px)]"
+        className="relative z-10 w-full max-w-[1200px] px-5 sm:px-6 md:px-12 flex flex-col items-center text-center mt-8"
       >
-        <div className="w-full max-w-[700px] text-left">
-          <Gsap.div
+        {/* Iris reveal + entrance wrapper */}
+        <Gsap.div
+          initial={false}
+          animate={isRevealed
+            ? { opacity: 1, y: 0, filter: 'blur(0px)', clipPath: 'circle(150% at 50% 100%)' }
+            : { opacity: 0, y: 14, filter: 'blur(3px)', clipPath: 'circle(0% at 50% 100%)' }
+          }
+          transition={{
+            clipPath: { duration: 1.25, ease: [0.2, 0.95, 0.3, 1] },
+            opacity: { duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] },
+            y: { duration: 1.0, delay: 0.08, ease: [0.22, 1, 0.36, 1] },
+            filter: { duration: 0.8, delay: 0.1 },
+          }}
+          className="w-full flex flex-col items-center"
+        >
+
+        {/* Location & Time — visible at top */}
+        <Gsap.div
+          initial={false}
+          animate={isRevealed ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 0.55, duration: 0.8 }}
+          className="mb-3 md:mb-4"
+        >
+          <LocationTimeBadge />
+        </Gsap.div>
+
+        {/* 2. Massive Clear Typography */}
+        <div className="flex flex-col items-center justify-center relative w-full mb-4 md:mb-5">
+          {/* Left Decoration */}
+          <OrbitingDecoration icon={Code2} delay={0.15} className="left-0 sm:left-2 lg:left-16 top-2" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
+          <OrbitingDecoration icon={Terminal} delay={0.45} className="left-6 sm:left-12 lg:left-28 bottom-8 hidden sm:flex" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
+
+          <Gsap.h1
             initial={false}
-            animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-5"
+            animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[clamp(4.25rem,14vw,9rem)] font-black uppercase tracking-tight text-black leading-[0.88]"
           >
-            <LocationTimeBadge />
-          </Gsap.div>
+            RITIK
+          </Gsap.h1>
 
-          <div className="relative">
-            <OrbitingDecoration icon={Code2} className="left-[-10px] top-4 -translate-x-full" />
-            <OrbitingDecoration icon={Database} className="right-0 top-8 translate-x-[110%]" />
-            <OrbitingDecoration icon={Terminal} className="left-6 bottom-2 -translate-x-full translate-y-full" />
-
-            <Gsap.h1
-              initial={false}
-              animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-              transition={{ duration: 0.75, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[clamp(4.5rem,11vw,8.5rem)] font-black uppercase leading-[0.82] tracking-[-0.055em] text-white"
-            >
-              RITIK
-            </Gsap.h1>
-
-            <Gsap.h1
-              initial={false}
-              animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-              transition={{ duration: 0.75, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[clamp(4.5rem,11vw,8.5rem)] font-black uppercase leading-[0.82] tracking-[-0.055em] mt-2 text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,0.90)]"
-            >
-              KUMAR
-            </Gsap.h1>
-          </div>
-
-          <Gsap.div
+          <Gsap.h1
             initial={false}
-            animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-            transition={{ delay: 0.26, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-7"
+            animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[clamp(4.25rem,14vw,9rem)] font-black uppercase tracking-tight text-transparent leading-[0.88] mt-2 sm:mt-0 font-outline-fallback"
           >
-            <h2 className="text-[clamp(1.35rem,3.6vw,2.2rem)] font-bold tracking-tight text-white/88 flex flex-wrap gap-x-2 gap-y-1 items-center">
-              Engineering <span className="bg-lime-400 text-black px-2.5 py-1 rounded-sm">Intelligence</span> Through Data<span className="text-lime-400">.</span>
-            </h2>
-            <p className="mt-3 max-w-2xl text-base md:text-lg leading-7 text-white/62">
-              Data Engineer focused on reliable pipelines, analytics systems, data modeling and AI-ready infrastructure.
-            </p>
-          </Gsap.div>
+            KUMAR
+          </Gsap.h1>
 
-          <Gsap.div
-            initial={false}
-            animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-            transition={{ delay: 0.36, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-wrap items-center gap-3 mt-7"
-          >
-            <button
-              onClick={() => document.getElementById('project-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group inline-flex items-center gap-2 bg-lime-400 text-black px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.10em] hover:bg-lime-300 transition-colors"
-            >
-              View Projects <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </button>
-            <a
-              href="/cv.pdf"
-              download
-              className="group inline-flex items-center gap-2 border border-white/35 bg-white/5 px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.10em] text-white hover:bg-white hover:text-black transition-colors"
-            >
-              Download CV <Download size={16} />
-            </a>
-          </Gsap.div>
-
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-5 border-t border-white/12 pt-6 max-w-2xl">
-            {[
-              ["8+", "PROJECTS"],
-              ["5+", "DOMAINS"],
-              ["10+", "TOOLS"],
-              ["01", "FOCUS"],
-            ].map(([value, label]) => (
-              <div key={label}>
-                <div className="text-2xl md:text-3xl font-black text-lime-400 tracking-tight">{value}</div>
-                <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-white/42 font-mono">{label}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
-            <span className="w-8 h-px bg-lime-400" />
-            <span>Turning data into meaningful systems</span>
-          </div>
+          {/* Right Decoration */}
+          <OrbitingDecoration icon={Database} delay={0.28} className="right-0 sm:right-2 lg:right-16 top-10" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
+          <OrbitingDecoration icon={Cpu} delay={0.58} className="right-6 sm:right-12 lg:right-28 -bottom-2 hidden sm:flex" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
         </div>
+
+        {/* 3. Clean Slogan with Green Accent */}
+        <Gsap.div
+          initial={false}
+          animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ delay: 0.38, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-center gap-2 mt-0"
+        >
+          <h2 className="text-[clamp(1.35rem,4.2vw,2.25rem)] font-bold text-black/80 tracking-tight flex items-center justify-center flex-wrap gap-2 px-2">
+            Architecting <span className="bg-lime-400/30 px-2 rounded-md ring-1 ring-lime-500/20">Intelligent</span> Paradigms<span className="text-lime-500 font-extrabold -ml-1">.</span>
+          </h2>
+          <p className="font-sans text-base text-black/60 max-w-xl leading-7 mt-2 px-4">
+            AI Engineer & Full-Stack Developer specializing in high-performance, scalable systems.
+          </p>
+        </Gsap.div>
+
+        {/* 4. CTA Buttons */}
+        <Gsap.div
+          initial={false}
+          animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          transition={{ delay: 0.5, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-wrap items-center justify-center gap-4 mt-5"
+        >
+          <button
+            onClick={() => document.getElementById('project-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="group flex items-center gap-2 bg-black text-white px-6 py-3 font-mono text-sm font-bold uppercase tracking-wider hover:bg-lime-400 hover:text-black transition-all duration-300 cursor-pointer"
+          >
+            View Projects <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </button>
+          <a
+            href="/cv.pdf"
+            download
+            className="group flex items-center gap-2 bg-transparent text-black border-2 border-black px-6 py-3 font-mono text-sm font-bold uppercase tracking-wider hover:bg-black hover:text-lime-400 transition-all duration-300"
+          >
+            Download CV <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
+          </a>
+        </Gsap.div>
+
+
+
+        </Gsap.div>
+
       </Gsap.div>
     </header>
   );
