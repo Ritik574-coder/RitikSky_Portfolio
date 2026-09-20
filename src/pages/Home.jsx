@@ -42,10 +42,10 @@ export default function Home() {
     }
   }, []);
 
-  // Preload profile image (optimized WebP with JPEG fallback)
+  // Preload the hero background so the first viewport appears without a flash.
   useEffect(() => {
     const profileImg = new Image();
-    profileImg.src = "/profile.webp";
+    profileImg.src = `${import.meta.env.BASE_URL}overview.png`;
   }, []);
 
   // Manage body overflow based on scroll lock

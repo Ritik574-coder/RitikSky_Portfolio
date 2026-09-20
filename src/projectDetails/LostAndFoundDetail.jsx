@@ -25,7 +25,7 @@ export const project = {
     "Enhances system security and relevance as only Udinus students can access it via campus email authentication.",
   ],
   links: {
-    repo: "https://github.com/zickrian/LostItem-Project",
+    repo: "https://github.com/Ritik574-coder/LostItem-Project",
   },
   notes: "Access Restricted: This website is only accessible using Udinus student email (@mhs.dinus.ac.id)."
 };

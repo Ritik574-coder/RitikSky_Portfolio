@@ -33,7 +33,7 @@ export const PROJECT_DETAILS_DATA = {
     ],
     links: {
       live: "https://diabetes-classificationn.streamlit.app/",
-      repo: "https://github.com/zickrian/Projek-Klasifikasi-Diabetes",
+      repo: "https://github.com/Ritik574-coder/Projek-Klasifikasi-Diabetes",
     },
   },
   leadsup: {
@@ -57,7 +57,7 @@ export const PROJECT_DETAILS_DATA = {
       "Provides an easy-to-use MVP for daily sales workflow: ranking > contact > update status > monitor results.",
     ],
     links: {
-      repo: "https://github.com/zickrian/Predictive-Lead-Scoring-Portal-for-Banking",
+      repo: "https://github.com/Ritik574-coder/Predictive-Lead-Scoring-Portal-for-Banking",
     },
   },
   polsekrembang: {
@@ -88,7 +88,7 @@ export const PROJECT_DETAILS_DATA = {
       "Enhances citizen experience with clear, consistent, and human-like responses - bringing public services closer through AI technology.",
     ],
     links: {
-      repo: "https://github.com/zickrian/chatbot_ai",
+      repo: "https://github.com/Ritik574-coder/chatbot_ai",
     },
   },
   floodsegmen: {
@@ -123,7 +123,7 @@ export const PROJECT_DETAILS_DATA = {
       "Facilitates segmentation model evaluation through direct U-Net vs U-Net++ comparison to select the best approach.",
     ],
     links: {
-      repo: "https://github.com/zickrian/FloodSegmentationAPP",
+      repo: "https://github.com/Ritik574-coder/FloodSegmentationAPP",
     },
   },
   qmeal: {
@@ -158,7 +158,7 @@ export const PROJECT_DETAILS_DATA = {
       "Provides vendor quality insights through ratings and purchase history, making user decisions more confident and data-driven.",
     ],
     links: {
-      repo: "https://github.com/zickrian/user-canteen",
+      repo: "https://github.com/Ritik574-coder/user-canteen",
     },
   },
   lostandfound: {
@@ -185,7 +185,7 @@ export const PROJECT_DETAILS_DATA = {
       "Enhances system security and relevance as only Udinus students can access it via campus email authentication.",
     ],
     links: {
-      repo: "https://github.com/zickrian/LostItem-Project",
+      repo: "https://github.com/Ritik574-coder/LostItem-Project",
     },
     notes: "Access Restricted: This website is only accessible using Udinus student email (@mhs.dinus.ac.id).",
   },
@@ -211,7 +211,7 @@ export const PROJECT_DETAILS_DATA = {
     ],
     links: {
       live: "https://vegetable-classifier.streamlit.app/",
-      repo: "https://github.com/zickrian/vegetable-classification",
+      repo: "https://github.com/Ritik574-coder/vegetable-classification",
     },
   },
   "financial-assistant-bot": {
@@ -243,7 +243,7 @@ export const PROJECT_DETAILS_DATA = {
     ],
     links: {
       live: "https://t.me/zickrian_bot",
-      repo: "https://github.com/zickrian/Accounting-Assistant",
+      repo: "https://github.com/Ritik574-coder/Accounting-Assistant",
     },
   },
   "base-realms": {
@@ -269,7 +269,7 @@ export const PROJECT_DETAILS_DATA = {
     ],
     links: {
       live: "https://baserealms.app/",
-      repo: "https://github.com/zickrian/Base-Realms",
+      repo: "https://github.com/Ritik574-coder/Base-Realms",
     },
     notes: "Achievement: National Finalist - Base Indonesia Hackathon 2025. Track: Base Track. Team: Terra Bit (Ritik Kumar & Gagah Athallah Fatha).",
   },

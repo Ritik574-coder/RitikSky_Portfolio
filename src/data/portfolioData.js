@@ -23,8 +23,8 @@ export const PORTFOLIO_DATA = {
         location: "India",
         email: "ritik74820@gmail.com",
         socials: {
-            github: "https://github.com/zickrian",
-            linkedin: "https://linkedin.com/in/firdauskhotibulzickrian/"
+            github: "https://github.com/Ritik574-coder",
+            linkedin: "https://www.linkedin.com/in/ritik-kumar-b81b32375/"
         }
     },
     experience: [
@@ -157,7 +157,7 @@ export const PORTFOLIO_DATA = {
             techStack: ["Solidity", "Next.js", "TypeScript", "JavaScript", "CSS"],
             links: {
                 devfolio: "https://devfolio.co/projects/base-realms-b63a",
-                github: "https://github.com/zickrian/Base-Realms",
+                github: "https://github.com/Ritik574-coder/Base-Realms",
                 live: "https://baserealms.app/"
             }
         }

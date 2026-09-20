@@ -23,7 +23,7 @@ export const project = {
     "Provides an easy-to-use MVP for daily sales workflow: ranking > contact > update status > monitor results.",
   ],
   links: {
-    repo: "https://github.com/zickrian/Predictive-Lead-Scoring-Portal-for-Banking",
+    repo: "https://github.com/Ritik574-coder/Predictive-Lead-Scoring-Portal-for-Banking",
   },
 };
 

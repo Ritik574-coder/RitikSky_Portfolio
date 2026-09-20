@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Gsap } from '../utils/gsapAnimate';
 import { Github, Linkedin, Mail, ArrowUpRight } from 'lucide-react';
 import { exponentialEaseOut } from '../utils/easing';
@@ -18,6 +18,7 @@ const DiscordIcon = ({ className = '', size = 16 }) => (
 
 const Footer = memo(function Footer() {
   const timeRef = useRef(null);
+  const [formStatus, setFormStatus] = useState('idle');
 
   const scrollToSection = (sectionId) => {
     const target = document.getElementById(sectionId);
@@ -33,6 +34,29 @@ const Footer = memo(function Footer() {
     }
 
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleContactSubmit = async (event) => {
+    event.preventDefault();
+    setFormStatus('sending');
+
+    const formData = new FormData(event.currentTarget);
+    formData.append('access_key', import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '');
+    formData.append('subject', 'New portfolio inquiry from Ritik Kumar');
+    formData.append('from_name', 'Ritik Kumar Portfolio');
+    formData.append('redirect', 'false');
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
+      setFormStatus(result.success ? 'success' : 'error');
+      if (result.success) event.currentTarget.reset();
+    } catch {
+      setFormStatus('error');
+    }
   };
 
   // Direct DOM update for the clock — avoids React re-render every second
@@ -54,20 +78,29 @@ const Footer = memo(function Footer() {
   }, []);
 
   return (
-    <footer id="contact-section" className="bg-[#0A0A0A] text-white pt-20 md:pt-24 pb-12 w-full relative overflow-hidden">
+    <footer
+      id="contact-section"
+      className="bg-[#0A0A0A] text-white pt-28 md:pt-32 pb-12 w-full min-h-[100svh] relative overflow-hidden"
+      style={{ backgroundColor: '#0A0A0A' }}
+    >
+      <div
+        className="absolute inset-0 bg-no-repeat bg-[length:auto_86%] bg-[position:28%_center] sm:bg-cover sm:bg-center"
+        style={{ backgroundImage: `url(${import.meta.env.BASE_URL}contect.png)` }}
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,10,6,0.96)_0%,rgba(5,10,6,0.9)_42%,rgba(5,10,6,0.84)_100%)]" />
       {/* Subtle Matrix BG */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', backgroundSize: '40px 40px' }}
       />
 
-      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 relative z-10 flex flex-col justify-between min-h-[50vh]">
+      <div className="max-w-[1400px] mx-auto w-full min-w-0 px-5 sm:px-8 md:px-12 relative z-10 flex flex-col justify-between min-h-[calc(100svh-11rem)]">
 
         {/* ── SECTION HEADER ── */}
         <Gsap.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex items-center gap-4 mb-16 md:mb-24"
+          className="flex items-center gap-4 mb-12 md:mb-16"
         >
           <div className="w-2 h-2 bg-lime-400 rounded-[2px] animate-pulse" />
           <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/40">
@@ -77,12 +110,12 @@ const Footer = memo(function Footer() {
         </Gsap.div>
 
         {/* Main Grid Layout */}
-        <div className="flex flex-col lg:flex-row justify-between gap-12 md:gap-16 lg:gap-8 mb-20 md:mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)_minmax(0,0.85fr)] gap-12 md:gap-16 lg:gap-10 items-start mb-20 md:mb-24">
 
           {/* Left: Huge Name & Status */}
-          <div className="lg:w-1/2 flex flex-col justify-between">
+          <div className="flex flex-col justify-between min-w-0">
             <div>
-              <h2 className="text-4xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.95] sm:leading-[0.9] text-white mb-6">
+              <h2 className="text-5xl sm:text-7xl lg:text-[clamp(4rem,6vw,6.6rem)] font-black uppercase tracking-tighter leading-[0.9] text-white mb-6 break-words">
                 LET'S <br />
                 <span className="text-lime-400 transform inline-block italic pr-4">CONNECT.</span>
               </h2>
@@ -92,8 +125,38 @@ const Footer = memo(function Footer() {
             </div>
           </div>
 
+          {/* Center: Direct inquiry form */}
+          <div className="order-2 lg:order-2 min-w-0">
+            <div className="w-full max-w-full border border-lime-400/25 bg-black/45 backdrop-blur-sm p-5 md:p-7 lg:p-8">
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-5 mb-6">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-lime-400 mb-3">Direct inquiry</p>
+                  <h3 className="text-2xl md:text-3xl font-black tracking-tight break-words">Get in Touch with Ritik</h3>
+                </div>
+                <span className="hidden md:block max-w-[150px] font-mono text-[10px] leading-5 text-white/45">Let's build something amazing.</span>
+              </div>
+
+              <form onSubmit={handleContactSubmit} className="space-y-3">
+                <label className="sr-only" htmlFor="contact-name">Your Name</label>
+                <input id="contact-name" name="name" required type="text" placeholder="Your Name" className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <label className="sr-only" htmlFor="contact-email">Email Address</label>
+                <input id="contact-email" name="email" required type="email" placeholder="Email Address" className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <label className="sr-only" htmlFor="contact-phone">Phone Number</label>
+                <input id="contact-phone" name="phone" required type="tel" placeholder="Phone Number" className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <label className="sr-only" htmlFor="contact-message">Message</label>
+                <textarea id="contact-message" name="message" required rows="4" placeholder="Message" className="w-full resize-none rounded-3xl border border-white/10 bg-white/[0.04] px-5 py-4 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <input type="checkbox" name="botcheck" className="hidden" tabIndex="-1" autoComplete="off" />
+                <button type="submit" disabled={formStatus === 'sending'} className="w-full rounded-full bg-lime-400 py-3.5 text-sm font-bold text-black transition-all hover:bg-lime-300 disabled:cursor-wait disabled:opacity-60">
+                  {formStatus === 'sending' ? 'Sending...' : 'Send Inquiry'}
+                </button>
+                {formStatus === 'success' && <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-lime-400">Message sent successfully.</p>}
+                {formStatus === 'error' && <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-red-300">Unable to send. Check the Web3Forms access key.</p>}
+              </form>
+            </div>
+          </div>
+
           {/* Right: Connect & Navigation */}
-          <div className="lg:w-1/2 flex flex-col sm:flex-row gap-12 sm:gap-16 lg:justify-end">
+          <div className="order-3 lg:order-3 min-w-0 flex flex-col sm:flex-row lg:flex-col gap-12 sm:gap-16 lg:justify-start">
 
             {/* Navigation */}
             <div className="flex flex-col gap-4">
@@ -120,13 +183,13 @@ const Footer = memo(function Footer() {
             </div>
 
             {/* Connect Links */}
-            <div className="flex flex-col gap-4 min-w-[200px]">
+            <div className="flex flex-col gap-4 min-w-0 sm:min-w-[200px]">
               <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.18em] md:tracking-[0.24em] mb-4 border-l-2 border-lime-400 pl-3">Networks</span>
 
               {[
-                { label: 'Email', href: 'https://mail.google.com/mail/?view=cm&fs=1&to=firdauskhotibulzickrian@gmail.com', icon: Mail },
-                { label: 'GitHub', href: 'https://github.com/zickrian', icon: Github },
-                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/firdauskhotibulzickrian/', icon: Linkedin },
+                { label: 'Email', href: 'mailto:ritik74820@gmail.com', icon: Mail },
+                { label: 'GitHub', href: 'https://github.com/Ritik574-coder', icon: Github },
+                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ritik-kumar-b81b32375/', icon: Linkedin },
               ].map((link) => (
                 <a
                   key={link.label}
@@ -145,7 +208,7 @@ const Footer = memo(function Footer() {
 
               {/* Discord Profile Link */}
               <a
-                href="https://discord.com/users/zickrian"
+                href="https://discord.com/users/1405958607429828708"
                 target="_blank"
                 rel="noreferrer"
                 className="group flex items-center justify-between border border-white/10 bg-[#111111] hover:bg-lime-400 hover:border-lime-400 transition-colors duration-300 p-3 mt-1"
@@ -158,7 +221,7 @@ const Footer = memo(function Footer() {
                       Discord
                     </span>
                     <span className="font-mono text-[9px] lowercase leading-none transition-colors text-white/40 group-hover:text-black/60">
-                      @zickrian
+                      @ritik-kumar
                     </span>
                   </div>
                 </div>

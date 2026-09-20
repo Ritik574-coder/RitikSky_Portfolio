@@ -28,14 +28,14 @@ const LocationTimeBadge = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center gap-3 sm:gap-5 font-mono text-xs uppercase tracking-[0.15em] text-black/50">
+    <div className="flex items-center justify-center gap-3 sm:gap-5 font-mono text-xs uppercase tracking-[0.15em] text-white/55">
       <div className="flex items-center gap-2">
-        <span className="font-bold text-black/70">Based in Indonesia</span>
+        <span className="font-bold text-white/75">Based in India</span>
       </div>
-      <div className="w-[1px] h-3 bg-black/15" />
+      <div className="w-[1px] h-3 bg-white/20" />
       <div className="flex items-center gap-1.5 tabular-nums">
-        <span className="text-black/40 hidden sm:inline">LOCAL:</span>
-        <span ref={timeRef} className="font-bold text-black/70" />
+        <span className="text-white/40 hidden sm:inline">LOCAL:</span>
+        <span ref={timeRef} className="font-bold text-white/75" />
       </div>
     </div>
   );
@@ -116,7 +116,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
     <header
       ref={containerRef}
       id="hero-section"
-      className="min-h-[100svh] w-full relative bg-[#FAF9F6] selection:bg-lime-300 selection:text-black overflow-hidden flex flex-col items-center justify-center pt-16 pb-16"
+      className="min-h-[100svh] w-full relative bg-[#10140f] text-white selection:bg-lime-300 selection:text-black overflow-hidden flex flex-col items-center justify-center px-0 pt-24 pb-16 sm:pt-28 sm:pb-20"
     >
       {/* ── BACKGROUND ENGINEERING Grid & Dynamic Glow ── */}
       <Gsap.div
@@ -127,13 +127,20 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
         className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center"
       >
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(163,230,53,0.12),transparent_48%),linear-gradient(to_bottom,rgba(163,230,53,0.04),transparent_48%)]" />
+        <div
+          className="absolute inset-0 bg-no-repeat bg-[length:auto_86%] bg-[position:70%_center] sm:bg-cover sm:bg-center"
+          style={{ backgroundImage: `url(${import.meta.env.BASE_URL}overview.png)` }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,12,8,0.92)_0%,rgba(8,12,8,0.68)_38%,rgba(8,12,8,0.2)_72%,rgba(8,12,8,0.42)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,5,0.5)_0%,transparent_35%,rgba(5,8,5,0.68)_100%)]" />
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_32%,rgba(163,230,53,0.18),transparent_38%),linear-gradient(to_bottom,rgba(163,230,53,0.05),transparent_48%)]" />
 
         {/* 1. Base Moving Grid */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.06] mix-blend-screen"
           style={{
-            backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)',
             backgroundSize: '40px 40px',
             ...(enableAmbientMotion && isRevealed ? { animation: 'hero-grid-scroll 14s linear infinite' } : {}),
           }}
@@ -141,9 +148,9 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
 
         {/* 2. Plus/Cross Pattern overlay */}
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0 opacity-[0.04] mix-blend-screen"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M40 38v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z' fill='%23000000' fill-opacity='1' fill-rule='nonzero'/%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M40 38v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z' fill='%23ffffff' fill-opacity='1' fill-rule='nonzero'/%3E%3C/g%3E%3C/svg%3E")`,
             backgroundPosition: 'center center'
           }}
         />
@@ -182,17 +189,17 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
         />
 
         {/* 4. Radial Vignette to blend gracefully with section edges */}
-        <div className="absolute inset-0 bg-[#FAF9F6] [mask-image:radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-75" />
+        <div className="absolute inset-0 bg-[#10140f] [mask-image:radial-gradient(circle_at_center,transparent 0%,black 100%)] opacity-40" />
 
         {/* Soft bottom fade */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#FAF9F6] to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#10140f] to-transparent pointer-events-none" />
       </Gsap.div>
 
       {/* ── MAIN CONTENT (PERFECTLY CENTERED) ── */}
       {/* Parallax wrapper (scroll-driven y only) */}
       <Gsap.div
         style={enableParallax ? { y: contentY } : undefined}
-        className="relative z-10 w-full max-w-[1200px] px-5 sm:px-6 md:px-12 flex flex-col items-center text-center mt-8"
+        className="relative z-10 w-full min-w-0 max-w-[1440px] px-5 sm:px-10 lg:px-16 flex flex-col items-start text-left mt-8"
       >
         {/* Iris reveal + entrance wrapper */}
         <Gsap.div
@@ -207,7 +214,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
             y: { duration: 1.0, delay: 0.08, ease: [0.22, 1, 0.36, 1] },
             filter: { duration: 0.8, delay: 0.1 },
           }}
-          className="w-full flex flex-col items-center"
+          className="w-full min-w-0 flex flex-col items-start"
         >
 
         {/* Location & Time — visible at top */}
@@ -215,13 +222,13 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           initial={false}
           animate={isRevealed ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.55, duration: 0.8 }}
-          className="mb-3 md:mb-4"
+          className="mb-5 md:mb-7"
         >
           <LocationTimeBadge />
         </Gsap.div>
 
         {/* 2. Massive Clear Typography */}
-        <div className="flex flex-col items-center justify-center relative w-full mb-4 md:mb-5">
+        <div className="flex flex-col items-start justify-center relative w-full min-w-0 max-w-[760px] mb-5 md:mb-7">
           {/* Left Decoration */}
           <OrbitingDecoration icon={Code2} delay={0.15} className="left-0 sm:left-2 lg:left-16 top-2" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
           <OrbitingDecoration icon={Terminal} delay={0.45} className="left-6 sm:left-12 lg:left-28 bottom-8 hidden sm:flex" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
@@ -230,7 +237,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
             initial={false}
             animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
             transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[clamp(4.25rem,14vw,9rem)] font-black uppercase tracking-tight text-black leading-[0.88]"
+            className="text-[clamp(4.25rem,12vw,8.5rem)] font-black uppercase tracking-tight text-white leading-[0.88]"
           >
             RITIK
           </Gsap.h1>
@@ -239,7 +246,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
             initial={false}
             animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
             transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[clamp(4.25rem,14vw,9rem)] font-black uppercase tracking-tight text-transparent leading-[0.88] mt-2 sm:mt-0 font-outline-fallback"
+            className="text-[clamp(4.25rem,12vw,8.5rem)] font-black uppercase tracking-tight text-transparent leading-[0.88] mt-2 sm:mt-0 font-outline-fallback"
           >
             KUMAR
           </Gsap.h1>
@@ -254,13 +261,13 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           initial={false}
           animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ delay: 0.38, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col items-center gap-2 mt-0"
+          className="flex flex-col items-start gap-2 mt-0 w-full max-w-[760px] min-w-0"
         >
-          <h2 className="text-[clamp(1.35rem,4.2vw,2.25rem)] font-bold text-black/80 tracking-tight flex items-center justify-center flex-wrap gap-2 px-2">
+          <h2 className="text-[clamp(1.35rem,3.4vw,2.25rem)] font-bold text-white/85 tracking-tight flex items-start justify-start flex-wrap gap-2 max-w-full">
             Architecting <span className="bg-lime-400/30 px-2 rounded-md ring-1 ring-lime-500/20">Intelligent</span> Paradigms<span className="text-lime-500 font-extrabold -ml-1">.</span>
           </h2>
-          <p className="font-sans text-base text-black/60 max-w-xl leading-7 mt-2 px-4">
-            AI Engineer & Full-Stack Developer specializing in high-performance, scalable systems.
+          <p className="font-sans text-sm sm:text-base text-white/65 max-w-[500px] leading-7 mt-2">
+            Data Engineer & Full-Stack Developer specialized in building scalable data systems, modern analytics solutions and impactful products.
           </p>
         </Gsap.div>
 
@@ -269,18 +276,18 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           initial={false}
           animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
           transition={{ delay: 0.5, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-wrap items-center justify-center gap-4 mt-5"
+          className="flex w-full max-w-[760px] flex-wrap items-center justify-start gap-3 sm:gap-4 mt-7"
         >
           <button
             onClick={() => document.getElementById('project-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="group flex items-center gap-2 bg-black text-white px-6 py-3 font-mono text-sm font-bold uppercase tracking-wider hover:bg-lime-400 hover:text-black transition-all duration-300 cursor-pointer"
+            className="group flex items-center gap-2 bg-lime-400 text-black px-7 py-3.5 font-mono text-sm font-bold uppercase tracking-wider hover:bg-white transition-all duration-300 cursor-pointer"
           >
             View Projects <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
           <a
             href="/cv.pdf"
             download
-            className="group flex items-center gap-2 bg-transparent text-black border-2 border-black px-6 py-3 font-mono text-sm font-bold uppercase tracking-wider hover:bg-black hover:text-lime-400 transition-all duration-300"
+            className="group flex items-center gap-2 bg-transparent text-white border border-white/35 px-7 py-3.5 font-mono text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300"
           >
             Download CV <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
           </a>

@@ -33,7 +33,7 @@ export const project = {
     "Facilitates segmentation model evaluation through direct U-Net vs U-Net++ comparison to select the best approach.",
   ],
   links: {
-    repo: "https://github.com/zickrian/FloodSegmentationAPP",
+    repo: "https://github.com/Ritik574-coder/FloodSegmentationAPP",
   },
 };
 

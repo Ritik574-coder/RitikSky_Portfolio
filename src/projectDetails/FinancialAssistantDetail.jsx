@@ -30,7 +30,7 @@ export const project = {
   ],
   links: {
     live: "https://t.me/zickrian_bot",
-    repo: "https://github.com/zickrian/Accounting-Assistant",
+    repo: "https://github.com/Ritik574-coder/Accounting-Assistant",
   },
 };
 

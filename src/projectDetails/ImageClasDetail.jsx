@@ -23,7 +23,7 @@ export const project = {
   ],
   links: {
     live: "https://vegetable-classifier.streamlit.app/",
-    repo: "https://github.com/zickrian/vegetable-classification",
+    repo: "https://github.com/Ritik574-coder/vegetable-classification",
   },
 };
 
