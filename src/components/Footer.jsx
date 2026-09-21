@@ -16,6 +16,34 @@ const DiscordIcon = ({ className = '', size = 16 }) => (
   </svg>
 );
 
+const BASE = import.meta.env.BASE_URL;
+
+// One shared look for every form control, so they match the site's sharp-cornered
+// #111111 cards / white-10 borders. Vertical padding scales with viewport height so the
+// whole card still fits a laptop screen at 100% zoom.
+const fieldClass =
+  'w-full border border-white/10 bg-[#111111] px-4 py-[clamp(0.6rem,1.6svh,0.8rem)] text-sm text-white ' +
+  'placeholder:text-white/35 outline-none transition-all duration-300 ' +
+  'focus:border-lime-400/60 focus:shadow-[0_0_20px_rgba(163,230,53,0.12)]';
+
+const SITEMAP = [
+  { label: 'About', id: 'about-section' },
+  { label: 'Projects', id: 'project-section' },
+  { label: 'Experience', id: 'experience-section' },
+  { label: 'Capabilities', id: 'capabilities-section' },
+];
+
+const NETWORKS = [
+  { label: 'Email', href: 'mailto:ritik74820@gmail.com', icon: Mail },
+  { label: 'GitHub', href: 'https://github.com/Ritik574-coder', icon: Github },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ritik-kumar-b81b32375/', icon: Linkedin },
+];
+
+// Shared by every link card in the right-hand column
+const cardLinkClass =
+  'group flex items-center justify-between border border-white/10 bg-[#111111] px-3 py-[clamp(0.5rem,1.4svh,0.75rem)] ' +
+  'transition-all duration-300 hover:border-lime-400 hover:bg-lime-400 hover:shadow-[0_0_24px_rgba(163,230,53,0.25)]';
+
 const Footer = memo(function Footer() {
   const timeRef = useRef(null);
   const [formStatus, setFormStatus] = useState('idle');
@@ -80,172 +108,171 @@ const Footer = memo(function Footer() {
   return (
     <footer
       id="contact-section"
-      className="bg-[#0A0A0A] text-white pt-28 md:pt-32 pb-12 w-full min-h-[100svh] relative overflow-hidden"
-      style={{ backgroundColor: '#0A0A0A' }}
+      className="relative isolate flex min-h-[100svh] w-full flex-col overflow-hidden bg-[#0A0A0A] text-white"
     >
+      {/* ── BACKDROP: cover-sized photo + palette scrims (see .scene--contact in index.css) ── */}
       <div
-        className="absolute inset-0 bg-no-repeat bg-[length:auto_86%] bg-[position:28%_center] sm:bg-cover sm:bg-center"
-        style={{ backgroundImage: `url(${import.meta.env.BASE_URL}contect.png)` }}
-      />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,10,6,0.96)_0%,rgba(5,10,6,0.9)_42%,rgba(5,10,6,0.84)_100%)]" />
-      {/* Subtle Matrix BG */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="scene scene--contact"
+        aria-hidden="true"
+        style={{ '--scene-photo': `url(${BASE}contect.webp)` }}
+      >
+        <div className="scene__photo" />
+        <div className="scene__glow" />
+        <div className="scene__scrim" />
+      </div>
+
+      {/* Subtle matrix grid */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{ backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', backgroundSize: '40px 40px' }}
       />
 
-      <div className="max-w-[1400px] mx-auto w-full min-w-0 px-5 sm:px-8 md:px-12 relative z-10 flex flex-col justify-between min-h-[calc(100svh-11rem)]">
+      <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-[1400px] flex-1 flex-col justify-between px-6 pb-[clamp(1rem,3svh,2rem)] pt-[clamp(5.25rem,14svh,8rem)] md:px-12">
 
         {/* ── SECTION HEADER ── */}
         <Gsap.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex items-center gap-4 mb-12 md:mb-16"
+          className="mb-[clamp(1.1rem,3.6svh,3rem)] flex items-center gap-4"
         >
-          <div className="w-2 h-2 bg-lime-400 rounded-[2px] animate-pulse" />
-          <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/40">
+          <div className="h-2 w-2 animate-pulse rounded-full bg-lime-400" />
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/40 md:text-xs md:tracking-[0.26em]">
             {'// INITIALIZE_CONTACT'}
           </span>
-          <div className="flex-1 h-[1px] bg-white/10" />
+          <div className="h-[1px] flex-1 bg-white/10" />
         </Gsap.div>
 
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)_minmax(0,0.85fr)] gap-12 md:gap-16 lg:gap-10 items-start mb-20 md:mb-24">
+        {/* ── MAIN GRID ──
+            <md   1 column:  intro / form / links
+            md    2 columns: intro | form, then links across the full width
+            lg+   3 columns: intro | form | links                                  */}
+        <div className="mb-[clamp(1.1rem,3.6svh,3rem)] grid grid-cols-1 items-start gap-y-10 md:grid-cols-2 md:gap-x-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,0.85fr)] xl:gap-x-10">
 
-          {/* Left: Huge Name & Status */}
-          <div className="flex flex-col justify-between min-w-0">
-            <div>
-              <h2 className="text-5xl sm:text-7xl lg:text-[clamp(4rem,6vw,6.6rem)] font-black uppercase tracking-tighter leading-[0.9] text-white mb-6 break-words">
-                LET'S <br />
-                <span className="text-lime-400 transform inline-block italic pr-4">CONNECT.</span>
-              </h2>
-              <p className="font-sans text-sm md:text-base text-white/60 max-w-md leading-7 md:leading-8">
-                Feel free to reach out for collaborations, system architecture discussions, or just to say hello. Always open to exploring new opportunities.
-              </p>
-            </div>
+          {/* Left: headline + intro */}
+          <div className="min-w-0">
+            <h2 className="mb-[clamp(0.75rem,2.5svh,1.5rem)] break-words text-[clamp(2.75rem,13vw,3.75rem)] font-black uppercase leading-[0.9] tracking-tighter text-white sm:text-7xl md:text-6xl lg:text-[clamp(3.25rem,min(5vw,11svh),5.25rem)]">
+              LET'S <br />
+              <span className="inline-block pr-4 italic text-lime-400">CONNECT.</span>
+            </h2>
+            <p className="max-w-md font-sans text-sm leading-7 text-white/70 [text-shadow:0_1px_14px_rgb(10_10_10/0.9)] md:text-base">
+              Feel free to reach out for collaborations, system architecture discussions, or just to say hello. Always open to exploring new opportunities.
+            </p>
           </div>
 
-          {/* Center: Direct inquiry form */}
-          <div className="order-2 lg:order-2 min-w-0">
-            <div className="w-full max-w-full border border-lime-400/25 bg-black/45 backdrop-blur-sm p-5 md:p-7 lg:p-8">
-              <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-5 mb-6">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-lime-400 mb-3">Direct inquiry</p>
-                  <h3 className="text-2xl md:text-3xl font-black tracking-tight break-words">Get in Touch with Ritik</h3>
+          {/* Center: direct inquiry form */}
+          <div className="min-w-0">
+            <div className="w-full max-w-full border border-lime-400/25 bg-[#0A0A0A]/80 p-5 shadow-[0_0_40px_rgba(163,230,53,0.08)] backdrop-blur-md md:p-6 lg:p-[clamp(1.25rem,3svh,2rem)]">
+              <div className="mb-[clamp(0.9rem,2.6svh,1.5rem)]">
+                <div className="mb-2 flex items-center justify-between gap-4">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-lime-400">Direct inquiry</p>
+                  <span className="hidden text-right font-mono text-[10px] leading-5 text-white/45 lg:block">Let's build something amazing.</span>
                 </div>
-                <span className="hidden md:block max-w-[150px] font-mono text-[10px] leading-5 text-white/45">Let's build something amazing.</span>
+                <h3 className="break-words text-2xl font-black tracking-tight md:text-3xl">Get in Touch with Ritik</h3>
               </div>
 
-              <form onSubmit={handleContactSubmit} className="space-y-3">
+              <form onSubmit={handleContactSubmit} className="space-y-[clamp(0.5rem,1.4svh,0.75rem)]">
                 <label className="sr-only" htmlFor="contact-name">Your Name</label>
-                <input id="contact-name" name="name" required type="text" placeholder="Your Name" className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <input id="contact-name" name="name" required type="text" placeholder="Your Name" autoComplete="name" className={fieldClass} />
                 <label className="sr-only" htmlFor="contact-email">Email Address</label>
-                <input id="contact-email" name="email" required type="email" placeholder="Email Address" className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <input id="contact-email" name="email" required type="email" placeholder="Email Address" autoComplete="email" className={fieldClass} />
                 <label className="sr-only" htmlFor="contact-phone">Phone Number</label>
-                <input id="contact-phone" name="phone" required type="tel" placeholder="Phone Number" className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <input id="contact-phone" name="phone" required type="tel" placeholder="Phone Number" autoComplete="tel" className={fieldClass} />
                 <label className="sr-only" htmlFor="contact-message">Message</label>
-                <textarea id="contact-message" name="message" required rows="4" placeholder="Message" className="w-full resize-none rounded-3xl border border-white/10 bg-white/[0.04] px-5 py-4 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-lime-400/60" />
+                <textarea id="contact-message" name="message" required rows="3" placeholder="Message" className={`${fieldClass} h-[clamp(5rem,13svh,8rem)] resize-none`} />
                 <input type="checkbox" name="botcheck" className="hidden" tabIndex="-1" autoComplete="off" />
-                <button type="submit" disabled={formStatus === 'sending'} className="w-full rounded-full bg-lime-400 py-3.5 text-sm font-bold text-black transition-all hover:bg-lime-300 disabled:cursor-wait disabled:opacity-60">
+                <button
+                  type="submit"
+                  disabled={formStatus === 'sending'}
+                  className="group flex w-full items-center justify-center gap-2 bg-lime-400 py-[clamp(0.7rem,1.8svh,0.9rem)] font-mono text-sm font-bold uppercase tracking-[0.14em] text-black transition-all duration-300 hover:bg-white hover:shadow-[0_0_30px_rgba(163,230,53,0.3)] disabled:cursor-wait disabled:opacity-60 md:tracking-[0.2em]"
+                >
                   {formStatus === 'sending' ? 'Sending...' : 'Send Inquiry'}
+                  <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
-                {formStatus === 'success' && <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-lime-400">Message sent successfully.</p>}
-                {formStatus === 'error' && <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-red-300">Unable to send. Check the Web3Forms access key.</p>}
+                {formStatus === 'success' && <p role="status" className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-lime-400">Message sent successfully.</p>}
+                {formStatus === 'error' && <p role="status" className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-red-300">Unable to send. Check the Web3Forms access key.</p>}
               </form>
             </div>
           </div>
 
-          {/* Right: Connect & Navigation */}
-          <div className="order-3 lg:order-3 min-w-0 flex flex-col sm:flex-row lg:flex-col gap-12 sm:gap-16 lg:justify-start">
+          {/* Right: sitemap + networks */}
+          <div className="flex min-w-0 flex-col gap-8 sm:flex-row sm:gap-x-16 md:col-span-2 lg:col-span-1 lg:flex-col lg:gap-[clamp(1.25rem,3.5svh,2rem)]">
 
             {/* Navigation */}
-            <div className="flex flex-col gap-4">
-              <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.18em] md:tracking-[0.24em] mb-4 border-l-2 border-white/20 pl-3">Sitemap</span>
-
-              {[
-                { label: 'About', id: 'about-section' },
-                { label: 'Projects', id: 'project-section' },
-                { label: 'Experience', id: 'experience-section' },
-                { label: 'Capabilities', id: 'capabilities-section' }
-              ].map((item) => (
+            <div className="flex flex-col gap-1.5 sm:min-w-[9.5rem]">
+              <span className="mb-1 border-l-2 border-white/20 pl-3 font-mono text-[10px] uppercase tracking-[0.18em] text-white/45 md:tracking-[0.24em]">Sitemap</span>
+              {SITEMAP.map((item) => (
                 <button
                   key={item.label}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-left font-mono text-xs md:text-sm font-bold uppercase text-white/60 hover:text-lime-400 transition-colors flex items-center gap-3 group py-1"
+                  className="group flex items-center gap-3 py-1 text-left font-mono text-xs font-bold uppercase text-white/60 transition-colors hover:text-lime-400 md:text-sm"
                 >
-                  <span className="w-1.5 h-1.5 bg-white/20 group-hover:bg-lime-400 transition-colors" />
-                  <span className="tracking-[0.14em] md:tracking-[0.2em] relative">
+                  <span className="h-1.5 w-1.5 bg-white/20 transition-colors group-hover:bg-lime-400" />
+                  <span className="relative tracking-[0.14em] md:tracking-[0.2em]">
                     {item.label}
-                    <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-lime-400 group-hover:w-full transition-all duration-300" />
+                    <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-lime-400 transition-all duration-300 group-hover:w-full" />
                   </span>
                 </button>
               ))}
             </div>
 
-            {/* Connect Links */}
-            <div className="flex flex-col gap-4 min-w-0 sm:min-w-[200px]">
-              <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.18em] md:tracking-[0.24em] mb-4 border-l-2 border-lime-400 pl-3">Networks</span>
+            {/* Connect links */}
+            <div className="flex min-w-0 flex-1 flex-col gap-2 lg:flex-none">
+              <span className="mb-1 border-l-2 border-lime-400 pl-3 font-mono text-[10px] uppercase tracking-[0.18em] text-white/45 md:tracking-[0.24em]">Networks</span>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                {NETWORKS.map((link) => (
+                  <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className={cardLinkClass}>
+                    <div className="flex items-center gap-3">
+                      <link.icon size={16} className="text-white/40 transition-colors group-hover:text-black" />
+                      <span className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-white/80 transition-colors group-hover:text-black md:text-sm md:tracking-[0.2em]">{link.label}</span>
+                    </div>
+                    <ArrowUpRight size={14} className="text-white/20 transition-colors group-hover:text-black" />
+                  </a>
+                ))}
 
-              {[
-                { label: 'Email', href: 'mailto:ritik74820@gmail.com', icon: Mail },
-                { label: 'GitHub', href: 'https://github.com/Ritik574-coder', icon: Github },
-                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ritik-kumar-b81b32375/', icon: Linkedin },
-              ].map((link) => (
+                {/* Discord profile link */}
                 <a
-                  key={link.label}
-                  href={link.href}
+                  href="https://discord.com/users/1405958607429828708"
                   target="_blank"
                   rel="noreferrer"
-                  className="group flex items-center justify-between border border-white/10 bg-[#111111] hover:bg-lime-400 hover:border-lime-400 transition-colors duration-300 p-3"
+                  className={cardLinkClass}
+                  title="Open Discord profile"
                 >
                   <div className="flex items-center gap-3">
-                    <link.icon size={16} className="text-white/40 group-hover:text-black transition-colors" />
-                    <span className="font-mono text-xs md:text-sm font-bold uppercase text-white/80 group-hover:text-black tracking-[0.14em] md:tracking-[0.2em] transition-colors">{link.label}</span>
+                    <DiscordIcon className="text-white/40 transition-colors group-hover:text-black" size={16} />
+                    <div className="flex flex-col items-start gap-1">
+                      <span className="font-mono text-xs font-bold uppercase leading-none tracking-[0.14em] text-white/80 transition-colors group-hover:text-black md:text-sm md:tracking-[0.2em]">
+                        Discord
+                      </span>
+                      <span className="font-mono text-[10px] lowercase leading-none text-white/40 transition-colors group-hover:text-black/60">
+                        @ritik-kumar
+                      </span>
+                    </div>
                   </div>
-                  <ArrowUpRight size={14} className="text-white/20 group-hover:text-black transition-colors" />
+                  <ArrowUpRight size={14} className="text-white/20 transition-colors group-hover:text-black" />
                 </a>
-              ))}
-
-              {/* Discord Profile Link */}
-              <a
-                href="https://discord.com/users/1405958607429828708"
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-center justify-between border border-white/10 bg-[#111111] hover:bg-lime-400 hover:border-lime-400 transition-colors duration-300 p-3 mt-1"
-                title="Open Discord profile"
-              >
-                <div className="flex items-center gap-3">
-                  <DiscordIcon className="text-white/40 group-hover:text-black transition-colors" size={16} />
-                  <div className="flex flex-col items-start gap-1">
-                    <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-[0.14em] md:tracking-[0.2em] leading-none transition-colors text-white/80 group-hover:text-black">
-                      Discord
-                    </span>
-                    <span className="font-mono text-[9px] lowercase leading-none transition-colors text-white/40 group-hover:text-black/60">
-                      @ritik-kumar
-                    </span>
-                  </div>
-                </div>
-                <ArrowUpRight size={14} className="text-white/20 group-hover:text-black transition-colors" />
-              </a>
+              </div>
             </div>
 
           </div>
         </div>
 
-        {/* Footer Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-4">
-          <div className="flex items-center gap-3 font-mono text-[10px] md:text-xs text-white/40 uppercase tracking-[0.14em] md:tracking-[0.2em]">
+        {/* ── FOOTER BOTTOM BAR ──
+            md:pr-12 keeps the copyright clear of the floating chat launcher (bottom-right). */}
+        <div className="flex flex-col items-center gap-2 border-t border-white/10 pt-4 md:flex-row md:flex-wrap md:justify-between md:gap-x-6 md:gap-y-2 md:pr-12 md:pt-5">
+          <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-white/40 md:text-xs md:tracking-[0.2em]">
             <span>SYS.STATUS:</span>
-            <div className="flex items-center gap-2 text-lime-400 bg-lime-400/10 px-2 flex-grow-0 min-w-16 justify-center py-0.5 border border-lime-400/20 yg">
+            <div className="flex min-w-16 flex-grow-0 items-center justify-center gap-2 border border-lime-400/20 bg-lime-400/10 px-2 py-0.5 text-lime-400">
               ONLINE
             </div>
           </div>
 
-          <div ref={timeRef} className="font-mono text-[10px] md:text-xs text-white/30 uppercase tracking-[0.18em] md:tracking-[0.24em] tabular-nums text-center order-first md:order-none opacity-50">
+          <div ref={timeRef} className="order-first whitespace-nowrap text-center font-mono text-[10px] uppercase tabular-nums tracking-[0.18em] text-white/30 opacity-50 md:order-none md:text-xs md:tracking-[0.24em]">
             00:00:00 LOCAL
           </div>
 
-          <div className="font-mono text-[10px] md:text-xs text-white/40 uppercase tracking-[0.14em] md:tracking-[0.2em] text-center md:text-right">
+          <div className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-white/40 md:text-right md:text-xs md:tracking-[0.2em]">
             &copy; {new Date().getFullYear()} RITIK KUMAR. ALL RIGHTS RESERVED.
           </div>
         </div>

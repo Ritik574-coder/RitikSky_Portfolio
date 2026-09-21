@@ -6,6 +6,13 @@
   --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'Space Grotesk', Menlo, Monaco, Consolas, monospace;
+
+  /* Shared dark + neon-lime palette. These are the exact values the TechStack,
+     GitHubStats and Projects sections already use, exposed as tokens so the Hero
+     and Contact backdrops can't drift from them again. Used as rgb(var(--x) / a). */
+  --ink-rgb: 10 10 10;          /* #0A0A0A  section base            */
+  --ink-raised-rgb: 17 17 17;   /* #111111  cards / raised surfaces */
+  --lime-rgb: 163 230 53;       /* lime-400 #A3E635  accent + glow  */
 }
 
 body {
@@ -42,21 +49,17 @@ code {
   font-family: var(--font-mono);
 }
 
-.font-outline-fallback {
-  text-shadow:
-    1px 0 0 #000,
-    -1px 0 0 #000,
-    0 1px 0 #000,
-    0 -1px 0 #000,
-    1px 1px 0 #000,
-    -1px 1px 0 #000,
-    1px -1px 0 #000,
-    -1px -1px 0 #000;
+/* Outlined display text for dark sections: neon-lime stroke + soft glow.
+   (Replaces the old black outline, which vanished against the dark hero.) */
+.text-outline-lime {
+  color: transparent;
+  -webkit-text-stroke: 2px rgb(var(--lime-rgb));
+  text-shadow: 0 0 32px rgb(var(--lime-rgb) / 0.28);
 }
 
-@supports (-webkit-text-stroke: 1px black) {
-  .font-outline-fallback {
-    -webkit-text-stroke: 2px black;
+@supports not (-webkit-text-stroke: 1px black) {
+  .text-outline-lime {
+    color: rgb(var(--lime-rgb));
     text-shadow: none;
   }
 }
@@ -254,6 +257,146 @@ html.lenis body {
 
   100% {
     transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ============================================
+   Section backdrops (Hero + Contact)
+   --------------------------------------------
+   Photos use `cover` and are anchored on their subject, so they scale WITH the
+   section instead of being pinned to a fixed size (the old `auto 86%` sizing made
+   them huge on tall/narrow screens). Scrims are built from the shared palette
+   tokens above. Each backdrop has two modes:
+     < 1024px  text spans the full width  -> vertical scrim (dark where the copy sits)
+     >= 1024px copy sits in a left column -> horizontal scrim
+   ============================================ */
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene__photo,
+.scene__scrim,
+.scene__glow {
+  position: absolute;
+  inset: 0;
+}
+
+.scene__photo {
+  background-image: var(--scene-photo);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Soft neon-lime glow, same recipe as the rest of the site */
+.scene__glow {
+  background:
+    radial-gradient(circle at 24% 30%, rgb(var(--lime-rgb) / 0.16), transparent 40%),
+    radial-gradient(circle at 82% 88%, rgb(var(--lime-rgb) / 0.07), transparent 46%);
+}
+
+/* Proper edge vignette (replaces a Tailwind class that never compiled) */
+.scene__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgb(var(--ink-rgb) / 0.55) 100%);
+}
+
+/* ── Hero ── subject sits in the right half of the photo */
+.scene--hero .scene__photo {
+  background-position: 76% 14%;
+}
+
+.scene--hero .scene__scrim {
+  background:
+    /* hides the clipped tail of the photo's baked-in script on portrait crops */
+    linear-gradient(270deg, rgb(var(--ink-rgb) / 0.8) 0%, rgb(var(--ink-rgb) / 0.35) 6%, transparent 14%),
+    linear-gradient(180deg,
+      rgb(var(--ink-rgb) / 0.62) 0%,
+      rgb(var(--ink-rgb) / 0.10) 24%,
+      rgb(var(--ink-rgb) / 0.55) 46%,
+      rgb(var(--ink-rgb) / 0.94) 72%,
+      rgb(var(--ink-rgb)) 100%);
+}
+
+@media (min-width: 1024px) {
+  .scene--hero .scene__photo {
+    background-position: 70% center;
+  }
+
+  .scene--hero .scene__scrim {
+    background:
+      linear-gradient(90deg,
+        rgb(var(--ink-rgb) / 0.94) 0%,
+        rgb(var(--ink-rgb) / 0.74) 34%,
+        rgb(var(--ink-rgb) / 0.16) 68%,
+        rgb(var(--ink-rgb) / 0.38) 100%),
+      linear-gradient(180deg,
+        rgb(var(--ink-rgb) / 0.5) 0%,
+        transparent 30%,
+        rgb(var(--ink-rgb) / 0.72) 100%);
+  }
+}
+
+/* ── Contact ── subject sits in the left third of the photo; the right side is
+   empty sky with a baked-in quote we don't want fighting the UI copy. */
+.scene--contact {
+  bottom: auto;
+  /* On tall stacked layouts the photo covers one screen, then fades to ink,
+     instead of being stretched over 1500px+ of form/links. */
+  height: min(100%, 125svh);
+}
+
+.scene--contact .scene__photo {
+  /* 22% pushes the photo's baked-in "Better Data Better Future" script out of frame
+     while keeping the figure's face in view. */
+  background-position: 22% 62%;
+}
+
+.scene--contact .scene__scrim {
+  /* Lightest just around the headline (big type reads fine on the glow), dark behind the
+     intro paragraph, lighter again where the figure sits, then fading to ink. */
+  background:
+    linear-gradient(180deg,
+      rgb(var(--ink-rgb) / 0.66) 0%,
+      rgb(var(--ink-rgb) / 0.44) 11%,
+      rgb(var(--ink-rgb) / 0.86) 23%,
+      rgb(var(--ink-rgb) / 0.88) 40%,
+      rgb(var(--ink-rgb) / 0.60) 54%,
+      rgb(var(--ink-rgb) / 0.72) 72%,
+      rgb(var(--ink-rgb) / 0.94) 90%,
+      rgb(var(--ink-rgb)) 100%);
+}
+
+@media (min-width: 1024px) {
+  .scene--contact {
+    bottom: 0;
+    height: auto;
+  }
+
+  .scene--contact .scene__photo {
+    background-position: 8% 78%;
+  }
+
+  .scene--contact .scene__scrim {
+    background:
+      /* the photo's baked-in script sits exactly where the headline is: mask it out */
+      radial-gradient(ellipse 18% 24% at 8% 36%,
+        rgb(var(--ink-rgb) / 0.97) 0%,
+        rgb(var(--ink-rgb) / 0.92) 55%,
+        transparent 100%),
+      linear-gradient(90deg,
+        rgb(var(--ink-rgb) / 0.62) 0%,
+        rgb(var(--ink-rgb) / 0.68) 28%,
+        rgb(var(--ink-rgb) / 0.9) 52%,
+        rgb(var(--ink-rgb)) 78%),
+      linear-gradient(180deg,
+        rgb(var(--ink-rgb) / 0.86) 0%,
+        rgb(var(--ink-rgb) / 0.5) 34%,
+        transparent 60%,
+        rgb(var(--ink-rgb) / 0.7) 100%);
   }
 }
 

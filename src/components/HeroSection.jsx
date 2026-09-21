@@ -2,6 +2,8 @@ import { memo, useRef, useState, useEffect } from 'react';
 import { Gsap, useGsapReducedMotion, useGsapScroll, useGsapTransform } from '../utils/gsapAnimate';
 import { Terminal, Code2, Database, Cpu, Download, ArrowUpRight } from 'lucide-react';
 
+const BASE = import.meta.env.BASE_URL;
+
 // Shared Intl formatter — created once, reused on every tick
 const jakartaFormatter = new Intl.DateTimeFormat('en-US', {
   timeZone: 'Asia/Jakarta',
@@ -55,14 +57,14 @@ const OrbitingDecoration = ({ icon: Icon, delay, className, isRevealed, enableAm
       y: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
       scale: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
     }}
-    className={`absolute flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-lime-500/20 bg-white/60 backdrop-blur-lg shadow-[0_10px_30px_rgba(132,204,22,0.12)] ${className}`}
+    className={`absolute flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-lime-400/25 bg-[#111111]/70 backdrop-blur-md shadow-[0_0_24px_rgba(163,230,53,0.14)] ${className}`}
     style={enableAmbientMotion && isRevealed ? {
       animation: `hero-float 5.8s ${delay + 0.35}s ease-in-out infinite`,
       willChange: 'transform',
     } : undefined}
   >
-    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-lime-300/25 to-transparent" />
-    <Icon size={18} className="relative text-black/65" />
+    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-lime-400/15 to-transparent" />
+    <Icon size={18} className="relative text-lime-400" />
   </Gsap.div>
 );
 
@@ -116,7 +118,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
     <header
       ref={containerRef}
       id="hero-section"
-      className="min-h-[100svh] w-full relative bg-[#10140f] text-white selection:bg-lime-300 selection:text-black overflow-hidden flex flex-col items-center justify-center px-0 pt-24 pb-16 sm:pt-28 sm:pb-20"
+      className="relative flex min-h-[100svh] w-full flex-col items-center justify-end overflow-hidden bg-[#0A0A0A] px-0 pb-[clamp(2rem,6svh,5rem)] pt-[clamp(5rem,12svh,7rem)] text-white selection:bg-lime-300 selection:text-black lg:justify-center"
     >
       {/* ── BACKGROUND ENGINEERING Grid & Dynamic Glow ── */}
       <Gsap.div
@@ -127,14 +129,12 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
         className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center"
       >
 
-        <div
-          className="absolute inset-0 bg-no-repeat bg-[length:auto_86%] bg-[position:70%_center] sm:bg-cover sm:bg-center"
-          style={{ backgroundImage: `url(${import.meta.env.BASE_URL}overview.png)` }}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,12,8,0.92)_0%,rgba(8,12,8,0.68)_38%,rgba(8,12,8,0.2)_72%,rgba(8,12,8,0.42)_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,5,0.5)_0%,transparent_35%,rgba(5,8,5,0.68)_100%)]" />
-
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_32%,rgba(163,230,53,0.18),transparent_38%),linear-gradient(to_bottom,rgba(163,230,53,0.05),transparent_48%)]" />
+        {/* Cover-sized photo + palette scrims + lime glow (see .scene--hero in index.css) */}
+        <div className="scene scene--hero" style={{ '--scene-photo': `url(${BASE}overview.webp)` }}>
+          <div className="scene__photo" />
+          <div className="scene__glow" />
+          <div className="scene__scrim" />
+        </div>
 
         {/* 1. Base Moving Grid */}
         <div
@@ -189,17 +189,17 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
         />
 
         {/* 4. Radial Vignette to blend gracefully with section edges */}
-        <div className="absolute inset-0 bg-[#10140f] [mask-image:radial-gradient(circle_at_center,transparent 0%,black 100%)] opacity-40" />
+        <div className="scene__vignette" />
 
         {/* Soft bottom fade */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#10140f] to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0A0A0A] to-transparent pointer-events-none" />
       </Gsap.div>
 
       {/* ── MAIN CONTENT (PERFECTLY CENTERED) ── */}
       {/* Parallax wrapper (scroll-driven y only) */}
       <Gsap.div
         style={enableParallax ? { y: contentY } : undefined}
-        className="relative z-10 w-full min-w-0 max-w-[1440px] px-5 sm:px-10 lg:px-16 flex flex-col items-start text-left mt-8"
+        className="relative z-10 mx-auto flex w-full min-w-0 max-w-[1400px] flex-col items-start px-6 text-left md:px-12"
       >
         {/* Iris reveal + entrance wrapper */}
         <Gsap.div
@@ -222,22 +222,22 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           initial={false}
           animate={isRevealed ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.55, duration: 0.8 }}
-          className="mb-5 md:mb-7"
+          className="mb-[clamp(0.75rem,2.5svh,1.75rem)]"
         >
           <LocationTimeBadge />
         </Gsap.div>
 
         {/* 2. Massive Clear Typography */}
-        <div className="flex flex-col items-start justify-center relative w-full min-w-0 max-w-[760px] mb-5 md:mb-7">
+        <div className="flex flex-col items-start justify-center relative w-full min-w-0 max-w-[760px] mb-[clamp(0.75rem,2.5svh,1.75rem)]">
           {/* Left Decoration */}
-          <OrbitingDecoration icon={Code2} delay={0.15} className="left-0 sm:left-2 lg:left-16 top-2" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
-          <OrbitingDecoration icon={Terminal} delay={0.45} className="left-6 sm:left-12 lg:left-28 bottom-8 hidden sm:flex" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
+          <OrbitingDecoration icon={Code2} delay={0.15} className="hidden lg:flex right-[24%] top-0" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
+          <OrbitingDecoration icon={Terminal} delay={0.45} className="hidden lg:flex right-[30%] bottom-[6%]" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
 
           <Gsap.h1
             initial={false}
             animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
             transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[clamp(4.25rem,12vw,8.5rem)] font-black uppercase tracking-tight text-white leading-[0.88]"
+            className="text-[clamp(3.5rem,min(13vw,17svh),8.5rem)] font-black uppercase tracking-tight text-white leading-[0.88]"
           >
             RITIK
           </Gsap.h1>
@@ -246,14 +246,14 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
             initial={false}
             animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
             transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[clamp(4.25rem,12vw,8.5rem)] font-black uppercase tracking-tight text-transparent leading-[0.88] mt-2 sm:mt-0 font-outline-fallback"
+            className="text-[clamp(3.5rem,min(13vw,17svh),8.5rem)] font-black uppercase tracking-tight text-outline-lime leading-[0.88] mt-2 sm:mt-0"
           >
             KUMAR
           </Gsap.h1>
 
           {/* Right Decoration */}
-          <OrbitingDecoration icon={Database} delay={0.28} className="right-0 sm:right-2 lg:right-16 top-10" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
-          <OrbitingDecoration icon={Cpu} delay={0.58} className="right-6 sm:right-12 lg:right-28 -bottom-2 hidden sm:flex" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
+          <OrbitingDecoration icon={Database} delay={0.28} className="hidden lg:flex right-[8%] top-[24%]" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
+          <OrbitingDecoration icon={Cpu} delay={0.58} className="hidden lg:flex right-[14%] bottom-[-2%]" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
         </div>
 
         {/* 3. Clean Slogan with Green Accent */}
@@ -276,7 +276,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           initial={false}
           animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
           transition={{ delay: 0.5, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          className="flex w-full max-w-[760px] flex-wrap items-center justify-start gap-3 sm:gap-4 mt-7"
+          className="flex w-full max-w-[760px] flex-wrap items-center justify-start gap-3 sm:gap-4 mt-[clamp(1.25rem,3.5svh,1.75rem)]"
         >
           <button
             onClick={() => document.getElementById('project-section')?.scrollIntoView({ behavior: 'smooth' })}
@@ -285,7 +285,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
             View Projects <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
           <a
-            href="/cv.pdf"
+            href={`${BASE}cv.pdf`}
             download
             className="group flex items-center gap-2 bg-transparent text-white border border-white/35 px-7 py-3.5 font-mono text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300"
           >

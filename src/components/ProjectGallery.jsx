@@ -418,7 +418,7 @@ export default function ProjectGallery({ onOpenProject }) {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="flex flex-col justify-center shrink-0 h-[70vh] w-[40vw]"
           >
-            <h2 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.92]">
+            <h2 className="text-6xl lg:text-[clamp(3.25rem,5.4vw,6rem)] font-black text-white uppercase leading-[0.92]">
               Past<br />
               <span className="text-lime-400">Explorations</span>
             </h2>

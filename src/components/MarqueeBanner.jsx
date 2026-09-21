@@ -12,6 +12,9 @@ const skills = [
 
 const MarqueeBanner = memo(function MarqueeBanner() {
   return (
+    // overflow-x-clip: the banner is scaled 1.02x + tilted, which used to poke ~15px past both
+    // viewport edges (horizontal overflow). Clipping x only keeps the vertical tilt overlap.
+    <div className="overflow-x-clip">
     <div className="relative z-20 sm:-rotate-[0.8deg] sm:scale-[1.02] cursor-default select-none">
       <div className="bg-black shadow-[0_0_40px_rgba(163,230,53,0.08)]">
 
@@ -66,6 +69,7 @@ const MarqueeBanner = memo(function MarqueeBanner() {
         </div>
 
       </div>
+    </div>
     </div>
   );
 });
