@@ -1,8 +1,8 @@
 # Contributing to MotionFolio
 
-Thanks for your interest in contributing! MotionFolio is an open-source animated
-portfolio starter, and contributions of all sizes are welcome — bug fixes, docs,
-new animation patterns, theme presets, and accessibility improvements.
+Thanks for your interest in contributing! MotionFolio is an animated portfolio application built by Ritik Kumar.
+
+Please note that this project is governed by a **Custom View-Only License** (see `LICENCE`). Contributions, bug fixes, or suggestions are welcome through pull requests and issues, provided you agree to the terms in `LICENCE`.
 
 By participating in this project, you agree to abide by our
 [Code of Conduct](CODE_OF_CONDUCT.md).

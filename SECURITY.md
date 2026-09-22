@@ -2,8 +2,7 @@
 
 ## Supported versions
 
-MotionFolio is an early-stage starter project. Security fixes are applied to the
-latest `main` branch and the most recent release.
+Security fixes are applied to the latest `main` branch and active releases.
 
 | Version | Supported |
 | ------- | --------- |
