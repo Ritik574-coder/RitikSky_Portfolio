@@ -1,15 +1,8 @@
-# MotionFolio
+# MotionFolio — Portfolio of Ritik Kumar
 
-> Open-source animated portfolio starter for modern developers.
+> Animated Developer Portfolio & Interactive AI Terminal built with React, Vite, Tailwind CSS, GSAP, and Lenis.
 
-MotionFolio is an open-source animated portfolio starter built with React, Vite,
-Tailwind CSS, GSAP, Lenis, and an optional AI-powered terminal assistant. It helps
-developers build creative portfolio websites faster using reusable motion patterns,
-centralized content data, project case studies, smooth scrolling, and customizable
-sections.
-
-Instead of starting from a blank page, you fork the project, edit a few data files,
-swap the assets, and ship a polished animated portfolio.
+MotionFolio is the personal portfolio website of **Ritik Kumar**, a Data Engineer with a strong background in Machine Learning, Computer Vision, and AI Systems. The portfolio showcases interactive UI animations, project case studies, achievements, professional experience, and an AI-powered interactive terminal assistant.
 
 ## Features
 
@@ -232,4 +225,4 @@ on direct load.
 
 ## License
 
-Licensed under the [MIT License](LICENSE). Copyright (c) 2026 Ritik.
+Licensed under the [Custom View-Only License](LICENCE). Copyright (c) 2026 Ritik Kumar. All Rights Reserved.
