@@ -19,10 +19,11 @@ const INTENSITY_CLASSES = [
 const WEEKDAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
 
 function buildCalendar(data) {
-    if (!data.length) return Array.from({ length: COLS }, () => Array(ROWS).fill(null));
-
     const byDate = new Map(data.map((day) => [day.date, day]));
-    const latestDate = new Date(`${data[data.length - 1].date}T00:00:00Z`);
+    const latestDate = data.length
+        ? new Date(`${data[data.length - 1].date}T00:00:00Z`)
+        : new Date();
+    if (!data.length) latestDate.setUTCHours(0, 0, 0, 0);
     latestDate.setUTCDate(latestDate.getUTCDate() + (6 - latestDate.getUTCDay()));
 
     return Array.from({ length: COLS }, (_, column) => (
