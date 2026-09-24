@@ -5,8 +5,8 @@ import { Terminal, Code2, Database, Cpu, Download, ArrowUpRight } from 'lucide-r
 const BASE = import.meta.env.BASE_URL;
 
 // Shared Intl formatter — created once, reused on every tick
-const jakartaFormatter = new Intl.DateTimeFormat('en-US', {
-  timeZone: 'Asia/Jakarta',
+const indiaFormatter = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'Asia/Kolkata',
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
@@ -21,7 +21,7 @@ const LocationTimeBadge = () => {
   useEffect(() => {
     const update = () => {
       if (timeRef.current) {
-        timeRef.current.textContent = jakartaFormatter.format(new Date());
+        timeRef.current.textContent = indiaFormatter.format(new Date());
       }
     };
     update();
@@ -264,7 +264,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           className="flex flex-col items-start gap-2 mt-0 w-full max-w-[760px] min-w-0"
         >
           <h2 className="text-[clamp(1.35rem,3.4vw,2.25rem)] font-bold text-white/85 tracking-tight flex items-start justify-start flex-wrap gap-2 max-w-full">
-            Architecting <span className="bg-lime-400/30 px-2 rounded-md ring-1 ring-lime-500/20">Intelligent</span> Paradigms<span className="text-lime-500 font-extrabold -ml-1">.</span>
+            Engineering <span className="bg-lime-400/30 px-2 rounded-md ring-1 ring-lime-500/20">Data.</span> Building Intelligence<span className="text-lime-500 font-extrabold -ml-1">.</span>
           </h2>
           <p className="font-sans text-sm sm:text-base text-white/65 max-w-[500px] leading-7 mt-2">
             Data Engineer & Full-Stack Developer specialized in building scalable data systems, modern analytics solutions and impactful products.
@@ -286,10 +286,10 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           </button>
           <a
             href={`${BASE}cv.pdf`}
-            download
+            download="Resume.pdf"
             className="group flex items-center gap-2 bg-transparent text-white border border-white/35 px-7 py-3.5 font-mono text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300"
           >
-            Download CV <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
+            Download Resume <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
           </a>
         </Gsap.div>
 

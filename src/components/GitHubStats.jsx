@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Gsap } from '../utils/gsapAnimate';
 import { Calendar, Code, ExternalLink, Users, Terminal } from 'lucide-react';
 
@@ -8,88 +8,89 @@ const HEATMAP_DAYS = 364;
 const COLS = 52;
 const ROWS = 7;
 
-// Color palette matching the dark engineering theme
-const LEVEL_COLORS = {
-    0: '#111111',   // dark-gray for empty
-    1: '#1a2e05',   // darkest lime
-    2: '#3f6212',
-    3: '#65a30d',
-    4: '#a3e635',   // bright lime
-};
+const INTENSITY_CLASSES = [
+    'bg-[#101610]',
+    'bg-[#A3FF12]/20',
+    'bg-[#A3FF12]/40',
+    'bg-[#A3FF12]/65',
+    'bg-[#A3FF12]',
+];
 
-const LOADING_COLOR = '#1a1a1a';
+const WEEKDAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+
+function buildCalendar(data) {
+    if (!data.length) return Array.from({ length: COLS }, () => Array(ROWS).fill(null));
+
+    const byDate = new Map(data.map((day) => [day.date, day]));
+    const latestDate = new Date(`${data[data.length - 1].date}T00:00:00Z`);
+    latestDate.setUTCDate(latestDate.getUTCDate() + (6 - latestDate.getUTCDay()));
+
+    return Array.from({ length: COLS }, (_, column) => (
+        Array.from({ length: ROWS }, (_, row) => {
+            const date = new Date(latestDate);
+            date.setUTCDate(latestDate.getUTCDate() - ((COLS - 1 - column) * ROWS) - (ROWS - 1 - row));
+            const dateKey = date.toISOString().slice(0, 10);
+            return byDate.get(dateKey) || { date: dateKey, count: 0, level: 0 };
+        })
+    ));
+}
+
+function getMonthLabels(weeks) {
+    return weeks.map((week, index) => {
+        if (!week[0]) return '';
+        const firstDate = new Date(`${week[0].date}T00:00:00Z`);
+        const previousDate = index > 0 ? new Date(`${weeks[index - 1][0].date}T00:00:00Z`) : null;
+        const isNewMonth = !previousDate || firstDate.getUTCMonth() !== previousDate.getUTCMonth();
+        return isNewMonth ? firstDate.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }) : '';
+    });
+}
 
 const HeatmapCanvas = memo(function HeatmapCanvas({ data, loading }) {
-    const canvasRef = useRef(null);
-    const containerRef = useRef(null);
-
-    const draw = useCallback(() => {
-        const canvas = canvasRef.current;
-        const container = containerRef.current;
-        if (!canvas || !container) return;
-
-        const containerWidth = container.clientWidth;
-        const dpr = window.devicePixelRatio || 1;
-
-        // Calculate cell size
-        const gap = window.innerWidth >= 768 ? 3 : 2;
-        const cellSize = Math.floor((containerWidth - (COLS - 1) * gap) / COLS);
-        const canvasWidth = COLS * cellSize + (COLS - 1) * gap;
-        const canvasHeight = ROWS * cellSize + (ROWS - 1) * gap;
-
-        canvas.width = canvasWidth * dpr;
-        canvas.height = canvasHeight * dpr;
-        canvas.style.width = `${canvasWidth}px`;
-        canvas.style.height = `${canvasHeight}px`;
-
-        const ctx = canvas.getContext('2d');
-        ctx.scale(dpr, dpr);
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-        for (let i = 0; i < HEATMAP_DAYS; i++) {
-            const col = Math.floor(i / ROWS);
-            const row = i % ROWS;
-
-            const x = col * (cellSize + gap);
-            const y = row * (cellSize + gap);
-
-            if (loading) {
-                ctx.fillStyle = LOADING_COLOR;
-            } else {
-                const day = data[i];
-                ctx.fillStyle = day ? (LEVEL_COLORS[day.level] || LEVEL_COLORS[0]) : LEVEL_COLORS[0];
-            }
-
-            ctx.fillRect(x, y, cellSize, cellSize);
-        }
-    }, [data, loading]);
-
-    useEffect(() => {
-        draw();
-
-        let rafId = null;
-        const handleResize = () => {
-            if (rafId !== null) cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(() => {
-                draw();
-                rafId = null;
-            });
-        };
-
-        window.addEventListener('resize', handleResize, { passive: true });
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            if (rafId !== null) cancelAnimationFrame(rafId);
-        };
-    }, [draw]);
+    const weeks = buildCalendar(data);
+    const monthLabels = getMonthLabels(weeks);
 
     return (
-        <div ref={containerRef} className="w-full overflow-hidden">
-            <canvas
-                ref={canvasRef}
-                className="w-full"
-                aria-label={`GitHub contribution heatmap showing ${HEATMAP_DAYS} days of activity`}
-            />
+        <div className="w-full overflow-x-auto pb-1" aria-label={`GitHub contribution calendar showing ${HEATMAP_DAYS} days of activity`}>
+            <div className="min-w-[620px]">
+                <div className="grid grid-cols-[30px_repeat(52,minmax(0,1fr))] gap-x-1 mb-2">
+                    <span />
+                    {monthLabels.map((label, index) => (
+                        <span key={`${label}-${index}`} className="h-4 font-mono text-[9px] text-white/40 leading-none">
+                            {label}
+                        </span>
+                    ))}
+                </div>
+
+                <div className="grid grid-cols-[30px_repeat(52,minmax(0,1fr))] gap-x-1 gap-y-1">
+                    <div className="grid grid-rows-7 gap-y-1">
+                        {WEEKDAY_LABELS.map((label, index) => (
+                            <span key={index} className="h-3.5 font-mono text-[9px] text-white/40 leading-3.5">
+                                {label}
+                            </span>
+                        ))}
+                    </div>
+
+                    {weeks.map((week, column) => (
+                        <div key={column} className="grid grid-rows-7 gap-y-1">
+                            {week.map((day, row) => (
+                                <span
+                                    key={day.date}
+                                    title={loading ? 'Loading activity' : `${day.count} contributions on ${day.date}`}
+                                    className={`block aspect-square w-full min-w-[8px] rounded-[2px] ${loading ? 'bg-[#101610]' : INTENSITY_CLASSES[Math.min(4, Math.max(0, day.level || 0))]}`}
+                                />
+                            ))}
+                        </div>
+                    ))}
+                </div>
+
+                <div className="mt-5 flex items-center justify-end gap-2 font-mono text-[9px] uppercase tracking-[0.12em] text-white/40 sm:hidden">
+                    Less
+                    {INTENSITY_CLASSES.map((colorClass, index) => (
+                        <span key={index} className={`h-3 w-3 rounded-[2px] ${colorClass}`} />
+                    ))}
+                    More
+                </div>
+            </div>
         </div>
     );
 });
@@ -156,7 +157,7 @@ const GitHubStats = memo(function GitHubStats() {
     }, []);
 
     return (
-        <section id="github-stats-section" className="pt-20 md:pt-24 pb-24 md:pb-32 w-full relative bg-[#0A0A0A] overflow-hidden">
+        <section id="github-stats-section" className="pt-20 md:pt-24 pb-24 md:pb-32 w-full relative bg-[#171817] overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
 
                 {/* ── SECTION HEADER ── */}
@@ -166,11 +167,11 @@ const GitHubStats = memo(function GitHubStats() {
                     viewport={{ once: true }}
                     className="flex items-center gap-4 mb-16 md:mb-20"
                 >
-                    <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
-                    <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/40">
+                    <div className="w-2 h-2 bg-[#A3FF12] rounded-full animate-pulse" />
+                    <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/55">
                         05. Source_Metrics
                     </span>
-                    <div className="flex-1 h-[1px] bg-white/10" />
+                    <div className="flex-1 h-[1px] bg-[#A3FF12]/12" />
                 </Gsap.div>
 
                 {/* Big Title Area */}
@@ -183,7 +184,7 @@ const GitHubStats = memo(function GitHubStats() {
                         className="text-3xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.98] sm:leading-[0.9] text-white"
                     >
                         GitHub <br />
-                        <span className="text-lime-400">Activity.</span>
+                        <span className="text-[#A3FF12]">Activity.</span>
                     </Gsap.h2>
 
                     <Gsap.a
@@ -194,7 +195,7 @@ const GitHubStats = memo(function GitHubStats() {
                         href={GITHUB_PROFILE_URL}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-3 w-fit border border-lime-400/30 text-lime-400 px-6 py-3 hover:bg-lime-400 hover:text-black transition-all font-mono text-sm font-bold uppercase tracking-[0.14em] md:tracking-[0.2em] group"
+                        className="flex items-center gap-3 w-fit border border-[#A3FF12]/30 text-[#A3FF12] px-6 py-3 hover:bg-[#A3FF12] hover:text-[#171817] transition-all font-mono text-sm font-bold uppercase tracking-[0.14em] md:tracking-[0.2em] group"
                     >
                         <Terminal size={16} />
                         Launch_Profile
@@ -211,55 +212,55 @@ const GitHubStats = memo(function GitHubStats() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="xl:w-1/3 grid grid-cols-2 gap-px bg-white/10 border border-white/10"
+                        className="xl:w-1/3 grid grid-cols-2 gap-px bg-[#A3FF12]/10 border border-[#A3FF12]/15"
                     >
                         {/* Box 1: Repositories */}
-                        <div className="bg-[#0A0A0A] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#111111] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
                                 <Code size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">REPOS</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
                                     {loading ? '-' : String(userData?.public_repos ?? 0).padStart(2, '0')}
                                 </p>
                             </div>
                         </div>
 
                         {/* Box 2: Commits */}
-                        <div className="bg-[#0A0A0A] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#111111] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
                                 <Terminal size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">TOTAL</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
                                     {loading ? '...' : (totalContributions > 999 ? `${(totalContributions / 1000).toFixed(1)}k` : totalContributions)}
                                 </p>
                             </div>
                         </div>
 
                         {/* Box 3: Followers */}
-                        <div className="bg-[#0A0A0A] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#111111] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
                                 <Users size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">FLWRS</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
                                     {loading ? '-' : String(userData?.followers ?? 0).padStart(2, '0')}
                                 </p>
                             </div>
                         </div>
 
                         {/* Box 4: Joined */}
-                        <div className="bg-[#0A0A0A] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#111111] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
                                 <Calendar size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">EST.</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
                                     {loading ? '-' : (userData?.created_at ? new Date(userData.created_at).getFullYear() : '----')}
                                 </p>
                             </div>
@@ -272,7 +273,7 @@ const GitHubStats = memo(function GitHubStats() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="xl:w-2/3 border border-white/10 bg-[#0F0F0F] p-6 lg:p-10 flex flex-col justify-between"
+                        className="xl:w-2/3 border border-[#A3FF12]/15 bg-[#232522] p-6 lg:p-10 flex flex-col justify-between"
                     >
                         <div className="flex justify-between items-start border-b border-white/10 pb-6 mb-8">
                             <div>
@@ -281,11 +282,9 @@ const GitHubStats = memo(function GitHubStats() {
                             </div>
                             <div className="hidden sm:flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] md:tracking-[0.16em] text-white/40">
                                 Less
-                                <span className="w-3 h-3 bg-[#111111] ml-2" />
-                                <span className="w-3 h-3 bg-[#1a2e05]" />
-                                <span className="w-3 h-3 bg-[#3f6212]" />
-                                <span className="w-3 h-3 bg-[#65a30d]" />
-                                <span className="w-3 h-3 bg-[#a3e635] mr-2" />
+                                {INTENSITY_CLASSES.map((colorClass, index) => (
+                                    <span key={index} className={`w-3 h-3 rounded-[2px] ${index === 0 ? 'ml-2' : ''} ${index === INTENSITY_CLASSES.length - 1 ? 'mr-2' : ''} ${colorClass}`} />
+                                ))}
                                 More
                             </div>
                         </div>

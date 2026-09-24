@@ -353,6 +353,7 @@ html.lenis body {
   /* 22% pushes the photo's baked-in "Better Data Better Future" script out of frame
      while keeping the figure's face in view. */
   background-position: 22% 62%;
+  opacity: 0.82;
 }
 
 .scene--contact .scene__scrim {
@@ -360,14 +361,11 @@ html.lenis body {
      intro paragraph, lighter again where the figure sits, then fading to ink. */
   background:
     linear-gradient(180deg,
-      rgb(var(--ink-rgb) / 0.66) 0%,
-      rgb(var(--ink-rgb) / 0.44) 11%,
-      rgb(var(--ink-rgb) / 0.86) 23%,
-      rgb(var(--ink-rgb) / 0.88) 40%,
-      rgb(var(--ink-rgb) / 0.60) 54%,
-      rgb(var(--ink-rgb) / 0.72) 72%,
-      rgb(var(--ink-rgb) / 0.94) 90%,
-      rgb(var(--ink-rgb)) 100%);
+      rgb(23 24 23 / 0.34) 0%,
+      rgb(23 24 23 / 0.28) 25%,
+      rgb(23 24 23 / 0.5) 60%,
+      rgb(23 24 23 / 0.82) 88%,
+      rgb(23 24 23) 100%);
 }
 
 @media (min-width: 1024px) {
@@ -378,25 +376,20 @@ html.lenis body {
 
   .scene--contact .scene__photo {
     background-position: 8% 78%;
+    opacity: 0.72;
   }
 
   .scene--contact .scene__scrim {
     background:
-      /* the photo's baked-in script sits exactly where the headline is: mask it out */
-      radial-gradient(ellipse 18% 24% at 8% 36%,
-        rgb(var(--ink-rgb) / 0.97) 0%,
-        rgb(var(--ink-rgb) / 0.92) 55%,
-        transparent 100%),
       linear-gradient(90deg,
-        rgb(var(--ink-rgb) / 0.62) 0%,
-        rgb(var(--ink-rgb) / 0.68) 28%,
-        rgb(var(--ink-rgb) / 0.9) 52%,
-        rgb(var(--ink-rgb)) 78%),
+        rgb(23 24 23 / 0.48) 0%,
+        rgb(23 24 23 / 0.34) 34%,
+        rgb(23 24 23 / 0.62) 68%,
+        rgb(23 24 23 / 0.86) 100%),
       linear-gradient(180deg,
-        rgb(var(--ink-rgb) / 0.86) 0%,
-        rgb(var(--ink-rgb) / 0.5) 34%,
-        transparent 60%,
-        rgb(var(--ink-rgb) / 0.7) 100%);
+        rgb(23 24 23 / 0.3) 0%,
+        transparent 46%,
+        rgb(23 24 23 / 0.78) 100%);
   }
 }
 
