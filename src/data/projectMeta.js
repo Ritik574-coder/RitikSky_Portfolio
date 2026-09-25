@@ -1,11 +1,11 @@
 export const PROJECT_META = [
   {
     id: 1,
-    slug: "diabetes-classification",
-    title: "Diabetes Classification",
-    category: "AI / Machine Learning",
-    color: "bg-lime-400",
-    img: "https://res.cloudinary.com/demlxsf08/image/upload/v1766486193/projek1_gj8ahb.png",
+    slug: "dbt-analytics-engineering",
+    title: "Retail Analytics Engineering Platform",
+    category: "Analytics Engineering / Data Engineering",
+    color: "bg-[#A8FF00]",
+    img: `${import.meta.env.BASE_URL}dbt-analytics-engineering-overview.webp`,
   },
   {
     id: 2,

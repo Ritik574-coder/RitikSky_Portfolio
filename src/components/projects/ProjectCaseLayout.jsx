@@ -15,7 +15,7 @@ function cloudinarySrc(originalUrl, width) {
 }
 
 const TechBadge = ({ children }) => (
-  <span className="px-3 py-1.5 bg-black/5 font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-black/80">
+  <span className="px-3 py-1.5 bg-[var(--case-surface-alt)] border border-[var(--case-border)] font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-[var(--case-text)]">
     {children}
   </span>
 );
@@ -27,23 +27,47 @@ export default function ProjectCaseLayout({
   preFeatureSection,
   mode,
 }) {
+  const theme = project.theme ?? {
+    background: "#070A07",
+    surface: "#0D120D",
+    surfaceAlt: "#111811",
+    border: "#294A1F",
+    accent: "#A8FF00",
+    text: "#F5F7F2",
+    textMuted: "#AEB7A8",
+    glow: "rgba(168, 255, 0, 0.22)",
+  };
+
   return (
-    <div className={`bg-[#FAF9F6] text-black font-sans selection:bg-lime-400 selection:text-black overflow-x-hidden ${mode === 'page' ? 'min-h-screen' : 'h-full flex flex-col'}`}>
+    <div
+      className={`text-[var(--case-text)] font-sans selection:bg-[var(--case-accent)] selection:text-black overflow-x-hidden ${mode === 'page' ? 'min-h-screen' : 'h-full flex flex-col'}`}
+      style={{
+        "--case-bg": theme.background,
+        "--case-surface": theme.surface,
+        "--case-surface-alt": theme.surfaceAlt,
+        "--case-border": theme.border,
+        "--case-accent": theme.accent,
+        "--case-text": theme.text,
+        "--case-muted": theme.textMuted,
+        "--case-glow": theme.glow,
+        backgroundColor: "var(--case-bg)",
+      }}
+    >
 
       {/* ── Sticky header ─────────────────────── */}
-      <div className="sticky top-0 z-40 bg-[#FAF9F6]/90 backdrop-blur-md border-b border-black/5">
+      <div className="sticky top-0 z-40 bg-[var(--case-bg)]/90 backdrop-blur-md border-b border-[var(--case-border)]">
         <div className="max-w-6xl mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] uppercase font-bold tracking-[0.12em] md:tracking-[0.16em] text-black/40 flex items-center gap-2">
+            <span className="font-mono text-[10px] uppercase font-bold tracking-[0.12em] md:tracking-[0.16em] text-[var(--case-muted)] flex items-center gap-2">
               {project.category}
             </span>
-            <span className="font-mono text-[10px] uppercase font-bold tracking-[0.12em] md:tracking-[0.16em] text-black/30 border-l border-black/20 pl-3">
+            <span className="font-mono text-[10px] uppercase font-bold tracking-[0.12em] md:tracking-[0.16em] text-[var(--case-muted)] border-l border-[var(--case-border)] pl-3">
               {project.year}
             </span>
           </div>
           <button
             onClick={onClose}
-            className="flex items-center gap-2 rounded-full border border-black/10 bg-white px-5 py-2 text-xs md:text-sm font-bold tracking-wide uppercase hover:bg-black hover:text-white transition-all duration-300 shadow-sm hover:shadow-md"
+            className="flex items-center gap-2 rounded-full border border-[var(--case-border)] bg-[var(--case-surface)] px-5 py-2 text-xs md:text-sm font-bold tracking-wide uppercase hover:bg-[var(--case-accent)] hover:text-black transition-all duration-300 shadow-sm hover:shadow-md"
           >
             <ArrowUpRight className="rotate-[225deg]" size={16} />
             {closeLabel}
@@ -54,7 +78,7 @@ export default function ProjectCaseLayout({
       <div className="flex-1 overflow-y-auto">
         {/* ── Hero Section ──────────────────────── */}
         <section className="max-w-4xl mx-auto text-center flex flex-col items-center px-6 md:px-10 pt-16 md:pt-20 pb-12">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-black/40 mb-4">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-[var(--case-muted)] mb-4">
             Project Case Study
           </p>
 
@@ -62,10 +86,10 @@ export default function ProjectCaseLayout({
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[0.9] tracking-tighter text-black mb-6"
+            className="text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[0.9] tracking-tighter text-[var(--case-text)] mb-6"
           >
             {project.title.split(' ').map((word, i, arr) => (
-              <span key={i} className={i === arr.length - 1 ? "text-transparent" : ""} style={i === arr.length - 1 ? { WebkitTextStroke: '2px black' } : {}}>
+              <span key={i} className={i === arr.length - 1 ? "text-transparent" : ""} style={i === arr.length - 1 ? { WebkitTextStroke: `2px ${theme.accent}` } : {}}>
                 {word}{i !== arr.length - 1 ? ' ' : ''}
               </span>
             ))}
@@ -75,7 +99,7 @@ export default function ProjectCaseLayout({
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="text-base md:text-lg leading-7 md:leading-8 text-black/60 max-w-2xl mx-auto"
+            className="text-base md:text-lg leading-7 md:leading-8 text-[var(--case-muted)] max-w-2xl mx-auto"
           >
             {project.tagline}
           </Gsap.p>
@@ -88,13 +112,13 @@ export default function ProjectCaseLayout({
           >
             {project.links?.live && (
               <a href={project.links.live} target="_blank" rel="noreferrer"
-                className="bg-lime-400 text-black px-8 py-3.5 font-bold uppercase text-xs tracking-wider hover:bg-black hover:text-white transition-all duration-300 rounded-[2px] flex items-center gap-2 shadow-sm">
+                className="bg-[var(--case-accent)] text-black px-8 py-3.5 font-bold uppercase text-xs tracking-wider hover:bg-[var(--case-text)] transition-all duration-300 rounded-[2px] flex items-center gap-2 shadow-[0_0_24px_var(--case-glow)]">
                 <Globe size={16} /> View Live
               </a>
             )}
             {project.links?.repo && (
               <a href={project.links.repo} target="_blank" rel="noreferrer"
-                className="bg-black/5 text-black px-8 py-3.5 font-bold uppercase text-xs tracking-wider border border-transparent hover:border-black/20 transition-all duration-300 rounded-[2px] flex items-center gap-2">
+                className="bg-[var(--case-surface)] text-[var(--case-text)] px-8 py-3.5 font-bold uppercase text-xs tracking-wider border border-[var(--case-border)] hover:border-[var(--case-accent)] transition-all duration-300 rounded-[2px] flex items-center gap-2">
                 <Github size={16} /> Repository
               </a>
             )}
@@ -108,9 +132,9 @@ export default function ProjectCaseLayout({
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-5xl mx-auto border border-black/5 p-2 bg-white rounded-lg shadow-sm"
+              className="max-w-5xl mx-auto border border-[var(--case-border)] p-2 bg-[var(--case-surface)] rounded-lg shadow-[0_0_40px_var(--case-glow)]"
             >
-              <div className="w-full bg-neutral-100/50 rounded-[4px] overflow-hidden aspect-video relative flex items-center justify-center border border-black/5">
+              <div className="w-full bg-[var(--case-surface-alt)] rounded-[4px] overflow-hidden aspect-video relative flex items-center justify-center border border-[var(--case-border)]">
                 <img
                   src={cloudinarySrc(project.heroImg, 1200)}
                   srcSet={[
@@ -135,19 +159,19 @@ export default function ProjectCaseLayout({
           {preFeatureSection}
 
           {/* Main Grid: Features and Impact side-by-side on desktop */}
-          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 mt-16 border-t border-black/10 pt-16">
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 mt-16 border-t border-[var(--case-border)] pt-16">
 
             {/* ── Left Column: Features ──── */}
             <div className="space-y-16">
               {project.features && project.features.length > 0 && (
                 <div>
-                  <h2 className="text-xs font-mono font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-black/40 mb-6 flex items-center gap-3">
-                    <span className="w-6 h-[1px] bg-black/20" /> Key Features
+                  <h2 className="text-xs font-mono font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-[var(--case-muted)] mb-6 flex items-center gap-3">
+                    <span className="w-6 h-[1px] bg-[var(--case-accent)]" /> Key Features
                   </h2>
-                  <ul className="space-y-4 text-base leading-relaxed text-black/80">
+                  <ul className="space-y-4 text-base leading-relaxed text-[var(--case-text)]">
                     {project.features.map((feature, idx) => (
                       <li key={idx} className="flex gap-4">
-                        <span className="mt-1.5 shrink-0 block w-1.5 h-1.5 bg-lime-500 rounded-full" />
+                        <span className="mt-1.5 shrink-0 block w-1.5 h-1.5 bg-[var(--case-accent)] rounded-full" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -160,13 +184,13 @@ export default function ProjectCaseLayout({
             <div className="space-y-16">
               {project.impact && project.impact.length > 0 && (
                 <div>
-                  <h2 className="text-xs font-mono font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-black/40 mb-6 flex items-center gap-3">
-                    <span className="w-6 h-[1px] bg-black/20" /> Outcome & Impact
+                  <h2 className="text-xs font-mono font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-[var(--case-muted)] mb-6 flex items-center gap-3">
+                    <span className="w-6 h-[1px] bg-[var(--case-accent)]" /> Outcome & Impact
                   </h2>
-                  <ul className="space-y-4 text-base leading-relaxed text-black/80">
+                  <ul className="space-y-4 text-base leading-relaxed text-[var(--case-text)]">
                     {project.impact.map((impact, idx) => (
                       <li key={idx} className="flex gap-4">
-                        <span className="mt-1.5 shrink-0 block w-1.5 h-1.5 bg-lime-500 rounded-full" />
+                        <span className="mt-1.5 shrink-0 block w-1.5 h-1.5 bg-[var(--case-accent)] rounded-full" />
                         <span>{impact}</span>
                       </li>
                     ))}
@@ -177,11 +201,11 @@ export default function ProjectCaseLayout({
           </div>
 
           {/* Tech Stack below both */}
-          <div className="mt-12 lg:mt-16 border-t border-black/10 pt-12 lg:pt-16">
+          <div className="mt-12 lg:mt-16 border-t border-[var(--case-border)] pt-12 lg:pt-16">
             {project.stack && project.stack.length > 0 && (
               <div>
-                <h2 className="text-xs font-mono font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-black/40 mb-6 flex items-center gap-3">
-                  <span className="w-6 h-[1px] bg-black/20" /> Tech Stack
+                <h2 className="text-xs font-mono font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] text-[var(--case-muted)] mb-6 flex items-center gap-3">
+                  <span className="w-6 h-[1px] bg-[var(--case-accent)]" /> Tech Stack
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {project.stack.map((stack) => (

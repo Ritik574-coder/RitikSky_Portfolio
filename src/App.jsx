@@ -2,6 +2,7 @@ import { useLayoutEffect } from "react";
 import { Routes, Route, useLocation, useNavigationType } from "react-router-dom";
 import Home from "./pages/Home";
 import ProjectDetailModal from "./components/projects/ProjectDetailModal";
+import ProjectDetailRouter from "./components/projects/ProjectDetailRouter";
 
 // Component untuk scroll ke atas setiap kali route berubah
 function ScrollToTop() {
@@ -106,6 +107,7 @@ export default function App() {
       <ScrollToTop />
       <Routes location={backgroundLocation || location}>
         <Route path="/" element={<Home />} />
+        <Route path="/projects/:slug" element={<ProjectDetailRouter mode="page" />} />
       </Routes>
 
       {backgroundLocation && (

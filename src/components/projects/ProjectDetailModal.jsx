@@ -49,7 +49,7 @@ export default function ProjectDetailModal() {
           exit={{ opacity: 0, y: 20, scale: 0.98 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           data-lenis-prevent
-          className="relative z-10 w-full h-full md:h-auto md:max-h-[90vh] max-w-6xl bg-[#FAF9F6] shadow-2xl md:rounded-lg overflow-y-auto overscroll-contain flex flex-col"
+          className="relative z-10 w-full h-full md:h-auto md:max-h-[90vh] max-w-6xl bg-[#070A07] shadow-2xl md:rounded-lg overflow-y-auto overscroll-contain flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           <ProjectDetailRouter mode="modal" />

@@ -99,10 +99,10 @@ export const PORTFOLIO_DATA = {
     ],
     projects: [
         {
-            slug: "diabetes-classification",
-            title: "Diabetes Classification",
-            category: "AI / Machine Learning",
-            description: "Machine Learning model to classify diabetes risk based on medical data."
+            slug: "dbt-analytics-engineering",
+            title: "Retail Analytics Engineering Platform",
+            category: "Analytics Engineering / Data Engineering",
+            description: "End-to-end retail analytics engineering platform built with dbt and Microsoft SQL Server."
         },
         {
             slug: "leadsup",
