@@ -345,7 +345,7 @@ export default function ProjectGallery({ onOpenProject }) {
                     alt={project.title}
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
-                    className="max-h-full max-w-full h-auto w-auto object-contain opacity-70 grayscale-[30%]"
+                    className="max-h-full max-w-full h-auto w-auto object-contain"
                     style={{ imageRendering: "auto" }}
                   />
                 </picture>
@@ -370,7 +370,7 @@ export default function ProjectGallery({ onOpenProject }) {
                   </span>
                 </div>
                 <h3 className="text-2xl font-black uppercase text-white tracking-tight leading-[1.05]">
-                  {project.title}
+                  {project.displayTitle || project.title}
                 </h3>
 
                 {/* CTA arrow */}
@@ -466,7 +466,7 @@ export default function ProjectGallery({ onOpenProject }) {
                     alt={project.title}
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
-                    className="max-h-full max-w-full h-auto w-auto object-contain transition-[opacity,filter] duration-500 opacity-80 group-hover:opacity-100 grayscale-[50%] group-hover:grayscale-0"
+                    className="max-h-full max-w-full h-auto w-auto object-contain transition-[opacity,filter] duration-500"
                     style={{ imageRendering: "auto" }}
                   />
                 </picture>
@@ -485,7 +485,7 @@ export default function ProjectGallery({ onOpenProject }) {
                         {project.category}
                       </span>
                     </div>
-                    <h3 className="text-4xl lg:text-5xl font-black uppercase text-white tracking-tight leading-[1.1]">{project.title}</h3>
+                    <h3 className="text-4xl lg:text-5xl font-black uppercase text-white tracking-tight leading-[1.1]">{project.displayTitle || project.title}</h3>
                   </div>
 
                   {/* Floating Action Button */}
