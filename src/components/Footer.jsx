@@ -74,17 +74,26 @@ const Footer = memo(function Footer() {
     formData.append('from_name', 'Ritik Kumar Portfolio');
     formData.append('redirect', 'false');
 
-    try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        body: formData,
-      });
-      const result = await response.json();
-      setFormStatus(result.success ? 'success' : 'error');
-      if (result.success) event.currentTarget.reset();
-    } catch {
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    console.log('Web3Forms response:', result);
+    console.log('HTTP status:', response.status);
+
+    if (response.ok && result.success !== false) {
+      setFormStatus('success');
+      event.currentTarget.reset();
+    } else {
       setFormStatus('error');
     }
+  } catch {
+    setFormStatus('error');
+  }
   };
 
   // Direct DOM update for the clock — avoids React re-render every second
@@ -191,7 +200,7 @@ const Footer = memo(function Footer() {
                   <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
                 {formStatus === 'success' && <p role="status" className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-[#A3FF12]">Message sent successfully.</p>}
-                {formStatus === 'error' && <p role="status" className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-red-300">Unable to send. Check the Web3Forms access key.</p>}
+                {formStatus === 'error' && <p role="status" className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-red-300">Unable to send the message. Please try again.</p>}
               </form>
             </div>
           </div>

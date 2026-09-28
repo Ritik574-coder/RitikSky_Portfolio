@@ -37,7 +37,7 @@ export const project = {
     "Demonstrates practical use of dbt, dimensional modeling, data quality governance, macros, snapshots, and incremental transformations.",
   ],
   links: {
-    live: "https://github.com/Ritik574-coder/dbt-analytics-engineering",
+    live: "https://ritik574-coder.github.io/dbt-analytics-engineering/#!/overview",
     repo: "https://github.com/Ritik574-coder/dbt-analytics-engineering",
   },
   theme: {
