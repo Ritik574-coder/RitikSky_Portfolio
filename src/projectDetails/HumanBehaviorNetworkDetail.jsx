@@ -1,9 +1,9 @@
 import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
-  title: "Financial Assistant Bot",
+  title: "Human Behavior Network",
   category: "AI / Fintech",
-  heroImg: "https://res.cloudinary.com/dujp9ydkx/image/upload/f_auto,q_auto/v1771095429/Screenshot_from_2026-02-15_01-49-09_q6icfy",
+  heroImg: `${import.meta.env.BASE_URL}human-behavior-network.webp`,
   tagline:
     "A personal AI-powered financial assistant on Telegram that automatically tracks expenses & income using RAG technology and OCR.",
   year: "2026",
@@ -34,7 +34,7 @@ export const project = {
   },
 };
 
-export default function FinancialAssistantDetail({ onClose, mode }) {
+export default function HumanBehaviorNetworkDetail({ onClose, mode }) {
   return (
     <ProjectCaseLayout
       project={project}

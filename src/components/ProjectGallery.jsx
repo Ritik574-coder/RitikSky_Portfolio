@@ -329,9 +329,9 @@ export default function ProjectGallery({ onOpenProject }) {
               data-project-index={index}
               style={{ WebkitTapHighlightColor: 'transparent', aspectRatio: '3/4' }}
             >
-              {/* Image */}
-              <div className="absolute inset-0 overflow-hidden">
-                <picture>
+              {/* Image — object-contain keeps full infographic visible (no crop) */}
+              <div className="absolute inset-0 overflow-hidden bg-neutral-950 flex items-center justify-center p-3">
+                <picture className="flex h-full w-full items-center justify-center">
                   <source
                     srcSet={[
                       cloudinarySrc(project.img, 400) + ' 400w',
@@ -345,7 +345,7 @@ export default function ProjectGallery({ onOpenProject }) {
                     alt={project.title}
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
-                    className="h-full w-full object-cover opacity-70 grayscale-[30%]"
+                    className="max-h-full max-w-full h-auto w-auto object-contain opacity-70 grayscale-[30%]"
                     style={{ imageRendering: "auto" }}
                   />
                 </picture>
@@ -443,8 +443,9 @@ export default function ProjectGallery({ onOpenProject }) {
               data-project-index={index}
               style={{ WebkitTapHighlightColor: 'transparent' }}
             >
-              <div className="absolute inset-0 overflow-hidden bg-neutral-950">
-                <picture>
+              {/* Image — object-contain keeps full infographic visible (no crop) */}
+              <div className="absolute inset-0 overflow-hidden bg-neutral-950 flex items-center justify-center p-4 md:p-6">
+                <picture className="flex h-full w-full items-center justify-center">
                   <source
                     srcSet={[
                       cloudinarySrc(project.img, 400) + ' 400w',
@@ -465,7 +466,7 @@ export default function ProjectGallery({ onOpenProject }) {
                     alt={project.title}
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
-                    className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100 grayscale-[50%] group-hover:grayscale-0 will-change-transform"
+                    className="max-h-full max-w-full h-auto w-auto object-contain transition-[opacity,filter] duration-500 opacity-80 group-hover:opacity-100 grayscale-[50%] group-hover:grayscale-0"
                     style={{ imageRendering: "auto" }}
                   />
                 </picture>

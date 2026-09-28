@@ -46,7 +46,7 @@ export const PROJECT_DETAILS_DATA = {
     },
   },
   leadsup: {
-    title: "LeadsUp",
+    title: "SkyNova — Intelligent Data Ecosystem",
     category: "AI-Powered Lead Scoring",
     tagline:
       "An AI-powered sales portal that prioritizes the most promising prospects for term deposit subscriptions - helping sales teams focus on high-value leads and boost follow-up efficiency.",
@@ -70,7 +70,7 @@ export const PROJECT_DETAILS_DATA = {
     },
   },
   polsekrembang: {
-    title: "Polsek Rembang",
+    title: "Medallion Data Warehouse",
     category: "Virtual Assistant",
     tagline:
       "A RAG-based virtual assistant for Polsek Rembang Kota information services - helping citizens get quick, clear, and human-like answers about SKCK, lost item reports, event permits, and related police services.",
@@ -101,7 +101,7 @@ export const PROJECT_DETAILS_DATA = {
     },
   },
   floodsegmen: {
-    title: "Flood Segmentation Analyzer",
+    title: "Snowflake Semi-Structured Data Normalization",
     category: "Computer Vision",
     tagline:
       "A deep learning-based flood segmentation app to detect and calculate affected area from imagery - with side-by-side U-Net and U-Net++ comparison in a single analysis dashboard.",
@@ -136,7 +136,7 @@ export const PROJECT_DETAILS_DATA = {
     },
   },
   qmeal: {
-    title: "QMeal E-Kantin",
+    title: "SQL Server Data Warehouse",
     category: "Multi-Vendor Ordering Platform",
     tagline:
       "A multi-vendor canteen platform that lets users order from multiple stalls at once - faster, queue-free, with AI-powered budget-based menu recommendations and QRIS/cashless payment via Midtrans.",
@@ -171,7 +171,7 @@ export const PROJECT_DETAILS_DATA = {
     },
   },
   lostandfound: {
-    title: "SITEMU Lost & Found Portal",
+    title: "Business Intelligence Analytics Dashboard",
     category: "Campus Web Application",
     tagline:
       "A Lost & Found app for Udinus students to quickly report lost or found items - complete with a statistics dashboard and per-post chat feature for easier coordination between users.",
@@ -199,7 +199,7 @@ export const PROJECT_DETAILS_DATA = {
     notes: "Access Restricted: This website is only accessible using Udinus student email (@mhs.dinus.ac.id).",
   },
   imageclas: {
-    title: "Vegetable Image Classification",
+    title: "Great Minds Knowledge Graph",
     category: "Computer Vision",
     tagline:
       "A TensorFlow-based image classification app that recognizes various vegetable types from uploaded photos, complete with confidence scores and Top-5 predictions in an interactive UI.",
@@ -224,7 +224,7 @@ export const PROJECT_DETAILS_DATA = {
     },
   },
   "financial-assistant-bot": {
-    title: "Financial Assistant Bot",
+    title: "Human Behavior Network",
     category: "AI / Fintech",
     tagline:
       "A personal AI-powered financial assistant on Telegram that automatically tracks expenses & income using RAG technology and OCR.",

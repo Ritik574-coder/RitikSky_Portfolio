@@ -1,9 +1,9 @@
 import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
-  title: "QMeal E-Kantin",
+  title: "SQL Server Data Warehouse",
   category: "Multi-Vendor Ordering Platform",
-  heroImg: "https://res.cloudinary.com/demlxsf08/image/upload/v1766489005/projekqmeal_c56xzx.png",
+  heroImg: `${import.meta.env.BASE_URL}sql-server-data-warehouse.webp`,
   tagline:
     "A multi-vendor canteen platform that lets users order from multiple stalls at once - faster, queue-free, with AI-powered budget-based menu recommendations and QRIS/cashless payment via Midtrans.",
   year: "2025",
@@ -37,6 +37,6 @@ export const project = {
   },
 };
 
-export default function QMealDetail({ onClose, mode }) {
+export default function SqlServerDataWarehouseDetail({ onClose, mode }) {
   return <ProjectCaseLayout project={project} onClose={onClose} closeLabel={mode === "modal" ? "Close" : "Back to Home"} mode={mode} />;
 }

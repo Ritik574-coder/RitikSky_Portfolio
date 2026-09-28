@@ -45,7 +45,7 @@ export default function Home() {
   // Preload the hero background so the first viewport appears without a flash.
   useEffect(() => {
     const profileImg = new Image();
-    profileImg.src = `${import.meta.env.BASE_URL}dbt-analytics-engineering-overview.webp`;
+    profileImg.src = `${import.meta.env.BASE_URL}retail-analytics-engineering-platform.webp`;
   }, []);
 
   // Manage body overflow based on scroll lock
