@@ -66,34 +66,32 @@ const Footer = memo(function Footer() {
 
   const handleContactSubmit = async (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
     setFormStatus('sending');
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     formData.append('access_key', import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '');
     formData.append('subject', 'New portfolio inquiry from Ritik Kumar');
     formData.append('from_name', 'Ritik Kumar Portfolio');
-    formData.append('redirect', 'false');
 
-  try {
-    const response = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    console.log('Web3Forms response:', result);
-    console.log('HTTP status:', response.status);
-
-    if (response.ok && result.success !== false) {
-      setFormStatus('success');
-      event.currentTarget.reset();
-    } else {
+      // Use the form ref captured above — event.currentTarget is null after await.
+      if (response.ok && result.success) {
+        setFormStatus('success');
+        form.reset();
+      } else {
+        setFormStatus('error');
+      }
+    } catch {
       setFormStatus('error');
     }
-  } catch {
-    setFormStatus('error');
-  }
   };
 
   // Direct DOM update for the clock — avoids React re-render every second
