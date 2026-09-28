@@ -1,9 +1,9 @@
 import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
-  title: "SITEMU Lost & Found Portal",
+  title: "Business Intelligence Analytics Dashboard",
   category: "Campus Web Application",
-  heroImg: "https://res.cloudinary.com/demlxsf08/image/upload/v1766489554/projeklast_zefs7l.png",
+  heroImg: `${import.meta.env.BASE_URL}business-intelligence-analytics-dashboard.webp`,
   tagline:
     "A Lost & Found app for Udinus students to quickly report lost or found items - complete with a statistics dashboard and per-post chat feature for easier coordination between users.",
   year: "2025",
@@ -40,7 +40,7 @@ const accessNotice = (
   </div>
 );
 
-export default function LostAndFoundDetail({ onClose, mode }) {
+export default function BusinessIntelligenceAnalyticsDashboardDetail({ onClose, mode }) {
   return (
     <ProjectCaseLayout
       project={project}

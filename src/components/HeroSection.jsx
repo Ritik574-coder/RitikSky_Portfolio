@@ -267,7 +267,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
             Engineering <span className="bg-lime-400/30 px-2 rounded-md ring-1 ring-lime-500/20">Data.</span> Building Intelligence<span className="text-lime-500 font-extrabold -ml-1">.</span>
           </h2>
           <p className="font-sans text-sm sm:text-base text-white/65 max-w-[500px] leading-7 mt-2">
-            Data Engineer & Full-Stack Developer specialized in building scalable data systems, modern analytics solutions and impactful products.
+            Data Engineer focused on scalable data systems and analytics engineering, with additional AI/ML skills for intelligent applications.
           </p>
         </Gsap.div>
 

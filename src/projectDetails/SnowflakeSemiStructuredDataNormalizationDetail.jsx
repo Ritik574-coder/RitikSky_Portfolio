@@ -1,9 +1,9 @@
 import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
-  title: "Flood Segmentation Analyzer",
+  title: "Snowflake Semi-Structured Data Normalization",
   category: "Computer Vision",
-  heroImg: "https://res.cloudinary.com/demlxsf08/image/upload/v1766488341/Screenshot_2025-12-23_180456_rarqj0.png",
+  heroImg: `${import.meta.env.BASE_URL}snowflake-semi-structured-data-normalization.webp`,
   tagline:
     "A deep learning-based flood segmentation app to detect and calculate affected area from imagery - with side-by-side U-Net and U-Net++ comparison in a single analysis dashboard.",
   year: "2025",
@@ -37,6 +37,6 @@ export const project = {
   },
 };
 
-export default function FloodSegmenDetail({ onClose, mode }) {
+export default function SnowflakeSemiStructuredDataNormalizationDetail({ onClose, mode }) {
   return <ProjectCaseLayout project={project} onClose={onClose} closeLabel={mode === "modal" ? "Close" : "Back to Home"} mode={mode} />;
 }

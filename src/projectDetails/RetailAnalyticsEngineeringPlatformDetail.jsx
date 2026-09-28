@@ -3,7 +3,7 @@ import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 export const project = {
   title: "Retail Analytics Engineering Platform",
   category: "Analytics Engineering / Data Engineering",
-  heroImg: `${import.meta.env.BASE_URL}dbt-analytics-engineering-overview.webp`,
+  heroImg: `${import.meta.env.BASE_URL}retail-analytics-engineering-platform.webp`,
   tagline:
     "An end-to-end retail analytics engineering platform built with dbt and Microsoft SQL Server, transforming raw operational data through Staging, Intermediate, and Marts layers into analytics-ready dimensional models.",
   year: "2026",
@@ -54,7 +54,7 @@ export const project = {
   },
 };
 
-export default function RetailAnalyticsEngineeringDetail({ onClose, mode }) {
+export default function RetailAnalyticsEngineeringPlatformDetail({ onClose, mode }) {
   return (
     <ProjectCaseLayout
       project={project}

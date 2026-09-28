@@ -1,9 +1,9 @@
 import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
-  title: "Polsek Rembang",
-  category: "Virtual Assistant",
-  heroImg: "https://res.cloudinary.com/demlxsf08/image/upload/v1766486963/projek3_enbcj9.png",
+  title: "Medallion Data Warehouse",
+  category: "Data Warehouse",
+  heroImg: `${import.meta.env.BASE_URL}medallion-data-warehouse.webp`,
   tagline:
     "A RAG-based virtual assistant for Polsek Rembang Kota information services - helping citizens get quick, clear, and human-like answers about SKCK, lost item reports, event permits, and related police services.",
   year: "2025",
@@ -33,6 +33,6 @@ export const project = {
   },
 };
 
-export default function PolsekRembangDetail({ onClose, mode }) {
+export default function MedallionDataWarehouseDetail({ onClose, mode }) {
   return <ProjectCaseLayout project={project} onClose={onClose} closeLabel={mode === "modal" ? "Close" : "Back to Home"} mode={mode} />;
 }

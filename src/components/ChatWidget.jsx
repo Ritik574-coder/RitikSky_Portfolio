@@ -60,7 +60,7 @@ const COMMANDS = {
             }
             return [
                 "        ╭──────────────────────╮",
-                "  ⣿⣿    │  zickrian@portfolio   │",
+                "  ⣿⣿    │  ritik@portfolio      │",
                 "  ⣿⣿    ╰──────────────────────╯",
                 "  ⣿⣿    ─────────────────────────",
                 `  ⣿⣿    Name     : ${p.name}`,
@@ -481,7 +481,7 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
                                 <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
                                 <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                             </div>
-                            <span className="ml-2 text-neutral-400 text-xs">zickrian_bot - -bash</span>
+                            <span className="ml-2 text-neutral-400 text-xs">ritik_assistant — bash</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-neutral-600 text-[10px] hidden md:inline">Ctrl+K</span>

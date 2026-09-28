@@ -19,7 +19,7 @@ export const PORTFOLIO_DATA = {
     profile: {
         name: "Ritik Kumar",
         role: "Data Engineer",
-        bio: "Hi, I'm Ritik — a Data Engineer with a strong interest in AI and Machine Learning. I enjoy working with data: building reliable pipelines, cleaning and transforming raw data, and shaping it into something structured and useful for analytics and intelligent applications. My focus areas include SQL, Python, ETL and ELT pipelines, data modeling, databases, and cloud-based data engineering.",
+        bio: "Hi, I'm Ritik — a Data Engineer focused on data engineering and analytics engineering, with AI and Machine Learning as additional skills. I enjoy building reliable pipelines, cleaning and transforming raw data, and shaping it into something structured and useful for analytics and intelligent applications. My focus areas include SQL, Python, ETL and ELT pipelines, data modeling, databases, and cloud-based data engineering.",
         location: "India",
         email: "ritik74820@gmail.com",
         socials: {
@@ -106,43 +106,43 @@ export const PORTFOLIO_DATA = {
         },
         {
             slug: "leadsup",
-            title: "LeadsUp",
+            title: "SkyNova — Intelligent Data Ecosystem",
             category: "AI-Powered Lead Scoring",
             description: "AI system for scoring sales leads to prioritize high-value prospects."
         },
         {
             slug: "polsekrembang",
-            title: "Polsek Rembang Virtual Assistant",
+            title: "Medallion Data Warehouse",
             category: "RAG Chatbot / AI Assistant",
             description: "RAG-based chatbot to assist with police station inquiries and services."
         },
         {
             slug: "floodsegmen",
-            title: "Flood Segmentation Analyzer",
+            title: "Snowflake Semi-Structured Data Normalization",
             category: "Computer Vision",
             description: "Computer Vision system for analyzing flood patterns and segmentation from satellite/drone imagery."
         },
         {
             slug: "qmeal",
-            title: "QMeal E-Kantin",
+            title: "SQL Server Data Warehouse",
             category: "Multi-Vendor Ordering Platform",
             description: "Digital canteen ordering system supporting multiple vendors and efficient queue management."
         },
         {
             slug: "lostandfound",
-            title: "SITEMU Lost & Found Portal",
+            title: "Business Intelligence Analytics Dashboard",
             category: "Web Application",
             description: "Community platform for reporting and finding lost items."
         },
         {
             slug: "imageclas",
-            title: "Vegetable Image Classification",
+            title: "Great Minds Knowledge Graph",
             category: "Computer Vision",
             description: "Deep Learning model for classifying different types of vegetables from images."
         },
         {
             slug: "financial-assistant-bot",
-            title: "Financial Assistant Bot",
+            title: "Human Behavior Network",
             category: "AI / Fintech",
             description: "AI bot for personal finance management and advice."
         }

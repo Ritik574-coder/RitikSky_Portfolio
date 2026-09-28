@@ -1,10 +1,9 @@
 import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
-  title: "LeadsUp",
+  title: "SkyNova — Intelligent Data Ecosystem",
   category: "AI-Powered Lead Scoring",
-  heroImg:
-    "https://res.cloudinary.com/demlxsf08/image/upload/v1766487795/7ad00c9f-b6b6-4773-8d33-3fbae3039350_rtk4hf.jpg",
+  heroImg: `${import.meta.env.BASE_URL}skynova-intelligent-data-ecosystem.webp`,
   tagline:
     "An AI-powered sales portal that prioritizes the most promising prospects for term deposit subscriptions - helping sales teams focus on high-value leads and boost follow-up efficiency.",
   year: "2025",
@@ -27,7 +26,7 @@ export const project = {
   },
 };
 
-export default function LeadsUpDetail({ onClose, mode }) {
+export default function SkyNovaIntelligentDataEcosystemDetail({ onClose, mode }) {
   return (
     <ProjectCaseLayout
       project={project}

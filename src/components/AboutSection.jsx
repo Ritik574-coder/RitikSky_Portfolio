@@ -273,10 +273,10 @@ const AboutSection = memo(function AboutSection() {
               className="space-y-4 text-[15px] md:text-[15.5px] font-light text-white/70 leading-[1.88] max-w-[580px]"
             >
               <p>
-                I'm <strong className="text-[#A3FF12] font-semibold">Ritik Kumar</strong>, a Data Engineer with a strong interest in AI and Machine Learning.
+                I'm <strong className="text-[#A3FF12] font-semibold">Ritik Kumar</strong>, a Data Engineer focused on data engineering and analytics engineering, with AI and Machine Learning as additional skills.
               </p>
               <p>
-                I enjoy working with data:building reliable pipelines, cleaning and transforming raw data, and shaping it into something structured and useful for analytics and intelligent applications. My focus areas include SQL, Python, ETL and ELT pipelines, data modeling, databases, and cloud-based data engineering.
+                I enjoy working with data: building reliable pipelines, cleaning and transforming raw data, and shaping it into something structured and useful for analytics and intelligent applications. My focus areas include SQL, Python, ETL and ELT pipelines, data modeling, databases, and cloud-based data engineering.
               </p>
             </Gsap.div>
 
