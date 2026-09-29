@@ -32,6 +32,8 @@ const CAPABILITIES = [
   'ETL / ELT',
 ];
 
+import VoiceIntroCard from './VoiceIntroCard';
+
 /* ─────────────────────────────────────────
    Achievement Card
    ───────────────────────────────────────── */
@@ -218,6 +220,9 @@ const AboutSection = memo(function AboutSection() {
                 </div>
               ))}
             </div>
+
+            {/* Voice Introduction */}
+            <VoiceIntroCard />
           </Gsap.div>
 
           {/* ══════════════════════════════
