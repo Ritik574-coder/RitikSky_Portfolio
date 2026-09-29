@@ -57,7 +57,7 @@ const OrbitingDecoration = ({ icon: Icon, delay, className, isRevealed, enableAm
       y: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
       scale: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
     }}
-    className={`absolute flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-lime-400/25 bg-[#111111]/70 backdrop-blur-md shadow-[0_0_24px_rgba(163,230,53,0.14)] ${className}`}
+    className={`absolute flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-lime-400/25 bg-[#111111]/70 backdrop-blur-md shadow-[0_0_24px_rgba(163,255,18,0.14)] ${className}`}
     style={enableAmbientMotion && isRevealed ? {
       animation: `hero-float 5.8s ${delay + 0.35}s ease-in-out infinite`,
       willChange: 'transform',
@@ -118,7 +118,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
     <header
       ref={containerRef}
       id="hero-section"
-      className="relative flex min-h-[100svh] w-full flex-col items-center justify-end overflow-hidden bg-[#0A0A0A] px-0 pb-[clamp(2rem,6svh,5rem)] pt-[clamp(5rem,12svh,7rem)] text-white selection:bg-lime-300 selection:text-black lg:justify-center"
+      className="relative flex min-h-[100svh] w-full flex-col items-center justify-end overflow-hidden bg-[#0A0A0A] px-0 pb-[clamp(2rem,6svh,5rem)] pt-[clamp(5rem,12svh,7rem)] text-white selection:bg-lime-400 selection:text-black lg:justify-center"
     >
       {/* ── BACKGROUND ENGINEERING Grid & Dynamic Glow ── */}
       <Gsap.div
@@ -162,12 +162,12 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           }}
         />
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] max-w-[920px] max-h-[920px] rounded-full border border-lime-500/10" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vw] max-w-[720px] max-h-[720px] rounded-full border border-lime-500/10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] max-w-[920px] max-h-[920px] rounded-full border border-lime-400/10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vw] max-w-[720px] max-h-[720px] rounded-full border border-lime-400/10" />
 
         {/* 3. Dynamic Organic Glowing Orbs — CSS animations for zero JS overhead */}
         <div
-          className="absolute top-1/2 left-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-lime-300 rounded-full blur-[90px] lg:blur-[130px] opacity-[0.1]"
+          className="absolute top-1/2 left-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-lime-400 rounded-full blur-[90px] lg:blur-[130px] opacity-[0.1]"
           style={enableAmbientMotion && isRevealed ? {
             animation: 'hero-orb-1 10s ease-in-out infinite',
             willChange: 'transform',
@@ -181,7 +181,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           } : undefined}
         />
         <div
-          className="absolute bottom-[10%] left-[20%] w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] bg-lime-200 rounded-full blur-[100px] lg:blur-[130px] opacity-[0.08]"
+          className="absolute bottom-[10%] left-[20%] w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] bg-lime-400 rounded-full blur-[100px] lg:blur-[130px] opacity-[0.08]"
           style={enableAmbientMotion && isRevealed ? {
             animation: 'hero-orb-3 15s 1s ease-in-out infinite',
             willChange: 'transform',
@@ -264,7 +264,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           className="flex flex-col items-start gap-2 mt-0 w-full max-w-[760px] min-w-0"
         >
           <h2 className="text-[clamp(1.35rem,3.4vw,2.25rem)] font-bold text-white/85 tracking-tight flex items-start justify-start flex-wrap gap-2 max-w-full">
-            Engineering <span className="bg-lime-400/30 px-2 rounded-md ring-1 ring-lime-500/20">Data.</span> Building Intelligence<span className="text-lime-500 font-extrabold -ml-1">.</span>
+            Engineering <span className="bg-lime-400/30 px-2 rounded-md ring-1 ring-lime-400/20">Data.</span> Building Intelligence<span className="text-lime-400 font-extrabold -ml-1">.</span>
           </h2>
           <p className="font-sans text-sm sm:text-base text-white/65 max-w-[500px] leading-7 mt-2">
             Data Engineer focused on scalable data systems and analytics engineering, with additional AI/ML skills for intelligent applications.

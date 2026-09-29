@@ -102,11 +102,11 @@ const TechStack = () => {
                     viewport={{ once: true }}
                     className="flex items-center gap-4 mb-20 md:mb-32"
                 >
-                    <div className="w-2 h-2 bg-[#A3FF12] rounded-full" />
+                    <div className="w-2 h-2 bg-lime-400 rounded-full" />
                     <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/55">
                         04. Technical_Arsenal
                     </span>
-                    <div className="flex-1 h-[1px] bg-[#A3FF12]/15" />
+                    <div className="flex-1 h-[1px] bg-lime-400/15" />
                 </Gsap.div>
 
                 {/* Main Content Area */}
@@ -122,7 +122,7 @@ const TechStack = () => {
                             className="text-3xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.98] sm:leading-[0.95] text-white"
                         >
                             Core <br />
-                            <span className="text-[#A3FF12]">Stack.</span>
+                            <span className="text-lime-400">Stack.</span>
                         </Gsap.h2>
 
                         <Gsap.div
@@ -147,10 +147,10 @@ const TechStack = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true, margin: "-50px" }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                                className="group border-b border-[#A3FF12]/12 py-8 md:py-12 flex flex-col md:flex-row gap-6 md:gap-12 transition-colors hover:bg-[#1B1E1B] -mx-4 px-4 sm:px-4 cursor-default"
+                                className="group border-b border-lime-400/12 py-8 md:py-12 flex flex-col md:flex-row gap-6 md:gap-12 transition-colors hover:bg-[#1B1E1B] -mx-4 px-4 sm:px-4 cursor-default"
                             >
                                 <div className="md:w-1/3 shrink-0 flex flex-col gap-2">
-                                    <h4 className="text-xl md:text-2xl font-bold uppercase text-white tracking-tight group-hover:text-[#A3FF12] transition-colors">
+                                    <h4 className="text-xl md:text-2xl font-bold uppercase text-white tracking-tight group-hover:text-lime-400 transition-colors">
                                         {category.title}
                                     </h4>
                                     <span className="font-mono text-xs text-white/55 uppercase tracking-[0.12em] md:tracking-[0.16em] hidden md:block">
@@ -164,12 +164,12 @@ const TechStack = () => {
                                         return (
                                             <div
                                                 key={idx}
-                                                className="relative group/icon w-11 h-11 md:w-12 md:h-12 flex items-center justify-center border border-[#A3FF12]/15 rounded-lg hover:border-[#A3FF12]/30 hover:bg-[#101610] transition-all duration-300 cursor-default"
+                                                className="relative group/icon w-11 h-11 md:w-12 md:h-12 flex items-center justify-center border border-lime-400/15 rounded-lg hover:border-lime-400/30 hover:bg-[#101610] transition-all duration-300 cursor-default"
                                                 title={skill.name}
                                             >
-                                                <IconComponent className="w-5 h-5 md:w-6 md:h-6 text-white/60 group-hover:text-white group-hover/icon:text-[#A3FF12] transition-colors" />
+                                                <IconComponent className="w-5 h-5 md:w-6 md:h-6 text-white/60 group-hover:text-white group-hover/icon:text-lime-400 transition-colors" />
                                                 {/* Tooltip */}
-                                                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-[#A3FF12] text-[#171817] text-[10px] font-mono font-bold uppercase tracking-wider rounded whitespace-nowrap opacity-0 group-hover/icon:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-lime-400 text-[#171817] text-[10px] font-mono font-bold uppercase tracking-wider rounded whitespace-nowrap opacity-0 group-hover/icon:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                                                     {skill.name}
                                                 </span>
                                             </div>

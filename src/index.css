@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'Space Grotesk', Menlo, Monaco, Consolas, monospace;
+  --font-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
 
   /* Shared dark + neon-lime palette. These are the exact values the TechStack,
      GitHubStats and Projects sections already use, exposed as tokens so the Hero
      and Contact backdrops can't drift from them again. Used as rgb(var(--x) / a). */
   --ink-rgb: 10 10 10;          /* #0A0A0A  section base            */
   --ink-raised-rgb: 17 17 17;   /* #111111  cards / raised surfaces */
-  --lime-rgb: 163 230 53;       /* lime-400 #A3E635  accent + glow  */
+  --lime-rgb: 163 255 18;       /* #A3FF12  accent + glow           */
 }
 
 body {

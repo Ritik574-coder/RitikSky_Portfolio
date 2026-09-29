@@ -193,7 +193,7 @@ export default function HackathonDetailModal({ isOpen, onClose }) {
                             <div className="px-6 md:px-10 py-4 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <span className="font-mono text-[10px] uppercase font-bold tracking-[0.12em] md:tracking-[0.16em] text-[#000] flex items-center gap-2">
-                                        <Trophy size={14} className="text-lime-500" />
+                                        <Trophy size={14} className="text-lime-400" />
                                         National Finalist
                                     </span>
                                 </div>
@@ -271,7 +271,7 @@ export default function HackathonDetailModal({ isOpen, onClose }) {
                                                 'QRIS onboarding for non-crypto users - scan, play, and learn crypto naturally.'
                                             ].map((item, i) => (
                                                 <li key={i} className="flex gap-4">
-                                                    <span className="mt-1.5 shrink-0 block w-1.5 h-1.5 bg-lime-500 rounded-full" />
+                                                    <span className="mt-1.5 shrink-0 block w-1.5 h-1.5 bg-lime-400 rounded-full" />
                                                     <span className="text-sm leading-relaxed text-black/80">{item}</span>
                                                 </li>
                                             ))}

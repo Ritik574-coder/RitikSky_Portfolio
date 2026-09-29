@@ -1,6 +1,6 @@
 {
-  "short_name": "Portfolio",
-  "name": "Portfolio",
+  "short_name": "Ritik Kumar",
+  "name": "Ritik Kumar - Portfolio",
   "icons": [
     {
       "src": "favicon.svg",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#171817",
+  "background_color": "#101610"
 }
