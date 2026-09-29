@@ -1,0 +1,9 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#101610"/>
+  <circle cx="600" cy="315" r="400" fill="rgba(163, 255, 18, 0.05)" filter="blur(50px)"/>
+  <rect width="1140" height="570" x="30" y="30" fill="none" stroke="#A3FF12" stroke-width="2" stroke-opacity="0.15" rx="8"/>
+  <text x="100" y="320" font-family="sans-serif" font-weight="bold" font-size="72" fill="#ffffff">Ritik Kumar</text>
+  <text x="100" y="390" font-family="monospace" font-size="32" fill="#A3FF12" letter-spacing="2">Data Engineer &amp; Analytics</text>
+  <circle cx="100" cy="210" r="8" fill="#A3FF12"/>
+  <line x1="100" y1="210" x2="300" y2="210" stroke="#A3FF12" stroke-opacity="0.3" stroke-width="2"/>
+</svg>

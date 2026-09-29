@@ -281,7 +281,7 @@ export default function ProjectGallery({ onOpenProject }) {
         {/* Section Header */}
         <div className="px-6 mb-10">
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-2 h-2 bg-lime-400 rounded-full shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
+            <div className="w-2 h-2 bg-lime-400 rounded-full shadow-[0_0_8px_rgba(163,255,18,0.8)]" />
             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
               02. Past_Explorations
             </span>
@@ -364,7 +364,7 @@ export default function ProjectGallery({ onOpenProject }) {
               {/* Category + Title */}
               <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-lime-400 shadow-[0_0_6px_rgba(163,230,53,0.8)]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-lime-400 shadow-[0_0_6px_rgba(163,255,18,0.8)]" />
                   <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-white/70">
                     {project.category}
                   </span>
@@ -398,7 +398,7 @@ export default function ProjectGallery({ onOpenProject }) {
         viewport={{ once: true }}
         className="absolute top-16 left-24 right-24 flex items-center gap-4 z-20 pointer-events-none"
       >
-        <div className="w-2 h-2 bg-lime-400 rounded-full shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
+        <div className="w-2 h-2 bg-lime-400 rounded-full shadow-[0_0_8px_rgba(163,255,18,0.8)]" />
         <span className="font-mono text-xs font-bold uppercase tracking-[0.26em] text-white/40">
           02. Past_Explorations
         </span>
@@ -439,7 +439,7 @@ export default function ProjectGallery({ onOpenProject }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter") onOpenProject?.(project);
               }}
-              className="project-card group relative h-[70vh] w-[45vw] shrink-0 overflow-hidden rounded-[4px] border border-white/10 bg-neutral-900 transition-all duration-500 hover:border-lime-400/50 hover:shadow-[0_0_40px_rgba(163,230,53,0.1)] active:scale-[0.98] cursor-pointer"
+              className="project-card group relative h-[70vh] w-[45vw] shrink-0 overflow-hidden rounded-[4px] border border-white/10 bg-neutral-900 transition-all duration-500 hover:border-lime-400/50 hover:shadow-[0_0_40px_rgba(163,255,18,0.1)] active:scale-[0.98] cursor-pointer"
               data-project-index={index}
               style={{ WebkitTapHighlightColor: 'transparent' }}
             >
@@ -480,7 +480,7 @@ export default function ProjectGallery({ onOpenProject }) {
                 <div className="flex justify-between items-end gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,255,18,0.8)]" />
                       <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-white/80">
                         {project.category}
                       </span>

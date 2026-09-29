@@ -13,7 +13,16 @@ const NAV_ITEMS = [
   { label: 'Skills', sectionId: 'capabilities-section' },
 ];
 
-const DARK_SECTION_IDS = ['hero-section', 'project-section', 'tech-stack-section', 'github-stats-section', 'contact-section'];
+const DARK_SECTION_IDS = [
+  'hero-section',
+  'about-section',
+  'project-section',
+  'experience-section',
+  'tech-stack-section',
+  'github-stats-section',
+  'capabilities-section',
+  'contact-section',
+];
 
 const Navbar = memo(function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -239,7 +248,7 @@ const Navbar = memo(function Navbar() {
         <Magnetic>
           <button
             onClick={() => scrollTo('contact-section')}
-            className={`group relative overflow-hidden flex items-center gap-3 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] hover:shadow-[0_0_30px_rgba(163,230,53,0.3)] transition-all duration-500 ${isOnDarkSection ? 'bg-white text-black' : 'bg-black text-white'}`}
+            className={`group relative overflow-hidden flex items-center gap-3 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] hover:shadow-[0_0_30px_rgba(163,255,18,0.3)] transition-all duration-500 ${isOnDarkSection ? 'bg-white text-black' : 'bg-black text-white'}`}
           >
             {/* Core Label */}
             <span className="relative z-10 pl-2">Let's Talk</span>

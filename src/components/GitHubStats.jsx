@@ -10,10 +10,10 @@ const ROWS = 7;
 
 const INTENSITY_CLASSES = [
     'bg-[#101610]',
-    'bg-[#A3FF12]/20',
-    'bg-[#A3FF12]/40',
-    'bg-[#A3FF12]/65',
-    'bg-[#A3FF12]',
+    'bg-lime-400/20',
+    'bg-lime-400/40',
+    'bg-lime-400/65',
+    'bg-lime-400',
 ];
 
 const WEEKDAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
@@ -168,11 +168,11 @@ const GitHubStats = memo(function GitHubStats() {
                     viewport={{ once: true }}
                     className="flex items-center gap-4 mb-16 md:mb-20"
                 >
-                    <div className="w-2 h-2 bg-[#A3FF12] rounded-full animate-pulse" />
+                    <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
                     <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/55">
                         05. Source_Metrics
                     </span>
-                    <div className="flex-1 h-[1px] bg-[#A3FF12]/12" />
+                    <div className="flex-1 h-[1px] bg-lime-400/12" />
                 </Gsap.div>
 
                 {/* Big Title Area */}
@@ -185,7 +185,7 @@ const GitHubStats = memo(function GitHubStats() {
                         className="text-3xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.98] sm:leading-[0.9] text-white"
                     >
                         GitHub <br />
-                        <span className="text-[#A3FF12]">Activity.</span>
+                        <span className="text-lime-400">Activity.</span>
                     </Gsap.h2>
 
                     <Gsap.a
@@ -196,7 +196,7 @@ const GitHubStats = memo(function GitHubStats() {
                         href={GITHUB_PROFILE_URL}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-3 w-fit border border-[#A3FF12]/30 text-[#A3FF12] px-6 py-3 hover:bg-[#A3FF12] hover:text-[#171817] transition-all font-mono text-sm font-bold uppercase tracking-[0.14em] md:tracking-[0.2em] group"
+                        className="flex items-center gap-3 w-fit border border-lime-400/30 text-lime-400 px-6 py-3 hover:bg-lime-400 hover:text-[#171817] transition-all font-mono text-sm font-bold uppercase tracking-[0.14em] md:tracking-[0.2em] group"
                     >
                         <Terminal size={16} />
                         Launch_Profile
@@ -213,16 +213,16 @@ const GitHubStats = memo(function GitHubStats() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="xl:w-1/3 grid grid-cols-2 gap-px bg-[#A3FF12]/10 border border-[#A3FF12]/15"
+                        className="xl:w-1/3 grid grid-cols-2 gap-px bg-lime-400/10 border border-lime-400/15"
                     >
                         {/* Box 1: Repositories */}
                         <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Code size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">REPOS</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
                                     {loading ? '-' : String(userData?.public_repos ?? 0).padStart(2, '0')}
                                 </p>
                             </div>
@@ -230,12 +230,12 @@ const GitHubStats = memo(function GitHubStats() {
 
                         {/* Box 2: Commits */}
                         <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Terminal size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">TOTAL</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
                                     {loading ? '...' : (totalContributions > 999 ? `${(totalContributions / 1000).toFixed(1)}k` : totalContributions)}
                                 </p>
                             </div>
@@ -243,12 +243,12 @@ const GitHubStats = memo(function GitHubStats() {
 
                         {/* Box 3: Followers */}
                         <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Users size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">FLWRS</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
                                     {loading ? '-' : String(userData?.followers ?? 0).padStart(2, '0')}
                                 </p>
                             </div>
@@ -256,12 +256,12 @@ const GitHubStats = memo(function GitHubStats() {
 
                         {/* Box 4: Joined */}
                         <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-[#A3FF12] transition-colors">
+                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Calendar size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">EST.</span>
                             </div>
                             <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-[#A3FF12] transition-colors">
+                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
                                     {loading ? '-' : (userData?.created_at ? new Date(userData.created_at).getFullYear() : '----')}
                                 </p>
                             </div>
@@ -274,7 +274,7 @@ const GitHubStats = memo(function GitHubStats() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="xl:w-2/3 border border-[#A3FF12]/15 bg-[#232522] p-6 lg:p-10 flex flex-col justify-between"
+                        className="xl:w-2/3 border border-lime-400/15 bg-[#232522] p-6 lg:p-10 flex flex-col justify-between"
                     >
                         <div className="flex justify-between items-start border-b border-white/10 pb-6 mb-8">
                             <div>
@@ -296,7 +296,7 @@ const GitHubStats = memo(function GitHubStats() {
 
                         <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center font-mono text-xs md:text-sm text-white/40">
                             <div>
-                                <span className="text-lime-500 mr-2">$</span>
+                                <span className="text-lime-400 mr-2">$</span>
                                 user_query --status
                             </div>
                             <div className="uppercase tracking-[0.12em] md:tracking-[0.16em] text-lime-400/80 animate-pulse">

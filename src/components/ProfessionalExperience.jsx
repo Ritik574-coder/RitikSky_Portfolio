@@ -74,25 +74,25 @@ const ExperienceItem = ({ experience, isExpanded, onToggle, index }) => {
 
   return (
     <article className="relative min-w-0">
-      <div className="absolute left-[15px] top-0 h-full w-px bg-[#A3FF12]/15" />
+      <div className="absolute left-[15px] top-0 h-full w-px bg-lime-400/15" />
 
       <div className="relative pl-8 min-w-0">
-        <span className={`absolute left-[10px] top-8 h-[11px] w-[11px] rounded-full border ${isExpanded ? 'border-[#A3FF12] bg-[#A3FF12]' : 'border-[#A3FF12]/35 bg-[#171817]'}`} />
+        <span className={`absolute left-[10px] top-8 h-[11px] w-[11px] rounded-full border ${isExpanded ? 'border-lime-400 bg-lime-400' : 'border-lime-400/35 bg-[#171817]'}`} />
 
         <button
           onClick={onToggle}
           type="button"
-          className="w-full max-w-full rounded-[6px] border border-[#A3FF12]/15 bg-[#1B1E1B] text-left px-5 md:px-7 py-6 md:py-7 hover:border-[#A3FF12]/30 hover:shadow-[0_8px_24px_rgba(163,255,18,0.06)] transition-all duration-300"
+          className="w-full max-w-full rounded-[6px] border border-lime-400/15 bg-[#1B1E1B] text-left px-5 md:px-7 py-6 md:py-7 hover:border-lime-400/30 hover:shadow-[0_8px_24px_rgba(163,255,18,0.06)] transition-all duration-300"
         >
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2.5 mb-3">
-                <span className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.16em] text-white/65 border border-[#A3FF12]/20 px-2.5 py-1 rounded-[2px] inline-flex items-center gap-1.5">
+                <span className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.16em] text-white/65 border border-lime-400/20 px-2.5 py-1 rounded-[2px] inline-flex items-center gap-1.5">
                   <Calendar className="w-3 h-3" />
                   {experience.period}
                 </span>
                 {isCurrent && (
-                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] bg-[#A3FF12] text-[#171817] px-2.5 py-1 rounded-[2px]">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] bg-lime-400 text-[#171817] px-2.5 py-1 rounded-[2px]">
                     Active Now
                   </span>
                 )}
@@ -115,7 +115,7 @@ const ExperienceItem = ({ experience, isExpanded, onToggle, index }) => {
             <Gsap.div
               animate={{ rotate: isExpanded ? 45 : 0 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className={`mt-1 w-10 h-10 shrink-0 rounded-full border flex items-center justify-center ${isExpanded ? 'border-[#A3FF12] bg-[#A3FF12] text-[#171817]' : 'border-[#A3FF12]/25 text-[#A3FF12]'}`}
+              className={`mt-1 w-10 h-10 shrink-0 rounded-full border flex items-center justify-center ${isExpanded ? 'border-lime-400 bg-lime-400 text-[#171817]' : 'border-lime-400/25 text-lime-400'}`}
             >
               <Plus className="w-4.5 h-4.5" strokeWidth={1.8} />
             </Gsap.div>
@@ -134,21 +134,21 @@ const ExperienceItem = ({ experience, isExpanded, onToggle, index }) => {
               }}
               className="overflow-hidden"
             >
-              <div className="mt-2 ml-0 rounded-[6px] border border-[#A3FF12]/12 bg-[#1F201E] px-5 md:px-7 py-5 md:py-6">
+              <div className="mt-2 ml-0 rounded-[6px] border border-lime-400/12 bg-[#1F201E] px-5 md:px-7 py-5 md:py-6">
                 <ul className="space-y-3 max-w-3xl">
                   {experience.description.map((point) => (
                     <li key={point} className="flex items-start gap-2.5 text-white/70 font-light text-sm md:text-[15px] leading-relaxed">
-                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#A3FF12] shrink-0" />
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-lime-400 shrink-0" />
                       <span>{point}</span>
                     </li>
                   ))}
                 </ul>
 
-                <div className="mt-5 pt-4 border-t border-[#A3FF12]/10 flex flex-wrap gap-2">
+                <div className="mt-5 pt-4 border-t border-lime-400/10 flex flex-wrap gap-2">
                   {experience.stack.map((item) => (
                     <span
                       key={item}
-                      className="font-mono text-[9.5px] md:text-[10px] uppercase tracking-[0.14em] text-[#A3FF12] border border-[#A3FF12]/20 bg-[#171817] px-2.5 py-1 rounded-[2px]"
+                      className="font-mono text-[9.5px] md:text-[10px] uppercase tracking-[0.14em] text-lime-400 border border-lime-400/20 bg-[#171817] px-2.5 py-1 rounded-[2px]"
                     >
                       {item}
                     </span>
@@ -184,16 +184,16 @@ const ProfessionalExperience = () => {
   return (
     <section id="experience-section" className="pt-20 md:pt-24 pb-24 md:pb-32 w-full relative bg-[#171817] overflow-hidden overflow-x-clip">
       <div className="absolute inset-0 pointer-events-none select-none">
-        <div className="absolute right-0 top-20 w-[460px] h-[460px] bg-[#A3FF12]/6 rounded-full blur-[100px]" />
+        <div className="absolute right-0 top-20 w-[460px] h-[460px] bg-lime-400/6 rounded-full blur-[100px]" />
       </div>
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
         <div className="flex items-center gap-3 mb-14 md:mb-16">
-          <span className="w-[6px] h-[6px] rounded-full bg-lime-500 shrink-0" />
+          <span className="w-[6px] h-[6px] rounded-full bg-lime-400 shrink-0" />
           <span className="font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.24em] text-white/55">
             03 - Experience
           </span>
-          <div className="flex-1 h-px bg-[#A3FF12]/12" />
+          <div className="flex-1 h-px bg-lime-400/12" />
         </div>
 
         <div className="grid lg:grid-cols-[360px_1fr] gap-10 lg:gap-14 items-start min-w-0">
@@ -210,15 +210,15 @@ const ProfessionalExperience = () => {
 
             <div className="mt-7 grid grid-cols-2 gap-2.5">
               {statCards.map((stat) => (
-                <div key={stat.label} className="border border-[#A3FF12]/15 bg-[#1C1D1B] rounded-[4px] px-3.5 py-3.5">
+                <div key={stat.label} className="border border-lime-400/15 bg-[#1C1D1B] rounded-[4px] px-3.5 py-3.5">
                   <p className="font-mono text-[8.5px] uppercase tracking-[0.14em] text-white/55">{stat.label}</p>
-                  <p className="mt-1.5 text-[22px] leading-none font-black tracking-tight text-[#A3FF12]">{stat.value}</p>
+                  <p className="mt-1.5 text-[22px] leading-none font-black tracking-tight text-lime-400">{stat.value}</p>
                 </div>
               ))}
             </div>
 
             <div className="mt-6 flex items-center gap-2 text-white/60">
-              <Sparkles className="w-3.5 h-3.5 text-[#A3FF12]" />
+              <Sparkles className="w-3.5 h-3.5 text-lime-400" />
               <p className="font-mono text-[9px] uppercase tracking-[0.16em]">Career timeline - expand each role</p>
             </div>
           </aside>
@@ -237,7 +237,7 @@ const ProfessionalExperience = () => {
             <div className="pl-9 pt-2">
               <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/50 inline-flex items-center gap-1.5">
                 End of timeline
-                <ArrowUpRight className="w-3 h-3 text-[#A3FF12]" />
+                <ArrowUpRight className="w-3 h-3 text-lime-400" />
               </span>
             </div>
           </div>

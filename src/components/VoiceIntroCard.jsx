@@ -84,12 +84,12 @@ const VoiceIntroCard = memo(function VoiceIntroCard() {
   const audioSrc = `${import.meta.env.BASE_URL}multi-speaker.mp3`;
 
   return (
-    <div className="mt-2.5 bg-[#101610] border border-[#A3FF12]/15 rounded-[3px] p-4 hover:border-[#A3FF12]/30 hover:shadow-[0_4px_20px_rgba(163,255,18,0.04)] transition-all duration-300 group">
+    <div className="mt-2.5 bg-[#101610] border border-lime-400/15 rounded-[3px] p-4 hover:border-lime-400/30 hover:shadow-[0_4px_20px_rgba(163,255,18,0.04)] transition-all duration-300 group">
       <audio ref={audioRef} src={audioSrc} preload="metadata" />
       
       {/* Top Label */}
       <div className="flex items-center gap-2 mb-3.5">
-        <div className="w-[5px] h-[5px] rounded-full bg-[#A3FF12] shrink-0" />
+        <div className="w-[5px] h-[5px] rounded-full bg-lime-400 shrink-0" />
         <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/55">Voice Introduction</span>
       </div>
 
@@ -97,12 +97,12 @@ const VoiceIntroCard = memo(function VoiceIntroCard() {
         {/* Play/Pause Button */}
         <button 
           onClick={togglePlayPause}
-          className="shrink-0 w-11 h-11 rounded-full border border-[#A3FF12]/25 flex items-center justify-center bg-[#A3FF12]/5 hover:bg-[#A3FF12]/15 hover:border-[#A3FF12]/50 transition-all duration-300 outline-none"
+          className="shrink-0 w-11 h-11 rounded-full border border-lime-400/25 flex items-center justify-center bg-lime-400/5 hover:bg-lime-400/15 hover:border-lime-400/50 transition-all duration-300 outline-none"
         >
           {isPlaying ? (
-            <Pause size={16} className="text-[#A3FF12] fill-[#A3FF12]" />
+            <Pause size={16} className="text-lime-400 fill-lime-400" />
           ) : (
-            <Play size={16} className="text-[#A3FF12] fill-[#A3FF12] ml-0.5" />
+            <Play size={16} className="text-lime-400 fill-lime-400 ml-0.5" />
           )}
         </button>
 
@@ -110,7 +110,7 @@ const VoiceIntroCard = memo(function VoiceIntroCard() {
         <div className="flex-1 flex flex-col gap-2 min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-medium text-white truncate">Listen to my introduction</span>
-            <span className="font-mono text-[10px] text-[#A3FF12]/80 tabular-nums shrink-0 ml-3">
+            <span className="font-mono text-[10px] text-lime-400/80 tabular-nums shrink-0 ml-3">
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
           </div>
@@ -119,10 +119,10 @@ const VoiceIntroCard = memo(function VoiceIntroCard() {
           <div 
             ref={progressRef}
             onClick={handleProgressClick}
-            className="h-1.5 w-full bg-[#171817] border border-[#A3FF12]/10 rounded-full overflow-hidden cursor-pointer relative group-hover:border-[#A3FF12]/20 transition-colors"
+            className="h-1.5 w-full bg-[#171817] border border-lime-400/10 rounded-full overflow-hidden cursor-pointer relative group-hover:border-lime-400/20 transition-colors"
           >
             <div 
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#A3FF12]/70 to-[#A3FF12] transition-all duration-100 ease-linear shadow-[0_0_8px_rgba(163,255,18,0.4)]"
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-lime-400/70 to-lime-400 transition-all duration-100 ease-linear shadow-[0_0_8px_rgba(163,255,18,0.4)]"
               style={{ width: `${progress}%` }}
             />
           </div>

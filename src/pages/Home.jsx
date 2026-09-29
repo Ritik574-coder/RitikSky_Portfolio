@@ -25,8 +25,13 @@ export default function Home() {
   const galleryRef = useRef(null);
 
   /* Refactored Loading & Scroll Logic */
-  const [isLoading, setIsLoading] = useState(true);
-  const [isScrollLocked, setIsScrollLocked] = useState(true);
+  // For returning visitors the preloader is skipped; reveal the hero immediately.
+  const skipPreloader = typeof sessionStorage !== 'undefined'
+    ? sessionStorage.getItem('rk_preloader_seen') === '1'
+    : false;
+  const [isLoading, setIsLoading] = useState(!skipPreloader);
+  const [isRevealed, setIsRevealed] = useState(skipPreloader);
+  const [isScrollLocked, setIsScrollLocked] = useState(!skipPreloader);
   const [enableNoiseOverlay, setEnableNoiseOverlay] = useState(false);
 
   // Initialize Lenis with scroll lock state
@@ -73,6 +78,9 @@ export default function Home() {
           onComplete={() => {
             setIsLoading(false);
             setIsScrollLocked(false);
+            // Trigger hero reveal on next frame so the preloader slide-out
+            // has already begun before entrance animations fire (ISSUE-008).
+            requestAnimationFrame(() => setIsRevealed(true));
           }}
         />
       )}
@@ -84,7 +92,7 @@ export default function Home() {
 
       <Cursor />
       <Navbar />
-      <HeroSection isRevealed={true} />
+      <HeroSection isRevealed={isRevealed} />
       <Suspense fallback={null}><MarqueeBanner /></Suspense>
       <Suspense fallback={null}><AboutSection /></Suspense>
 

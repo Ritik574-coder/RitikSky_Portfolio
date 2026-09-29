@@ -12,6 +12,11 @@ module.exports = {
       mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
     },
     extend: {
+      colors: {
+        lime: {
+          400: '#A3FF12',
+        },
+      },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
       },
