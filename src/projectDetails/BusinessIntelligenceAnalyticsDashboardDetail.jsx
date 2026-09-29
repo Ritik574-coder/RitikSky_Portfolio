@@ -5,7 +5,7 @@ export const project = {
   category: "Campus Web Application",
   heroImg: `${import.meta.env.BASE_URL}business-intelligence-analytics-dashboard.webp`,
   tagline:
-    "A Lost & Found app for Udinus students to quickly report lost or found items - complete with a statistics dashboard and per-post chat feature for easier coordination between users.",
+    "A Business Intelligence Analytics Dashboard for Udinus to visualize and analyze campus data - complete with interactive charts and real-time updates.",
   year: "2025",
   stack: ["Next.js", "TailwindCSS", "Supabase (PostgreSQL)", "Realtime Chat", "Geolocation"],
   features: [
@@ -25,7 +25,7 @@ export const project = {
     "Enhances system security and relevance as only Udinus students can access it via campus email authentication.",
   ],
   links: {
-    repo: "https://github.com/Ritik574-coder/LostItem-Project",
+    repo: "https://github.com/Ritik574-coder/Business-Intelligence-Analytics-Dashboard",
   },
   notes: "Access Restricted: This website is only accessible using Udinus student email (@mhs.dinus.ac.id)."
 };

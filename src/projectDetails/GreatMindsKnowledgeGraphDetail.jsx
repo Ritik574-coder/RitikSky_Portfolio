@@ -22,8 +22,8 @@ export const project = {
     "Represents a complete end-to-end pipeline: from TensorFlow model training to deployment/inference in a web application.",
   ],
   links: {
-    live: "https://vegetable-classifier.streamlit.app/",
-    repo: "https://github.com/Ritik574-coder/vegetable-classification",
+    live: "https://ritik574-coder.github.io/Great-Minds-Knowledge-Graph/",
+    repo: "https://github.com/Ritik574-coder/Great-Minds-Knowledge-Graph",
   },
 };
 
