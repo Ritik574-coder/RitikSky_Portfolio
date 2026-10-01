@@ -170,7 +170,7 @@ const GitHubStats = memo(function GitHubStats() {
                 >
                     <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
                     <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/55">
-                        05. Source_Metrics
+                        05 — GitHub Stats
                     </span>
                     <div className="flex-1 h-[1px] bg-lime-400/12" />
                 </Gsap.div>

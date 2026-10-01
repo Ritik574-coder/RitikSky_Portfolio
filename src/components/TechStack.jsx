@@ -104,7 +104,7 @@ const TechStack = () => {
                 >
                     <div className="w-2 h-2 bg-lime-400 rounded-full" />
                     <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/55">
-                        04. Technical_Arsenal
+                        04 — Tech Stack
                     </span>
                     <div className="flex-1 h-[1px] bg-lime-400/15" />
                 </Gsap.div>

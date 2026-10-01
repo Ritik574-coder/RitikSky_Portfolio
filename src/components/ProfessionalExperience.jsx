@@ -191,7 +191,7 @@ const ProfessionalExperience = () => {
         <div className="flex items-center gap-3 mb-14 md:mb-16">
           <span className="w-[6px] h-[6px] rounded-full bg-lime-400 shrink-0" />
           <span className="font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.24em] text-white/55">
-            03 - Experience
+            03 — Experience
           </span>
           <div className="flex-1 h-px bg-lime-400/12" />
         </div>

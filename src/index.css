@@ -111,6 +111,15 @@ body {
   overscroll-behavior: none;
 }
 
+/* Utility to hide scrollbars on child containers while preserving scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Custom Text Selection Color */
 ::selection {
   background-color: #a3e635;
