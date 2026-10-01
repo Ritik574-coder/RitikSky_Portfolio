@@ -1,6 +1,7 @@
-import { memo, useRef, useState, useEffect } from 'react';
+import { memo, useRef, useState, useEffect, useCallback } from 'react';
 import { Gsap, useGsapReducedMotion, useGsapScroll, useGsapTransform } from '../utils/gsapAnimate';
 import { Terminal, Code2, Database, Cpu, Download, ArrowUpRight } from 'lucide-react';
+import { exponentialEaseOut } from '../utils/easing';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -113,6 +114,22 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
       }
     };
   }, [reduceMotion]);
+
+  const handleViewProjects = useCallback(() => {
+    const target = document.getElementById('project-section');
+    if (!target) return;
+
+    if (window.lenisInstance && typeof window.lenisInstance.scrollTo === 'function') {
+      window.lenisInstance.scrollTo(target, {
+        offset: -24,
+        duration: 1.5,
+        easing: exponentialEaseOut,
+      });
+      return;
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   return (
     <header
@@ -233,23 +250,25 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           <OrbitingDecoration icon={Code2} delay={0.15} className="hidden lg:flex right-[24%] top-0" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
           <OrbitingDecoration icon={Terminal} delay={0.45} className="hidden lg:flex right-[30%] bottom-[6%]" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
 
-          <Gsap.h1
-            initial={false}
-            animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-            transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[clamp(3.5rem,min(13vw,17svh),8.5rem)] font-black uppercase tracking-tight text-white leading-[0.88]"
-          >
-            RITIK
-          </Gsap.h1>
+          <h1 className="flex flex-col items-start w-full">
+            <Gsap.span
+              initial={false}
+              animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+              transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="block text-[clamp(3.5rem,min(13vw,17svh),8.5rem)] font-black uppercase tracking-tight text-white leading-[0.88]"
+            >
+              RITIK
+            </Gsap.span>
 
-          <Gsap.h1
-            initial={false}
-            animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-            transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[clamp(3.5rem,min(13vw,17svh),8.5rem)] font-black uppercase tracking-tight text-outline-lime leading-[0.88] mt-2 sm:mt-0"
-          >
-            KUMAR
-          </Gsap.h1>
+            <Gsap.span
+              initial={false}
+              animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+              transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="block text-[clamp(3.5rem,min(13vw,17svh),8.5rem)] font-black uppercase tracking-tight text-outline-lime leading-[0.88] mt-2 sm:mt-0"
+            >
+              KUMAR
+            </Gsap.span>
+          </h1>
 
           {/* Right Decoration */}
           <OrbitingDecoration icon={Database} delay={0.28} className="hidden lg:flex right-[8%] top-[24%]" isRevealed={isRevealed} enableAmbientMotion={enableAmbientMotion} />
@@ -279,7 +298,7 @@ const HeroSection = memo(function HeroSection({ isRevealed = true }) {
           className="flex w-full max-w-[760px] flex-wrap items-center justify-start gap-3 sm:gap-4 mt-[clamp(1.25rem,3.5svh,1.75rem)]"
         >
           <button
-            onClick={() => document.getElementById('project-section')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={handleViewProjects}
             className="group flex items-center gap-2 bg-lime-400 text-black px-7 py-3.5 font-mono text-sm font-bold uppercase tracking-wider hover:bg-white transition-all duration-300 cursor-pointer"
           >
             View Projects <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

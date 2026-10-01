@@ -49,7 +49,7 @@ const TechnicalCapabilities = memo(function TechnicalCapabilities() {
         >
           <div className="w-8 h-[2px] bg-lime-400" />
           <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/55">
-            06. Capabilities_Matrix
+            06 — Capabilities
           </span>
           <div className="w-8 h-[2px] bg-lime-400" />
         </Gsap.div>

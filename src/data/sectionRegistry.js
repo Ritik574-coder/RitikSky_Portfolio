@@ -42,18 +42,18 @@ export const SECTION_REGISTRY = [
   },
   {
     id: 'scroll_to_projects',
-    label: 'Past Explorations / Projects',
+    label: 'Projects',
     elementId: 'project-section',
     synonyms: [
       'project', 'projek', 'proyek', 'portfolio', 'karya',
-      'exploration', 'past exploration', 'logs',
+      'exploration', 'past exploration', 'logs', 'projects',
       'list project', 'daftar project', 'semua project', 'all project',
       'show project', 'lihat project', 'apa aja project',
     ],
   },
   {
     id: 'scroll_to_experience',
-    label: 'Experience Log / Career Journey',
+    label: 'Experience',
     elementId: 'experience-section',
     synonyms: [
       'experience', 'pengalaman', 'karir', 'career', 'kerja', 'work',
@@ -64,7 +64,7 @@ export const SECTION_REGISTRY = [
   },
   {
     id: 'scroll_to_tech',
-    label: 'Tech Stack / Technologies',
+    label: 'Tech Stack',
     elementId: 'tech-stack-section',
     synonyms: [
       'tech stack', 'teknologi', 'technology', 'tools',
@@ -76,18 +76,18 @@ export const SECTION_REGISTRY = [
   },
   {
     id: 'scroll_to_capabilities',
-    label: 'Technical Capabilities / What I Can Do',
+    label: 'Capabilities',
     elementId: 'capabilities-section',
     synonyms: [
       'capabilities', 'kemampuan', 'keahlian', 'bisa apa',
       'bidang', 'expertise', 'specialization', 'spesialisasi',
       'apa yang dikuasai', 'mampu apa', 'what can you do',
-      'skill', 'ability', 'able',
+      'skill', 'skills', 'ability', 'able',
     ],
   },
   {
     id: 'scroll_to_github',
-    label: 'GitHub Stats / Coding Stats',
+    label: 'GitHub Stats',
     elementId: 'github-stats-section',
     synonyms: [
       'github', 'kontribusi', 'contribution', 'commit',

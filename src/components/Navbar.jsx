@@ -6,11 +6,11 @@ import { exponentialEaseOut } from '../utils/easing';
 
 const NAV_ITEMS = [
   { label: 'About', sectionId: 'about-section' },
-  { label: 'Logs', sectionId: 'project-section' },
-  { label: 'Work', sectionId: 'experience-section' },
-  { label: 'Stack', sectionId: 'tech-stack-section' },
+  { label: 'Projects', sectionId: 'project-section' },
+  { label: 'Experience', sectionId: 'experience-section' },
+  { label: 'Tech Stack', sectionId: 'tech-stack-section' },
   { label: 'Stats', sectionId: 'github-stats-section' },
-  { label: 'Skills', sectionId: 'capabilities-section' },
+  { label: 'Capabilities', sectionId: 'capabilities-section' },
 ];
 
 const DARK_SECTION_IDS = [
