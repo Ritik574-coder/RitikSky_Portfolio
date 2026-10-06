@@ -2,37 +2,74 @@ import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
   title: "Medallion Data Warehouse",
-  category: "Data Warehouse",
+
+  category: "Data Engineering & Data Warehousing",
+
   heroImg: `${import.meta.env.BASE_URL}medallion-data-warehouse.webp`,
+
   tagline:
-    "A RAG-based virtual assistant for Polsek Rembang Kota information services - helping citizens get quick, clear, and human-like answers about SKCK, lost item reports, event permits, and related police services.",
-  year: "2025",
+    "A SQL Server data warehouse that transforms raw retail data into cleansed, standardized, and analytics-ready datasets through a Bronze–Silver–Gold architecture.",
+
+  year: "2026",
+
   stack: [
-    "Next.js (API Route)",
-    "Google Gemini API",
-    "RAG (Knowledge Base + Retrieval)",
-    "Prompt Engineering (system prompt & guardrails)",
-    "Chat UI (interactive conversation)",
+    "Microsoft SQL Server 2022",
+    "T-SQL",
+    "Docker",
+    "Docker Compose",
+    "CSV",
+    "Python",
+    "Pandas",
+    "Plotly",
+    "SQLAlchemy",
   ],
+
   features: [
-    "Interactive chat for Q&A about police services with a friendly yet professional and informative tone.",
-    "RAG knowledge base: answers are derived from internal knowledge (station profile, service hours, SKCK, lost item reports, event permits, detainee visits, etc.).",
-    "Response guardrails: assistant only answers topics relevant to police services, and politely declines off-topic questions.",
-    "Consistent answer format (plain text): no markdown, no unusual symbols - easily readable on any device.",
-    "Quick actions to speed up user flow: e.g., police service buttons, incident reports, and contact an officer.",
-    "Download transcript: users can download chat history as evidence/conversation summary.",
-    "Multimodal mode (optional): can receive images for analysis if needed (e.g., evidence or simple visual context).",
+    "Implemented a three-layer warehouse architecture that separates raw ingestion, data cleansing, and business-ready analytical models.",
+    "Built a Bronze ingestion process using SQL Server BULK INSERT, transaction control, full-refresh loading, execution logging, and error handling across eight retail datasets.",
+    "Applied defensive type conversion, null handling, deduplication, text normalization, date parsing, geographic standardization, and domain-specific business rules in the Silver layer.",
+    "Structured customer, employee, product, store, inventory, sales, returns, and review data to support downstream analytical workloads.",
+    "Validated transaction-level financial fields and recalculated derived values when source cost, pricing, and gross-profit fields were inconsistent.",
+    "Built analytical views for dimensions and facts covering customers, employees, products, stores, sales, returns, reviews, and inventory snapshots.",
+    "Provided a reproducible SQL Server environment through Docker and Docker Compose with mounted source datasets and automated setup commands.",
+    "Connected the Gold layer to Python through SQLAlchemy and Pandas for customer analysis and exploratory visualization.",
   ],
+
   impact: [
-    "Speeds up access to service information: citizens no longer need to search for procedures and requirements as answers are instantly available via chat.",
-    "Reduces repetitive questions to officers for administrative matters (SKCK, lost items, permits), allowing officers to focus on field services.",
-    "Enhances citizen experience with clear, consistent, and human-like responses - bringing public services closer through AI technology.",
+    "Established a structured retail data warehouse instead of working directly from inconsistent source files.",
+    "Separated ingestion from transformation so raw source data remains available while downstream models become progressively cleaner.",
+    "Improved analytical reliability by standardizing inconsistent formats and validating business fields before downstream use.",
+    "Handled multiple retail business domains within a single warehouse architecture.",
+    "Applied dimensional modeling concepts in the Gold layer to make the warehouse easier to consume for analytics and reporting.",
+    "Created a repeatable local development environment with Docker and SQL Server rather than relying on a machine-specific database setup.",
+    "Connected warehouse outputs to Python-based analysis, demonstrating an end-to-end path from ingestion to analytical consumption.",
   ],
+
   links: {
     repo: "https://github.com/Ritik574-coder/Medallion-Data-Warehouse",
+  },
+
+  theme: {
+    mode: "dark",
+    background: "#070A07",
+    surface: "#0D120D",
+    surfaceAlt: "#111811",
+    border: "#294A1F",
+    accent: "#A8FF00",
+    accentSoft: "#72D600",
+    text: "#F5F7F2",
+    textMuted: "#AEB7A8",
+    glow: "rgba(168, 255, 0, 0.22)",
   },
 };
 
 export default function MedallionDataWarehouseDetail({ onClose, mode }) {
-  return <ProjectCaseLayout project={project} onClose={onClose} closeLabel={mode === "modal" ? "Close" : "Back to Home"} mode={mode} />;
+  return (
+    <ProjectCaseLayout
+      project={project}
+      onClose={onClose}
+      closeLabel={mode === "modal" ? "Close" : "Back to Home"}
+      mode={mode}
+    />
+  );
 }

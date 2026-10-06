@@ -2,43 +2,62 @@ import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
   title: "Business Intelligence Analytics Dashboard",
-  category: "Campus Web Application",
+
+  category: "Business Intelligence & Data Analytics",
+
   heroImg: `${import.meta.env.BASE_URL}business-intelligence-analytics-dashboard.webp`,
+
   tagline:
-    "A Business Intelligence Analytics Dashboard for Udinus to visualize and analyze campus data - complete with interactive charts and real-time updates.",
+    "A collection of interactive BI dashboards that transform operational, financial, workforce, sales, and market data into clear analytical insights.",
+
   year: "2025",
-  stack: ["Next.js", "TailwindCSS", "Supabase (PostgreSQL)", "Realtime Chat", "Geolocation"],
+
+  stack: [
+    "Power BI",
+    "Tableau",
+    "DAX",
+    "Python",
+    "Pandas",
+    "NumPy",
+    "SQL",
+    "Power Query",
+  ],
+
   features: [
-    "Lost & found item reporting: students can create detailed reports with category, time, and item description.",
-    "Geolocation tagging: when creating a report, users can auto-detect location (GPS) or select a point on the map to mark where the item was last seen/found.",
-    "Map view for location context: reports display location pins so other users can better understand the area and speed up the search.",
-    "Clean post board: users can browse recent reports, search, and filter by status (lost/found/resolved).",
-    "Per-post chat: each report has a discussion thread to facilitate communication between the reporter and the finder.",
-    "Statistics dashboard: shows total reports, lost items, found items, active reports, and resolved cases for campus-wide insights.",
-    "Udinus email-only login: access is restricted to Udinus email domain to keep the system secure and relevant to the campus environment.",
-    "Status tracking: reports can be updated to resolved once the item has been returned to its owner.",
+    "Built interactive Power BI and Tableau dashboards with filters, drill-through views, KPI cards, charts, maps, and analytical breakdowns.",
+    "Analyzed ATM transactions, revenue, operating costs, uptime, gross profit, transaction efficiency, and loss-making ATMs.",
+    "Analyzed employee demographics, hiring, compensation, tenure, department distribution, performance, and workforce trends.",
+    "Analyzed sales, profit, orders, customers, subcategories, year-over-year trends, and top-performing customers.",
+    "Explored job volumes, salary distributions, job roles, geographic patterns, employment characteristics, and market trends.",
+    "Applied structured analytical models and documented dimensions, relationships, KPIs, calculated measures, and business metrics.",
   ],
+
   impact: [
-    "Speeds up item recovery since reports can be created and accessed online without manually spreading the word.",
-    "Accurate geolocation helps make searches more effective and reduces confusion about where items were lost.",
-    "Reduces miscommunication through direct chat on posts, making verification and item return processes faster.",
-    "Enhances system security and relevance as only Udinus students can access it via campus email authentication.",
+    "Converted raw and structured datasets into interactive analytical dashboards.",
+    "Created reusable DAX measures for revenue, cost, profitability, operational efficiency, and risk analysis.",
+    "Applied Python-based data preparation using Pandas and NumPy before visualization.",
+    "Used Tableau calculated fields and LOD expressions for workforce and sales analysis.",
+    "Designed dashboards around business questions rather than presenting raw data.",
+    "Covered multiple analytical domains including banking operations, HR, sales, customer behavior, employment, and global economic data.",
   ],
+
   links: {
     repo: "https://github.com/Ritik574-coder/Business-Intelligence-Analytics-Dashboard",
   },
-  notes: "Access Restricted: This website is only accessible using Udinus student email (@mhs.dinus.ac.id)."
-};
 
-const accessNotice = (
-  <div className="mb-10 border-4 border-black bg-lime-400 p-8">
-    <h2 className="text-3xl md:text-4xl font-black uppercase mb-4">Restricted Access</h2>
-    <p className="text-lg font-medium leading-relaxed">
-      This website is only accessible using a Udinus student email (@mhs.dinus.ac.id). The authentication system is designed
-      to maintain security and platform relevance within the campus environment.
-    </p>
-  </div>
-);
+  theme: {
+    mode: "dark",
+    background: "#070A07",
+    surface: "#0D120D",
+    surfaceAlt: "#111811",
+    border: "#294A1F",
+    accent: "#A8FF00",
+    accentSoft: "#72D600",
+    text: "#F5F7F2",
+    textMuted: "#AEB7A8",
+    glow: "rgba(168, 255, 0, 0.22)",
+  },
+};
 
 export default function BusinessIntelligenceAnalyticsDashboardDetail({ onClose, mode }) {
   return (
@@ -46,7 +65,6 @@ export default function BusinessIntelligenceAnalyticsDashboardDetail({ onClose, 
       project={project}
       onClose={onClose}
       closeLabel={mode === "modal" ? "Close" : "Back to Home"}
-      preFeatureSection={accessNotice}
       mode={mode}
     />
   );

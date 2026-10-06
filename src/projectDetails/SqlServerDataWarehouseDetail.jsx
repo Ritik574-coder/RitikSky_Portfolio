@@ -2,41 +2,73 @@ import ProjectCaseLayout from "../components/projects/ProjectCaseLayout";
 
 export const project = {
   title: "SQL Server Data Warehouse",
-  category: "Multi-Vendor Ordering Platform",
+
+  category: "Data Engineering & Data Warehousing",
+
   heroImg: `${import.meta.env.BASE_URL}sql-server-data-warehouse.webp`,
+
   tagline:
-    "A multi-vendor canteen platform that lets users order from multiple stalls at once - faster, queue-free, with AI-powered budget-based menu recommendations and QRIS/cashless payment via Midtrans.",
-  year: "2025",
+    "An enterprise-style SQL Server data warehouse that integrates CRM and ERP data through a Bronze–Silver–Gold architecture and delivers analytics-ready dimensional models.",
+
+  year: "2026",
+
   stack: [
-    "Next.js",
-    "TailwindCSS",
-    "Database (Supabase)",
-    "Authentication (JWT / NextAuth)",
-    "Midtrans Payment Gateway",
-    "QRIS + E-Wallet / VA (via Midtrans) + Cash option",
-    "Chatbot Recommendation (Rule-based / LLM integration)",
-    "Order History & Rating System",
+    "Microsoft SQL Server",
+    "T-SQL",
+    "Docker",
+    "SQL Server Stored Procedures",
+    "CSV",
+    "Apache Spark",
+    "PySpark",
+    "Git",
   ],
+
   features: [
-    "Multi-stall checkout: users can select menu items from multiple vendors in a single order flow (no app-switching needed).",
-    "Queue-free ordering: online ordering system reduces wait times and makes buying food more efficient during peak hours.",
-    "AI Assistant (chatbot) for recommendations: helps choose menu items based on budget, preferences (snacks/drinks/full meals), and value bundles.",
-    "Smart cart: automatically groups items per stall/vendor and shows a clear total summary before checkout.",
-    "Flexible payments: supports QRIS/cashless via Midtrans, plus a CASH option for on-site payment (per canteen policy).",
-    "Order history: users can view purchase history, order status, and total transactions for expense tracking.",
-    "Store rating & review: displays vendor ratings so users can choose the most trustworthy and quality-consistent stalls.",
-    "Search & category discovery: menu/vendor search + categories (breakfast/lunch/snacks) for faster exploration.",
+    "Integrated customer, product, sales, demographic, geographic, and product-classification data from separate CRM and ERP source systems.",
+    "Built SQL Server stored procedures that perform full-load CSV ingestion into source-aligned Bronze tables using BULK INSERT, transactional control, and execution timing.",
+    "Applied cleansing, standardization, normalization, validation, deduplication, derived fields, and cross-source business rules before exposing data to analytics.",
+    "Conformed customer identifiers and combined CRM customer records with ERP demographic and geographic information into a unified analytical customer model.",
+    "Combined CRM product information with ERP product classification data to create a richer product dimension with category, subcategory, product line, and maintenance attributes.",
+    "Created Gold-layer customer and product dimensions together with a sales fact model using surrogate keys and star-schema relationships.",
+    "Implemented SQL checks for duplicates, nulls, invalid dates, business-rule violations, orphan records, revenue reconciliation, dimensional integrity, and granularity.",
+    "Created reporting queries for customer order volume, sales performance, monthly revenue contribution, yearly performance, quantity, pricing, and shipping-time analysis.",
+    "Used PySpark in a separate analysis notebook to inspect and explore source data before warehouse processing.",
   ],
+
   impact: [
-    "Reduces wasted time during breaks as users can pre-order without standing in long queues.",
-    "Improves canteen shopping experience with a smooth ordering flow, fast payments, and budget-relevant menu recommendations.",
-    "Provides vendor quality insights through ratings and purchase history, making user decisions more confident and data-driven.",
+    "Created a structured analytical layer from multiple operational source systems rather than querying raw CRM and ERP files directly.",
+    "Established clear separation between raw ingestion, transformation, and business-facing data models.",
+    "Standardized inconsistent customer, product, demographic, geographic, and sales attributes across source systems.",
+    "Built a reusable Gold-layer star schema designed for BI reporting, SQL analysis, and downstream analytical workloads.",
+    "Added explicit data-quality validation for dimensional integrity and transactional business rules.",
+    "Produced analytical SQL queries that turn the warehouse into a usable foundation for customer and sales reporting.",
   ],
+
   links: {
     repo: "https://github.com/Ritik574-coder/sqlserver-datawarehouse",
+  },
+
+  theme: {
+    mode: "dark",
+    background: "#070A07",
+    surface: "#0D120D",
+    surfaceAlt: "#111811",
+    border: "#294A1F",
+    accent: "#A8FF00",
+    accentSoft: "#72D600",
+    text: "#F5F7F2",
+    textMuted: "#AEB7A8",
+    glow: "rgba(168, 255, 0, 0.22)",
   },
 };
 
 export default function SqlServerDataWarehouseDetail({ onClose, mode }) {
-  return <ProjectCaseLayout project={project} onClose={onClose} closeLabel={mode === "modal" ? "Close" : "Back to Home"} mode={mode} />;
+  return (
+    <ProjectCaseLayout
+      project={project}
+      onClose={onClose}
+      closeLabel={mode === "modal" ? "Close" : "Back to Home"}
+      mode={mode}
+    />
+  );
 }
