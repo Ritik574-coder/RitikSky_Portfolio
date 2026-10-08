@@ -102,49 +102,49 @@ export const PORTFOLIO_DATA = {
             slug: "dbt-analytics-engineering",
             title: "Retail Analytics Engineering Platform",
             category: "Analytics Engineering / Data Engineering",
-            description: "End-to-end retail analytics engineering platform built with dbt and Microsoft SQL Server."
+            description: "An end-to-end retail analytics engineering platform built with dbt and Microsoft SQL Server, transforming raw operational data through Staging, Intermediate, and Marts layers into analytics-ready dimensional models."
         },
         {
             slug: "leadsup",
             title: "SkyNova — Intelligent Data Ecosystem",
             category: "AI-Powered Lead Scoring",
-            description: "AI system for scoring sales leads to prioritize high-value prospects."
+            description: "An AI-powered sales portal that prioritizes the most promising prospects for term deposit subscriptions - helping sales teams focus on high-value leads and boost follow-up efficiency."
         },
         {
             slug: "polsekrembang",
             title: "Medallion Data Warehouse",
-            category: "RAG Chatbot / AI Assistant",
-            description: "RAG-based chatbot to assist with police station inquiries and services."
+            category: "Data Engineering & Data Warehousing",
+            description: "A SQL Server data warehouse that transforms raw retail data into cleansed, standardized, and analytics-ready datasets through a Bronze–Silver–Gold architecture."
         },
         {
             slug: "floodsegmen",
-            title: "Snowflake Semi-Structured Data Normalization",
-            category: "Computer Vision",
-            description: "Computer Vision system for analyzing flood patterns and segmentation from satellite/drone imagery."
+            title: "Snowflake Semi-Structured Data Engineering",
+            category: "Snowflake & Data Engineering",
+            description: "A Snowflake data engineering project focused on processing nested JSON with VARIANT, extracting and flattening hierarchical structures, and transforming semi-structured data into a normalized relational data mart."
         },
         {
             slug: "qmeal",
             title: "SQL Server Data Warehouse",
-            category: "Multi-Vendor Ordering Platform",
-            description: "Digital canteen ordering system supporting multiple vendors and efficient queue management."
+            category: "Data Engineering & Data Warehousing",
+            description: "An enterprise-style SQL Server data warehouse that integrates CRM and ERP data through a Bronze–Silver–Gold architecture and delivers analytics-ready dimensional models."
         },
         {
             slug: "lostandfound",
             title: "Business Intelligence Analytics Dashboard",
-            category: "Web Application",
-            description: "Community platform for reporting and finding lost items."
+            category: "Business Intelligence & Data Analytics",
+            description: "A collection of interactive BI dashboards that transform operational, financial, workforce, sales, and market data into clear analytical insights."
         },
         {
             slug: "imageclas",
             title: "Great Minds Knowledge Graph",
-            category: "Computer Vision",
-            description: "Deep Learning model for classifying different types of vegetables from images."
+            category: "Research Platform & Knowledge Graph",
+            description: "An evidence-aware research platform for studying how exceptional people think, decide, fail, adapt, and build through structured knowledge and connected evidence."
         },
         {
             slug: "financial-assistant-bot",
             title: "Human Behavior Network",
-            category: "AI / Fintech",
-            description: "AI bot for personal finance management and advice."
+            category: "Interactive Systems Visualization & AI-Assisted Product Design",
+            description: "An interactive systems-visualization platform that maps relationships among money, data, incentives, and power to explore how complex forces shape human behavior."
         }
     ],
     achievements: [
