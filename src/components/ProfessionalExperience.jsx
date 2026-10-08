@@ -1,76 +1,63 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Gsap, GsapPresence } from '../utils/gsapAnimate';
 // Note: scroll-triggered entrance animations removed from this section intentionally
-import { Plus, Calendar, Building2, Sparkles, ArrowUpRight } from 'lucide-react';
+import { Plus, Target, GraduationCap, Sparkles, ArrowUpRight } from 'lucide-react';
 
 const experiences = [
   {
-    company: 'GDSC Udinus',
-    role: 'Developer Community',
-    period: 'Nov 2023 - Nov 2025',
-    impact: 'Contributed to 5+ technical discussions across 4 collaborative projects.',
-    stack: ['Community', 'Workshops', 'Collaboration'],
+    role: 'Data Engineer',
+    period: 'Primary Focus',
+    context: 'Student · Career Direction',
+    impact: 'Data Engineering is my primary focus as I build practical skills and projects toward a career in the field.',
+    stack: ['Data Platforms', 'ETL/ELT', 'Data Warehousing', 'Modern Data Systems'],
     description: [
-      'Actively participated in workshops, technical events, and collaborative learning sessions.',
-      'Contributed insights around development and analytics in community-driven projects.',
+      'Building practical skills and projects around data engineering, data platforms, ETL/ELT, data warehousing, and modern data systems.',
     ],
   },
   {
-    company: 'Blockvizo',
+    role: 'Analytics Engineer',
+    period: 'Current Focus',
+    context: 'Student · Career Direction',
+    impact: 'Analytics Engineering is a current focus alongside my primary Data Engineering direction.',
+    stack: ['Analytics Engineering', 'Data Transformation', 'Data Warehousing'],
+    description: [
+      'Building practical skills and project experience in Analytics Engineering.',
+    ],
+  },
+  {
     role: 'Data Analyst',
-    period: 'Jun 2024 - Jul 2025',
-    impact: 'Improved forecasting accuracy by 35% and cut analysis time by 40%.',
-    stack: ['Data Analysis', 'Dashboards', 'Web3 Analytics', 'Predictive Modeling'],
+    period: 'Current Focus',
+    context: 'Student · Career Direction',
+    impact: 'Data Analysis is a current focus as I build skills to work with data and draw useful insights.',
+    stack: ['Data Analysis', 'Data Interpretation', 'Analytical Insights'],
     description: [
-      'Processed 50,000+ game hash history records to model item-drop probability behavior.',
-      'Built actionable dashboards for decentralized projects, enabling faster and more confident decisions.',
-      'Specialized in predictive airdrop and winning probability analysis across 10+ Web3 ecosystems.',
+      'Building practical skills in analyzing data and communicating insights.',
     ],
   },
   {
-    company: 'ASAH (led by Dicoding x Accenture)',
-    role: 'Machine Learning Cohort',
-    period: 'Aug 2025 - Jan 2026',
-    impact: 'Served as project manager during the capstone phase and improved team execution by 70%.',
-    stack: ['Project Leadership', 'ML Product', 'React', 'Stakeholder Sync'],
+    role: 'ML Engineering',
+    period: 'Learning Direction',
+    context: 'Learning',
+    impact: 'ML Engineering is a learning direction, not a current professional role.',
+    stack: ['ML Engineering', 'Learning Direction'],
     description: [
-      'Acted as project manager during capstone, leading a cross-functional team of 5 machine learning engineers and React developers.',
-      'Managed the development of a banking sales prediction portal to prioritize high-probability leads and reduce low-value outreach.',
-      'Coordinated timelines and technical workflows across functions to improve delivery speed and reliability.',
+      'Learning ML Engineering while building a foundation in Data Engineering.',
     ],
   },
   {
-    company: 'Programming Lab',
-    role: 'Lab Assistant',
-    period: 'Aug 2025 - Present',
-    impact: 'Mentored 110+ junior students through practical engineering sessions.',
-    stack: ['Teaching', 'Mentorship', 'Software Fundamentals'],
+    role: 'AI Engineering',
+    period: 'Learning Direction',
+    context: 'Learning',
+    impact: 'AI Engineering is a learning direction, not a current professional role.',
+    stack: ['AI Engineering', 'Learning Direction'],
     description: [
-      'Assisted in 3+ weekly academic lab sessions for programming and software engineering courses.',
-      'Mentored around 110 junior students in problem solving, practical exercises, and core programming concepts.',
-    ],
-  },
-  {
-    company: 'PIJAK (led by Dicoding x IBM)',
-    role: 'AI Engineer Cohort',
-    period: 'Jan 2026 - Present',
-    impact: 'Selected participant in the PIJAK AI Engineer cohort.',
-    stack: ['Python', 'Generative AI', 'Deep Learning', 'AI Ethics'],
-    description: [
-      'Joined an intensive AI Engineer cohort focused on Generative AI, Deep Learning, and AI Ethics.',
-      'Developing advanced AI solutions with Python and industry-standard practices from the IBM SkillsBuild curriculum.',
-      'Building capstone-ready systems for real-world AI implementation challenges.',
+      'Learning AI Engineering while continuing to build practical data systems skills.',
     ],
   },
 ];
 
-function getStartYear(period) {
-  const match = period.match(/\b20\d{2}\b/);
-  return match ? Number(match[0]) : null;
-}
-
-const ExperienceItem = ({ experience, isExpanded, onToggle, index }) => {
-  const isCurrent = /present/i.test(experience.period);
+const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
+  const isCurrent = experience.period === 'Current Focus';
 
   return (
     <article className="relative min-w-0">
@@ -88,12 +75,12 @@ const ExperienceItem = ({ experience, isExpanded, onToggle, index }) => {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2.5 mb-3">
                 <span className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.16em] text-white/65 border border-lime-400/20 px-2.5 py-1 rounded-[2px] inline-flex items-center gap-1.5">
-                  <Calendar className="w-3 h-3" />
+                  <Target className="w-3 h-3" />
                   {experience.period}
                 </span>
                 {isCurrent && (
                   <span className="font-mono text-[9px] uppercase tracking-[0.16em] bg-lime-400 text-[#171817] px-2.5 py-1 rounded-[2px]">
-                    Active Now
+                    Current Focus
                   </span>
                 )}
               </div>
@@ -103,8 +90,8 @@ const ExperienceItem = ({ experience, isExpanded, onToggle, index }) => {
               </h3>
 
               <p className="mt-2 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.16em] text-white/55 inline-flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5" />
-                {experience.company}
+                <GraduationCap className="w-3.5 h-3.5" />
+                {experience.context}
               </p>
 
               <p className="mt-5 text-sm md:text-[15px] font-light leading-relaxed text-white/70 max-w-3xl">
@@ -166,20 +153,12 @@ const ExperienceItem = ({ experience, isExpanded, onToggle, index }) => {
 const ProfessionalExperience = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
-  const statCards = useMemo(() => {
-    const roles = experiences.length;
-    const activeNow = experiences.filter((item) => /present/i.test(item.period)).length;
-    const organizations = new Set(experiences.map((item) => item.company)).size;
-    const startYears = experiences.map((item) => getStartYear(item.period)).filter(Boolean);
-    const firstYear = startYears.length ? Math.min(...startYears) : new Date().getFullYear();
-
-    return [
-      { label: 'Total Roles', value: String(roles).padStart(2, '0') },
-      { label: 'Active Now', value: String(activeNow).padStart(2, '0') },
-      { label: 'Since', value: String(firstYear) },
-      { label: 'Organizations', value: String(organizations).padStart(2, '0') },
-    ];
-  }, []);
+  const statCards = [
+    { label: 'Current Status', value: 'Student' },
+    { label: 'Primary Focus', value: 'Data Eng.' },
+    { label: 'Current Focus', value: 'Analytics' },
+    { label: 'Learning', value: 'ML + AI' },
+  ];
 
   return (
     <section id="experience-section" className="pt-20 md:pt-24 pb-24 md:pb-32 w-full relative bg-[#171817] overflow-hidden overflow-x-clip">
@@ -205,7 +184,7 @@ const ProfessionalExperience = () => {
             </h2>
 
             <p className="mt-5 text-[14px] md:text-[15px] font-light leading-[1.8] text-white/70 max-w-[320px]">
-              Selected roles across AI cohorts, data analytics, and mentoring. Each step adds stronger delivery habits, leadership, and product clarity.
+              I am a student building practical skills and projects toward a career in Data Engineering. My primary focus is Data Engineering, with current focus on Analytics Engineering and Data Analysis, while learning ML Engineering and AI Engineering.
             </p>
 
             <div className="mt-7 grid grid-cols-2 gap-2.5">
@@ -219,16 +198,15 @@ const ProfessionalExperience = () => {
 
             <div className="mt-6 flex items-center gap-2 text-white/60">
               <Sparkles className="w-3.5 h-3.5 text-lime-400" />
-              <p className="font-mono text-[9px] uppercase tracking-[0.16em]">Career timeline - expand each role</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em]">Focus areas - expand for details</p>
             </div>
           </aside>
 
           <div className="relative space-y-3 min-w-0 overflow-x-clip">
             {experiences.map((experience, index) => (
               <ExperienceItem
-                key={experience.company + experience.role}
+                key={experience.role}
                 experience={experience}
-                index={index}
                 isExpanded={expandedIndex === index}
                 onToggle={() => setExpandedIndex((current) => (current === index ? null : index))}
               />
