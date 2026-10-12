@@ -6,33 +6,35 @@ import { Plus, Target, GraduationCap, Sparkles, ArrowUpRight } from 'lucide-reac
 const experiences = [
   {
     role: 'Data Engineer',
-    period: 'Career Direction',
-    context: 'Student · Career Direction',
-    impact: 'My primary career focus while I build practical skills and projects in data systems.',
-    stack: ['Data Platforms', 'ETL/ELT', 'Data Warehousing', 'Modern Data Systems'],
+    period: 'Project Work',
+    context: 'Student · Project Work',
+    impact: 'Primary focus, demonstrated through hands-on data pipeline and warehouse projects.',
+    stack: ['SQL Server', 'T-SQL', 'Snowflake', 'Data Quality'],
     description: [
-      'Building practical skills and projects around data platforms, ETL/ELT, data warehousing, and modern data systems.',
+      'Built SQL Server Bronze–Silver–Gold warehouses with CSV ingestion, transformation, validation, and analytics-ready dimensional models.',
+      'Implemented a Snowflake workflow to ingest nested JSON, flatten arrays, normalize relational data, and support repeatable processing.',
     ],
     primary: true,
   },
   {
     role: 'Analytics Engineer',
-    period: 'Developing Direction',
-    context: 'Student · Career Direction',
-    impact: 'My secondary career direction as I develop skills in analytics engineering.',
-    stack: ['Analytics Engineering', 'Data Transformation', 'Data Warehousing'],
+    period: 'Developing Focus',
+    context: 'Student · Project Work',
+    impact: 'Secondary development focus: shaping tested, analytics-ready retail datasets with dbt.',
+    stack: ['dbt', 'Dimensional Modeling', 'Data Tests', 'Analytics Marts'],
     description: [
-      'Developing practical skills and project experience in analytics engineering.',
+      'Built layered dbt models and dimensional marts for retail reporting.',
+      'Added tests for uniqueness, nullability, relationships, accepted values, and business rules, with CI validation and model documentation.',
     ],
   },
   {
     role: 'AI/ML Engineering',
     period: 'Learning Direction',
-    context: 'Learning',
-    impact: 'A learning direction, not a current professional role.',
-    stack: ['AI/ML Engineering', 'Learning Direction'],
+    context: 'Active Learning',
+    impact: 'An active learning direction alongside my data engineering project work.',
+    stack: ['Learning Direction', 'AI/ML Concepts'],
     description: [
-      'Learning AI/ML engineering while continuing to build practical data systems skills.',
+      'Currently studying AI/ML Engineering concepts; this card reflects learning, not professional experience.',
     ],
   },
 ];
@@ -133,10 +135,10 @@ const ProfessionalExperience = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   const statCards = [
-    { label: 'Status', value: 'Student' },
-    { label: 'Primary', value: 'Data Eng.' },
-    { label: 'Developing', value: 'Analytics' },
-    { label: 'Learning', value: 'AI/ML' },
+    { label: 'Career Stage', value: 'Student' },
+    { label: 'Primary Focus', value: 'Data Eng.' },
+    { label: 'Developing Focus', value: 'Analytics' },
+    { label: 'Learning Direction', value: 'AI/ML' },
   ];
 
   return (
@@ -163,7 +165,7 @@ const ProfessionalExperience = () => {
             </h2>
 
             <p className="mt-5 text-[14px] md:text-[15px] font-light leading-[1.8] text-white/70 max-w-[320px]">
-              I am a student focused primarily on Data Engineering, developing toward Analytics Engineering, and learning AI/ML Engineering.
+              I am a student with no formal professional experience. My project work centers on Data Engineering; I am developing toward Analytics Engineering and actively learning AI/ML Engineering.
             </p>
 
             <div className="mt-7 grid grid-cols-2 gap-2.5">
