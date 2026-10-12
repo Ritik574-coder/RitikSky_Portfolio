@@ -6,59 +6,38 @@ import { Plus, Target, GraduationCap, Sparkles, ArrowUpRight } from 'lucide-reac
 const experiences = [
   {
     role: 'Data Engineer',
-    period: 'Primary Focus',
+    period: 'Career Direction',
     context: 'Student · Career Direction',
-    impact: 'Data Engineering is my primary focus as I build practical skills and projects toward a career in the field.',
+    impact: 'My primary career focus while I build practical skills and projects in data systems.',
     stack: ['Data Platforms', 'ETL/ELT', 'Data Warehousing', 'Modern Data Systems'],
     description: [
-      'Building practical skills and projects around data engineering, data platforms, ETL/ELT, data warehousing, and modern data systems.',
+      'Building practical skills and projects around data platforms, ETL/ELT, data warehousing, and modern data systems.',
     ],
+    primary: true,
   },
   {
     role: 'Analytics Engineer',
-    period: 'Current Focus',
+    period: 'Developing Direction',
     context: 'Student · Career Direction',
-    impact: 'Analytics Engineering is a current focus alongside my primary Data Engineering direction.',
+    impact: 'My secondary career direction as I develop skills in analytics engineering.',
     stack: ['Analytics Engineering', 'Data Transformation', 'Data Warehousing'],
     description: [
-      'Building practical skills and project experience in Analytics Engineering.',
+      'Developing practical skills and project experience in analytics engineering.',
     ],
   },
   {
-    role: 'Data Analyst',
-    period: 'Current Focus',
-    context: 'Student · Career Direction',
-    impact: 'Data Analysis is a current focus as I build skills to work with data and draw useful insights.',
-    stack: ['Data Analysis', 'Data Interpretation', 'Analytical Insights'],
-    description: [
-      'Building practical skills in analyzing data and communicating insights.',
-    ],
-  },
-  {
-    role: 'ML Engineering',
+    role: 'AI/ML Engineering',
     period: 'Learning Direction',
     context: 'Learning',
-    impact: 'ML Engineering is a learning direction, not a current professional role.',
-    stack: ['ML Engineering', 'Learning Direction'],
+    impact: 'A learning direction, not a current professional role.',
+    stack: ['AI/ML Engineering', 'Learning Direction'],
     description: [
-      'Learning ML Engineering while building a foundation in Data Engineering.',
-    ],
-  },
-  {
-    role: 'AI Engineering',
-    period: 'Learning Direction',
-    context: 'Learning',
-    impact: 'AI Engineering is a learning direction, not a current professional role.',
-    stack: ['AI Engineering', 'Learning Direction'],
-    description: [
-      'Learning AI Engineering while continuing to build practical data systems skills.',
+      'Learning AI/ML engineering while continuing to build practical data systems skills.',
     ],
   },
 ];
 
 const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
-  const isCurrent = experience.period === 'Current Focus';
-
   return (
     <article className="relative min-w-0">
       <div className="absolute left-[15px] top-0 h-full w-px bg-lime-400/15" />
@@ -69,7 +48,7 @@ const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
         <button
           onClick={onToggle}
           type="button"
-          className="w-full max-w-full rounded-[6px] border border-lime-400/15 bg-[#1B1E1B] text-left px-5 md:px-7 py-6 md:py-7 hover:border-lime-400/30 hover:shadow-[0_8px_24px_rgba(163,255,18,0.06)] transition-all duration-300"
+          className="w-full max-w-full rounded-[6px] border border-lime-400/15 bg-[#1B1E1B] text-left px-4 md:px-5 py-4 md:py-5 hover:border-lime-400/30 hover:shadow-[0_8px_24px_rgba(163,255,18,0.06)] transition-all duration-300"
         >
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
@@ -78,9 +57,9 @@ const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
                   <Target className="w-3 h-3" />
                   {experience.period}
                 </span>
-                {isCurrent && (
+                {experience.primary && (
                   <span className="font-mono text-[9px] uppercase tracking-[0.16em] bg-lime-400 text-[#171817] px-2.5 py-1 rounded-[2px]">
-                    Current Focus
+                    Primary Focus
                   </span>
                 )}
               </div>
@@ -121,7 +100,7 @@ const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
               }}
               className="overflow-hidden"
             >
-              <div className="mt-2 ml-0 rounded-[6px] border border-lime-400/12 bg-[#1F201E] px-5 md:px-7 py-5 md:py-6">
+              <div className="mt-2 ml-0 rounded-[6px] border border-lime-400/12 bg-[#1F201E] px-4 md:px-5 py-4 md:py-5">
                 <ul className="space-y-3 max-w-3xl">
                   {experience.description.map((point) => (
                     <li key={point} className="flex items-start gap-2.5 text-white/70 font-light text-sm md:text-[15px] leading-relaxed">
@@ -154,10 +133,10 @@ const ProfessionalExperience = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   const statCards = [
-    { label: 'Current Status', value: 'Student' },
-    { label: 'Primary Focus', value: 'Data Eng.' },
-    { label: 'Current Focus', value: 'Analytics' },
-    { label: 'Learning', value: 'ML + AI' },
+    { label: 'Status', value: 'Student' },
+    { label: 'Primary', value: 'Data Eng.' },
+    { label: 'Developing', value: 'Analytics' },
+    { label: 'Learning', value: 'AI/ML' },
   ];
 
   return (
@@ -166,7 +145,7 @@ const ProfessionalExperience = () => {
         <div className="absolute right-0 top-20 w-[460px] h-[460px] bg-lime-400/6 rounded-full blur-[100px]" />
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-10 relative z-10">
         <div className="flex items-center gap-3 mb-14 md:mb-16">
           <span className="w-[6px] h-[6px] rounded-full bg-lime-400 shrink-0" />
           <span className="font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.24em] text-white/55">
@@ -175,7 +154,7 @@ const ProfessionalExperience = () => {
           <div className="flex-1 h-px bg-lime-400/12" />
         </div>
 
-        <div className="grid lg:grid-cols-[360px_1fr] gap-10 lg:gap-14 items-start min-w-0">
+        <div className="grid lg:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start min-w-0">
           <aside className="lg:sticky lg:top-24 min-w-0">
             <h2 className="text-[34px] sm:text-[46px] lg:text-[56px] font-black uppercase tracking-[-0.03em] leading-[0.95] text-white">
               Professional
@@ -184,7 +163,7 @@ const ProfessionalExperience = () => {
             </h2>
 
             <p className="mt-5 text-[14px] md:text-[15px] font-light leading-[1.8] text-white/70 max-w-[320px]">
-              I am a student building practical skills and projects toward a career in Data Engineering. My primary focus is Data Engineering, with current focus on Analytics Engineering and Data Analysis, while learning ML Engineering and AI Engineering.
+              I am a student focused primarily on Data Engineering, developing toward Analytics Engineering, and learning AI/ML Engineering.
             </p>
 
             <div className="mt-7 grid grid-cols-2 gap-2.5">
