@@ -50,11 +50,11 @@ const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
         <button
           onClick={onToggle}
           type="button"
-          className="w-full max-w-full rounded-[6px] border border-lime-400/15 bg-[#1B1E1B] text-left px-4 md:px-5 py-4 md:py-5 hover:border-lime-400/30 hover:shadow-[0_8px_24px_rgba(163,255,18,0.06)] transition-all duration-300"
+          className="w-full max-w-full rounded-[6px] border border-lime-400/15 bg-[#1B1E1B] text-left px-4 md:px-5 py-3 md:py-4 hover:border-lime-400/30 hover:shadow-[0_8px_24px_rgba(163,255,18,0.06)] transition-all duration-300"
         >
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2.5 mb-3">
+              <div className="flex flex-wrap items-center gap-2.5 mb-2">
                 <span className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.16em] text-white/65 border border-lime-400/20 px-2.5 py-1 rounded-[2px] inline-flex items-center gap-1.5">
                   <Target className="w-3 h-3" />
                   {experience.period}
@@ -75,7 +75,7 @@ const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
                 {experience.context}
               </p>
 
-              <p className="mt-5 text-sm md:text-[15px] font-light leading-relaxed text-white/70 max-w-3xl">
+              <p className="mt-3 text-sm md:text-[15px] font-light leading-relaxed text-white/70 max-w-3xl">
                 {experience.impact}
               </p>
             </div>
@@ -102,8 +102,8 @@ const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
               }}
               className="overflow-hidden"
             >
-              <div className="mt-2 ml-0 rounded-[6px] border border-lime-400/12 bg-[#1F201E] px-4 md:px-5 py-4 md:py-5">
-                <ul className="space-y-3 max-w-3xl">
+              <div className="mt-2 ml-0 rounded-[6px] border border-lime-400/12 bg-[#1F201E] px-4 md:px-5 py-3 md:py-4">
+                <ul className="space-y-2 max-w-3xl">
                   {experience.description.map((point) => (
                     <li key={point} className="flex items-start gap-2.5 text-white/70 font-light text-sm md:text-[15px] leading-relaxed">
                       <span className="mt-2 h-1.5 w-1.5 rounded-full bg-lime-400 shrink-0" />
@@ -112,7 +112,7 @@ const ExperienceItem = ({ experience, isExpanded, onToggle }) => {
                   ))}
                 </ul>
 
-                <div className="mt-5 pt-4 border-t border-lime-400/10 flex flex-wrap gap-2">
+                <div className="mt-4 pt-3 border-t border-lime-400/10 flex flex-wrap gap-2">
                   {experience.stack.map((item) => (
                     <span
                       key={item}
@@ -142,13 +142,13 @@ const ProfessionalExperience = () => {
   ];
 
   return (
-    <section id="experience-section" className="pt-20 md:pt-24 pb-24 md:pb-32 w-full relative bg-[#171817] overflow-hidden overflow-x-clip">
+    <section id="experience-section" className="pt-16 md:pt-20 pb-16 md:pb-20 w-full relative bg-[#171817] overflow-hidden overflow-x-clip">
       <div className="absolute inset-0 pointer-events-none select-none">
         <div className="absolute right-0 top-20 w-[460px] h-[460px] bg-lime-400/6 rounded-full blur-[100px]" />
       </div>
 
       <div className="max-w-[1280px] mx-auto px-6 md:px-10 relative z-10">
-        <div className="flex items-center gap-3 mb-14 md:mb-16">
+        <div className="flex items-center gap-3 mb-10 md:mb-12">
           <span className="w-[6px] h-[6px] rounded-full bg-lime-400 shrink-0" />
           <span className="font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.24em] text-white/55">
             03 — Experience
@@ -156,34 +156,34 @@ const ProfessionalExperience = () => {
           <div className="flex-1 h-px bg-lime-400/12" />
         </div>
 
-        <div className="grid lg:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start min-w-0">
+        <div className="grid lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] gap-8 lg:gap-16 items-start min-w-0">
           <aside className="lg:sticky lg:top-24 min-w-0">
-            <h2 className="text-[34px] sm:text-[46px] lg:text-[56px] font-black uppercase tracking-[-0.03em] leading-[0.95] text-white">
+            <h2 className="max-w-[280px] text-[30px] sm:text-[38px] lg:text-[40px] font-black uppercase tracking-[-0.03em] leading-[0.9] text-white">
               Professional
               <br />
               Experience
             </h2>
 
             <p className="mt-5 text-[14px] md:text-[15px] font-light leading-[1.8] text-white/70 max-w-[320px]">
-              I am a student with no formal professional experience. My project work centers on Data Engineering; I am developing toward Analytics Engineering and actively learning AI/ML Engineering.
+              My primary focus is Data Engineering, with practical work spanning data pipelines, data warehousing, data transformation, and data quality. I strengthen my engineering approach through hands-on projects, technical research, and established industry practices, while developing further in Analytics Engineering and expanding my knowledge of AI/ML Engineering.
             </p>
 
-            <div className="mt-7 grid grid-cols-2 gap-2.5">
+            <div className="mt-5 grid grid-cols-2 gap-2.5">
               {statCards.map((stat) => (
-                <div key={stat.label} className="border border-lime-400/15 bg-[#1C1D1B] rounded-[4px] px-3.5 py-3.5">
+                <div key={stat.label} className="border border-lime-400/15 bg-[#1C1D1B] rounded-[4px] px-3.5 py-3">
                   <p className="font-mono text-[8.5px] uppercase tracking-[0.14em] text-white/55">{stat.label}</p>
                   <p className="mt-1.5 text-[22px] leading-none font-black tracking-tight text-lime-400">{stat.value}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 flex items-center gap-2 text-white/60">
+            <div className="mt-4 flex items-center gap-2 text-white/60">
               <Sparkles className="w-3.5 h-3.5 text-lime-400" />
               <p className="font-mono text-[9px] uppercase tracking-[0.16em]">Focus areas - expand for details</p>
             </div>
           </aside>
 
-          <div className="relative space-y-3 min-w-0 overflow-x-clip">
+          <div className="relative space-y-2 min-w-0 overflow-x-clip">
             {experiences.map((experience, index) => (
               <ExperienceItem
                 key={experience.role}

@@ -216,7 +216,7 @@ const GitHubStats = memo(function GitHubStats() {
                         className="xl:w-1/3 grid grid-cols-2 gap-px bg-lime-400/10 border border-lime-400/15"
                     >
                         {/* Box 1: Repositories */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
                             <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Code size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">REPOS</span>
@@ -229,7 +229,7 @@ const GitHubStats = memo(function GitHubStats() {
                         </div>
 
                         {/* Box 2: Commits */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
                             <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Terminal size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">TOTAL</span>
@@ -242,7 +242,7 @@ const GitHubStats = memo(function GitHubStats() {
                         </div>
 
                         {/* Box 3: Followers */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
                             <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Users size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">FLWRS</span>
@@ -255,7 +255,7 @@ const GitHubStats = memo(function GitHubStats() {
                         </div>
 
                         {/* Box 4: Joined */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-square group hover:bg-[#171817] transition-colors">
+                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
                             <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
                                 <Calendar size={20} />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">EST.</span>

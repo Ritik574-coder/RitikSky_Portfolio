@@ -151,7 +151,7 @@ const AboutSection = memo(function AboutSection() {
           <div className="flex-1 h-px bg-lime-400/12" />
         </Gsap.div>
 
-        <div className="grid lg:grid-cols-[400px_1fr] xl:grid-cols-[440px_1fr] gap-14 lg:gap-20 xl:gap-28 items-start">
+        <div className="grid md:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:grid-cols-[400px_1fr] xl:grid-cols-[440px_1fr] gap-8 lg:gap-20 xl:gap-28 items-start">
 
           {/* ══════════════════════════════
               LEFT COLUMN — Image & Meta
@@ -167,7 +167,7 @@ const AboutSection = memo(function AboutSection() {
             <div className="relative">
               <div className="absolute -top-2.5 -left-2.5 w-full h-full border border-lime-400/25 rounded-[4px] pointer-events-none" />
 
-              <div className="relative aspect-[4/5] w-full rounded-[4px] overflow-hidden border border-lime-400/15 bg-[#101610] group">
+              <div className="relative mx-auto aspect-[4/5] w-full max-w-[440px] rounded-[4px] overflow-hidden border border-lime-400/15 bg-[#101610] group">
                 <picture>
                   <source srcSet={`${import.meta.env.BASE_URL}ritik_portfolio.webp`} type="image/webp" />
                   <img
@@ -215,7 +215,7 @@ const AboutSection = memo(function AboutSection() {
             <div className="mt-2.5 grid grid-cols-3 gap-2.5">
               {STATS.map((stat, i) => (
                 <div key={i} className="bg-[#101610] border border-lime-400/15 rounded-[3px] py-4 px-3 text-center">
-                  <p className="font-black text-[22px] text-lime-400 leading-none tabular-nums">{stat.value}</p>
+                  <p className="font-black text-[22px] md:text-base lg:text-[22px] text-lime-400 leading-none tabular-nums">{stat.value}</p>
                   <p className="font-mono text-[8px] uppercase tracking-[0.08em] text-white/50 mt-1.5 leading-tight whitespace-pre-line">{stat.label}</p>
                 </div>
               ))}
@@ -245,7 +245,7 @@ const AboutSection = memo(function AboutSection() {
 
               {/* Main title */}
               <h2 className="font-display font-bold tracking-[-0.025em] leading-[1.08] text-white">
-                <span className="block text-[44px] sm:text-[56px] lg:text-[64px] xl:text-[72px]">
+                <span className="block text-[44px] sm:text-[56px] md:text-[44px] lg:text-[64px] xl:text-[72px]">
                   Data Engineer
                 </span>
 
