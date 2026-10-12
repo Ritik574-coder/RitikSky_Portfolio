@@ -1,6 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Gsap } from '../utils/gsapAnimate';
-import { Calendar, Code, ExternalLink, Users, Terminal } from 'lucide-react';
+import { Activity, CalendarDays, CircleAlert, Code2, ExternalLink, RefreshCw, Users } from 'lucide-react';
 
 const GITHUB_USERNAME = 'Ritik574-coder';
 const GITHUB_PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
@@ -9,10 +9,10 @@ const COLS = 52;
 const ROWS = 7;
 
 const INTENSITY_CLASSES = [
-    'bg-[#101610]',
-    'bg-lime-400/20',
-    'bg-lime-400/40',
-    'bg-lime-400/65',
+    'bg-[#303630]',
+    'bg-lime-400/30',
+    'bg-lime-400/50',
+    'bg-lime-400/75',
     'bg-lime-400',
 ];
 
@@ -46,269 +46,297 @@ function getMonthLabels(weeks) {
     });
 }
 
-const HeatmapCanvas = memo(function HeatmapCanvas({ data, loading }) {
+const HeatmapCanvas = memo(function HeatmapCanvas({ data, loading, error, onRetry }) {
+    if (error) {
+        return (
+            <div className="flex min-h-[170px] flex-col items-center justify-center gap-3 text-center" role="status">
+                <CircleAlert className="h-5 w-5 text-white/45" aria-hidden="true" />
+                <p className="text-sm text-white/65">Contribution activity is unavailable right now.</p>
+                <button type="button" onClick={onRetry} className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-lime-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime-400">
+                    Retry data request
+                </button>
+            </div>
+        );
+    }
+
+    if (!loading && !data.length) {
+        return (
+            <div className="flex min-h-[170px] items-center justify-center text-center" role="status">
+                <p className="max-w-sm text-sm leading-6 text-white/55">No contribution dates were returned for this period.</p>
+            </div>
+        );
+    }
+
     const weeks = buildCalendar(data);
     const monthLabels = getMonthLabels(weeks);
+    const gridColumns = 'grid-cols-[28px_repeat(52,minmax(0,1fr))]';
 
     return (
-        <div className="w-full overflow-x-auto pb-1" aria-label={`GitHub contribution calendar showing ${HEATMAP_DAYS} days of activity`}>
-            <div className="min-w-[620px]">
-                <div className="grid grid-cols-[30px_repeat(52,minmax(0,1fr))] gap-x-1 mb-2">
+        <div className="w-full overflow-x-auto pb-2" aria-label={`GitHub contribution calendar showing ${HEATMAP_DAYS} days of activity`}>
+            <div className="min-w-[660px]">
+                <div className={`mb-2 grid ${gridColumns} gap-x-[3px]`}>
                     <span />
                     {monthLabels.map((label, index) => (
-                        <span key={`${label}-${index}`} className="h-4 font-mono text-[9px] text-white/40 leading-none">
+                        <span key={`${label}-${index}`} className="h-4 font-mono text-[9px] font-medium leading-none text-white/65">
                             {label}
                         </span>
                     ))}
                 </div>
 
-                <div className="grid grid-cols-[30px_repeat(52,minmax(0,1fr))] gap-x-1 gap-y-1">
-                    <div className="grid grid-rows-7 gap-y-1">
+                <div className={`grid ${gridColumns} gap-x-[3px] gap-y-[3px]`} role="img" aria-label="Daily contributions over the last 12 months; hover a day for its date and count.">
+                    <div className="grid grid-rows-7 gap-y-[3px]">
                         {WEEKDAY_LABELS.map((label, index) => (
-                            <span key={index} className="h-3.5 font-mono text-[9px] text-white/40 leading-3.5">
+                            <span key={index} className="h-[10px] font-mono text-[9px] leading-[10px] text-white/55">
                                 {label}
                             </span>
                         ))}
                     </div>
 
                     {weeks.map((week, column) => (
-                        <div key={column} className="grid grid-rows-7 gap-y-1">
+                        <div key={column} className="grid grid-rows-7 gap-y-[3px]">
                             {week.map((day, row) => (
                                 <span
-                                    key={day.date}
-                                    title={loading ? 'Loading activity' : `${day.count} contributions on ${day.date}`}
-                                    className={`block aspect-square w-full min-w-[8px] rounded-[2px] ${loading ? 'bg-[#101610]' : INTENSITY_CLASSES[Math.min(4, Math.max(0, day.level || 0))]}`}
+                                    key={`${day.date}-${row}`}
+                                    title={loading ? 'Loading contribution data' : `${day.count} contributions on ${day.date}`}
+                                    className={`block aspect-square w-full rounded-[2px] ring-1 ring-inset ring-white/[0.04] transition-colors ${loading ? 'animate-pulse bg-white/[0.06]' : INTENSITY_CLASSES[Math.min(4, Math.max(0, day.level || 0))]}`}
                                 />
                             ))}
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-5 flex items-center justify-end gap-2 font-mono text-[9px] uppercase tracking-[0.12em] text-white/40 sm:hidden">
-                    Less
+                <div className="mt-4 flex items-center justify-end gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-white/55" aria-label="Contribution intensity legend">
+                    <span className="mr-1">Less</span>
                     {INTENSITY_CLASSES.map((colorClass, index) => (
-                        <span key={index} className={`h-3 w-3 rounded-[2px] ${colorClass}`} />
+                        <span key={index} className={`h-3 w-3 rounded-[2px] ring-1 ring-inset ring-white/10 ${colorClass}`} />
                     ))}
-                    More
+                    <span className="ml-1">More</span>
                 </div>
+                <p className="mt-2 text-right font-mono text-[9px] uppercase tracking-[0.1em] text-white/35 sm:hidden">Swipe to explore all 52 weeks</p>
             </div>
         </div>
+    );
+});
+
+const formatMetric = (value, status) => {
+    if (status === 'loading') return '…';
+    if (status !== 'ready' || value === null || value === undefined || value === '') return 'Unavailable';
+    return typeof value === 'number' ? value.toLocaleString('en-US') : value;
+};
+
+const MetricCard = memo(function MetricCard({ icon: Icon, label, value, status, note }) {
+    const displayValue = formatMetric(value, status);
+    const unavailable = displayValue === 'Unavailable';
+
+    return (
+        <article className="group flex min-h-[118px] flex-col justify-between border border-white/[0.08] bg-[#111411] p-4 transition-colors duration-200 hover:border-lime-400/25 hover:bg-[#191D19] sm:min-h-[126px]">
+            <div className="flex items-center justify-between gap-3">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-white/55 sm:text-[10px]">{label}</span>
+                <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-lime-300/75 transition-colors group-hover:text-lime-300" />
+            </div>
+            <div className="mt-4 min-w-0">
+                <p className={`break-words font-display font-bold leading-none tracking-tight transition-colors group-hover:text-lime-300 ${unavailable ? 'text-[13px] text-white/55' : 'text-2xl text-white sm:text-3xl'}`}>
+                    {displayValue}
+                </p>
+                <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.1em] text-white/35">{note}</p>
+            </div>
+        </article>
     );
 });
 
 const GitHubStats = memo(function GitHubStats() {
     const [userData, setUserData] = useState(null);
     const [contributionData, setContributionData] = useState([]);
-    const [totalContributions, setTotalContributions] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [totalContributions, setTotalContributions] = useState(null);
+    const [userStatus, setUserStatus] = useState('loading');
+    const [contributionStatus, setContributionStatus] = useState('loading');
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         const controller = new AbortController();
         let isCancelled = false;
+        let hasStarted = false;
+        let observer = null;
+
+        const requestJson = async (url) => {
+            const response = await fetch(url, { signal: controller.signal });
+            if (!response.ok) throw new Error(`GitHub request failed (${response.status})`);
+            return response.json();
+        };
 
         const fetchData = async () => {
-            try {
-                const [userRes, contribRes] = await Promise.all([
-                    fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, { signal: controller.signal }),
-                    fetch(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`, { signal: controller.signal }),
-                ]);
+            if (hasStarted) return;
+            hasStarted = true;
+            setUserStatus('loading');
+            setContributionStatus('loading');
 
-                if (isCancelled) return;
+            const results = await Promise.allSettled([
+                requestJson(`https://api.github.com/users/${GITHUB_USERNAME}`),
+                requestJson(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`),
+            ]);
 
-                const userJson = await userRes.json();
-                if (isCancelled) return;
-                setUserData(userJson);
+            if (isCancelled) return;
 
-                const contribJson = await contribRes.json();
-                if (isCancelled) return;
+            const [userResult, contributionResult] = results;
+            if (
+                userResult.status === 'fulfilled' &&
+                Number.isFinite(userResult.value?.public_repos) &&
+                Number.isFinite(userResult.value?.followers)
+            ) {
+                setUserData(userResult.value);
+                setUserStatus('ready');
+            } else {
+                setUserData(null);
+                setUserStatus('error');
+            }
 
-                if (contribJson.contributions) {
-                    const allDays = contribJson.contributions;
-                    const total = allDays.reduce((acc, day) => acc + day.count, 0);
-                    setContributionData(allDays.slice(-364));
-                    setTotalContributions(total);
-                }
+            const days = contributionResult.status === 'fulfilled'
+                ? contributionResult.value?.contributions
+                : null;
+            const validDays = Array.isArray(days) && days.every((day) => (
+                typeof day.date === 'string' && Number.isFinite(day.count)
+            ));
 
-                setLoading(false);
-            } catch (error) {
-                if (error?.name === 'AbortError') return;
-                setLoading(false);
+            if (validDays) {
+                setContributionData(days.slice(-HEATMAP_DAYS));
+                setTotalContributions(days.reduce((total, day) => total + day.count, 0));
+                setContributionStatus('ready');
+            } else {
+                setContributionData([]);
+                setTotalContributions(null);
+                setContributionStatus('error');
             }
         };
 
         const section = document.getElementById('github-stats-section');
-        if (!section) { fetchData(); return; }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
+        if (!section || !('IntersectionObserver' in window)) {
+            fetchData();
+        } else {
+            observer = new IntersectionObserver(([entry]) => {
                 if (entry.isIntersecting) {
                     fetchData();
-                    observer.disconnect();
+                    observer?.disconnect();
                 }
-            },
-            { rootMargin: '200px' }
-        );
-        observer.observe(section);
+            }, { rootMargin: '160px' });
+            observer.observe(section);
+        }
 
         return () => {
             isCancelled = true;
-            observer.disconnect();
+            observer?.disconnect();
             controller.abort();
         };
-    }, []);
+    }, [retryCount]);
+
+    const isLoading = userStatus === 'loading' || contributionStatus === 'loading';
+    const hasError = userStatus === 'error' || contributionStatus === 'error';
+    const profileYear = userData?.created_at ? String(new Date(userData.created_at).getFullYear()) : null;
+    const retry = () => setRetryCount((count) => count + 1);
+    const profileStatus = userStatus === 'error' ? 'error' : userStatus;
+    const contributionValueStatus = contributionStatus === 'error' ? 'error' : contributionStatus;
+
+    const metrics = [
+        { label: 'Public repositories', icon: Code2, value: userData?.public_repos, status: profileStatus, note: 'Public profile' },
+        { label: 'Contributions', icon: Activity, value: totalContributions, status: contributionValueStatus, note: 'Last 12 months' },
+        { label: 'Followers', icon: Users, value: userData?.followers, status: profileStatus, note: 'Current profile' },
+        { label: 'Member since', icon: CalendarDays, value: profileYear, status: profileStatus, note: 'GitHub account' },
+    ];
+
+    const statusLabel = isLoading ? 'Fetching live data' : hasError ? 'Some data unavailable' : 'Live data';
 
     return (
-        <section id="github-stats-section" className="pt-20 md:pt-24 pb-24 md:pb-32 w-full relative bg-[#171817] overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
-
-                {/* ── SECTION HEADER ── */}
-                <Gsap.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="flex items-center gap-4 mb-16 md:mb-20"
-                >
-                    <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
-                    <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.26em] text-white/55">
-                        05 — GitHub Stats
+        <section id="github-stats-section" className="relative w-full overflow-hidden bg-[#171817] pt-20 pb-6 md:pt-24 md:pb-10">
+            <div className="relative z-10 mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-12">
+                <div className="mb-4 flex items-center gap-3 sm:mb-5">
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-lime-400" />
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/55 sm:text-xs">05 — GitHub Activity</span>
+                    <span className="h-px flex-1 bg-lime-400/15" />
+                    <span className={`inline-flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-[0.12em] sm:text-[9px] ${hasError ? 'text-white/45' : 'text-lime-300/70'}`} role="status" aria-live="polite">
+                        <span className={`h-1.5 w-1.5 rounded-full ${isLoading ? 'animate-pulse bg-white/45' : hasError ? 'bg-white/35' : 'bg-lime-400'}`} />
+                        {statusLabel}
                     </span>
-                    <div className="flex-1 h-[1px] bg-lime-400/12" />
-                </Gsap.div>
-
-                {/* Big Title Area */}
-                <div className="mb-12 md:mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-                    <Gsap.h2
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-3xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.98] sm:leading-[0.9] text-white"
-                    >
-                        GitHub <br />
-                        <span className="text-lime-400">Activity.</span>
-                    </Gsap.h2>
-
-                    <Gsap.a
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        href={GITHUB_PROFILE_URL}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-3 w-fit border border-lime-400/30 text-lime-400 px-6 py-3 hover:bg-lime-400 hover:text-[#171817] transition-all font-mono text-sm font-bold uppercase tracking-[0.14em] md:tracking-[0.2em] group"
-                    >
-                        <Terminal size={16} />
-                        Launch_Profile
-                        <ExternalLink size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                    </Gsap.a>
                 </div>
 
-                {/* Grid Layout Layout for Raw Data */}
-                <div className="flex flex-col xl:flex-row gap-6 md:gap-8 w-full">
-
-                    {/* Left side: Quick Numbers */}
-                    <Gsap.div
-                        initial={{ opacity: 0, y: 20 }}
+                <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-7">
+                    <Gsap.h2
+                        initial={{ opacity: 0, y: 14 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="xl:w-1/3 grid grid-cols-2 gap-px bg-lime-400/10 border border-lime-400/15"
+                        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-[34px] font-black uppercase leading-[0.92] tracking-[-0.035em] text-white sm:text-5xl"
                     >
-                        {/* Box 1: Repositories */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
-                                <Code size={20} />
-                                <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">REPOS</span>
-                            </div>
-                            <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
-                                    {loading ? '-' : String(userData?.public_repos ?? 0).padStart(2, '0')}
-                                </p>
-                            </div>
-                        </div>
+                        GitHub <span className="text-lime-400">Activity.</span>
+                    </Gsap.h2>
 
-                        {/* Box 2: Commits */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
-                                <Terminal size={20} />
-                                <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">TOTAL</span>
-                            </div>
-                            <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
-                                    {loading ? '...' : (totalContributions > 999 ? `${(totalContributions / 1000).toFixed(1)}k` : totalContributions)}
-                                </p>
-                            </div>
-                        </div>
+                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                        <button
+                            type="button"
+                            onClick={retry}
+                            disabled={isLoading}
+                            aria-label="Refresh GitHub statistics"
+                            title="Refresh live data"
+                            className="flex h-10 w-10 items-center justify-center border border-white/10 text-white/65 transition-colors hover:border-lime-400/35 hover:text-lime-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime-400 disabled:cursor-wait disabled:opacity-40"
+                        >
+                            <RefreshCw aria-hidden="true" className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                        </button>
+                        <a
+                            href={GITHUB_PROFILE_URL}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex h-10 items-center gap-2 border border-lime-400/35 px-3.5 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-lime-300 transition-colors hover:bg-lime-400 hover:text-[#171817] focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime-400 sm:px-4 sm:text-[11px]"
+                        >
+                            View GitHub profile
+                            <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
+                        </a>
+                    </div>
+                </header>
 
-                        {/* Box 3: Followers */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
-                                <Users size={20} />
-                                <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">FLWRS</span>
-                            </div>
-                            <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
-                                    {loading ? '-' : String(userData?.followers ?? 0).padStart(2, '0')}
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Box 4: Joined */}
-                        <div className="bg-[#101610] p-6 lg:p-8 flex flex-col justify-between aspect-[4/3] xl:aspect-square group hover:bg-[#171817] transition-colors">
-                            <div className="flex items-center justify-between text-white/40 group-hover:text-lime-400 transition-colors">
-                                <Calendar size={20} />
-                                <span className="font-mono text-[10px] uppercase tracking-[0.12em] md:tracking-[0.16em] font-bold">EST.</span>
-                            </div>
-                            <div>
-                                <p className="text-4xl lg:text-6xl text-white font-black tracking-tighter group-hover:text-lime-400 transition-colors">
-                                    {loading ? '-' : (userData?.created_at ? new Date(userData.created_at).getFullYear() : '----')}
-                                </p>
-                            </div>
-                        </div>
-                    </Gsap.div>
-
-                    {/* Right side: Matrix Output Container */}
+                <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(290px,0.82fr)_minmax(0,1.65fr)] lg:gap-5">
                     <Gsap.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 12 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="xl:w-2/3 border border-lime-400/15 bg-[#232522] p-6 lg:p-10 flex flex-col justify-between"
+                        transition={{ duration: 0.45 }}
+                        className="grid grid-cols-2 gap-2.5 sm:gap-3"
                     >
-                        <div className="flex justify-between items-start border-b border-white/10 pb-6 mb-8">
-                            <div>
-                                <h3 className="text-xl md:text-2xl font-bold uppercase text-white tracking-tight">System_Log</h3>
-                                <p className="font-sans text-sm md:text-sm text-white/55 mt-2">Annual code contribution density (last 12 months)</p>
-                            </div>
-                            <div className="hidden sm:flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] md:tracking-[0.16em] text-white/40">
-                                Less
-                                {INTENSITY_CLASSES.map((colorClass, index) => (
-                                    <span key={index} className={`w-3 h-3 rounded-[2px] ${index === 0 ? 'ml-2' : ''} ${index === INTENSITY_CLASSES.length - 1 ? 'mr-2' : ''} ${colorClass}`} />
-                                ))}
-                                More
-                            </div>
-                        </div>
-
-                        <div className="w-full flex-1 flex flex-col justify-center">
-                            <HeatmapCanvas data={contributionData} loading={loading} />
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center font-mono text-xs md:text-sm text-white/40">
-                            <div>
-                                <span className="text-lime-400 mr-2">$</span>
-                                user_query --status
-                            </div>
-                            <div className="uppercase tracking-[0.12em] md:tracking-[0.16em] text-lime-400/80 animate-pulse">
-                                ONLINE
-                            </div>
-                        </div>
+                        {metrics.map((metric) => <MetricCard key={metric.label} {...metric} />)}
+                        {userStatus === 'error' && (
+                            <p className="col-span-2 px-1 text-[11px] leading-5 text-white/50" role="status">
+                                Profile statistics could not be loaded. Those values are unavailable, not zero.
+                            </p>
+                        )}
                     </Gsap.div>
 
+                    <Gsap.div
+                        initial={{ opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.45, delay: 0.08 }}
+                        className="min-w-0 border border-lime-400/15 bg-[#202320] p-4 sm:p-5"
+                    >
+                        <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/10 pb-3">
+                            <div>
+                                <h3 className="text-base font-bold uppercase tracking-tight text-white sm:text-lg">Contribution activity</h3>
+                                <p className="mt-1 text-xs text-white/50">Daily contributions · last 12 months</p>
+                            </div>
+                            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/40">52 weeks</span>
+                        </div>
+
+                        <HeatmapCanvas
+                            data={contributionData}
+                            loading={contributionStatus === 'loading'}
+                            error={contributionStatus === 'error'}
+                            onRetry={retry}
+                        />
+
+                        <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/[0.08] pt-3 font-mono text-[8px] uppercase tracking-[0.1em] text-white/40 sm:text-[9px]">
+                            <span>Source · GitHub contribution API</span>
+                            <span className="shrink-0">{contributionStatus === 'ready' ? 'Updated live' : contributionStatus === 'loading' ? 'Loading' : 'Unavailable'}</span>
+                        </div>
+                    </Gsap.div>
                 </div>
             </div>
         </section>
     );
 });
-
 export default GitHubStats;

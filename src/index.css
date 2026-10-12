@@ -359,22 +359,24 @@ html.lenis body {
 }
 
 .scene--contact .scene__photo {
-  /* 22% pushes the photo's baked-in "Better Data Better Future" script out of frame
-     while keeping the figure's face in view. */
   background-position: 22% 62%;
-  opacity: 0.82;
+  filter: blur(8px) saturate(0.82) brightness(0.82);
+  opacity: 0.76;
+  transform: scale(1.04);
+}
+
+.scene--contact .scene__glow {
+  opacity: 0.45;
 }
 
 .scene--contact .scene__scrim {
-  /* Lightest just around the headline (big type reads fine on the glow), dark behind the
-     intro paragraph, lighter again where the figure sits, then fading to ink. */
   background:
     linear-gradient(180deg,
-      rgb(23 24 23 / 0.34) 0%,
-      rgb(23 24 23 / 0.28) 25%,
-      rgb(23 24 23 / 0.5) 60%,
-      rgb(23 24 23 / 0.82) 88%,
-      rgb(23 24 23) 100%);
+      rgb(16 18 16 / 0.42) 0%,
+      rgb(16 18 16 / 0.5) 30%,
+      rgb(16 18 16 / 0.68) 62%,
+      rgb(16 18 16 / 0.9) 88%,
+      rgb(16 18 16 / 0.96) 100%);
 }
 
 @media (min-width: 1024px) {
@@ -385,20 +387,20 @@ html.lenis body {
 
   .scene--contact .scene__photo {
     background-position: 8% 78%;
-    opacity: 0.72;
+    opacity: 0.68;
   }
 
   .scene--contact .scene__scrim {
     background:
       linear-gradient(90deg,
-        rgb(23 24 23 / 0.48) 0%,
-        rgb(23 24 23 / 0.34) 34%,
-        rgb(23 24 23 / 0.62) 68%,
-        rgb(23 24 23 / 0.86) 100%),
+        rgb(16 18 16 / 0.46) 0%,
+        rgb(16 18 16 / 0.44) 34%,
+        rgb(16 18 16 / 0.68) 68%,
+        rgb(16 18 16 / 0.92) 100%),
       linear-gradient(180deg,
-        rgb(23 24 23 / 0.3) 0%,
-        transparent 46%,
-        rgb(23 24 23 / 0.78) 100%);
+        rgb(16 18 16 / 0.38) 0%,
+        rgb(16 18 16 / 0.44) 46%,
+        rgb(16 18 16 / 0.82) 100%);
   }
 }
 
