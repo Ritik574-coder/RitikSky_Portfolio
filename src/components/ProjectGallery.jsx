@@ -383,9 +383,9 @@ export default function ProjectGallery({ onOpenProject }) {
               tabIndex={0}
               aria-label={`View project details: ${project.title}`}
               onKeyDown={(e) => handleCardKeyDown(e, project)}
-              className="project-card group relative w-[80vw] shrink-0 snap-center overflow-hidden rounded-lg border border-white/10 bg-neutral-950 cursor-pointer active:scale-[0.98] transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 focus-visible:border-lime-400/80"
+              className="project-card group relative w-[80vw] max-w-[480px] shrink-0 snap-center overflow-hidden rounded-lg border border-white/10 bg-neutral-950 cursor-pointer active:scale-[0.98] transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 focus-visible:border-lime-400/80"
               data-project-index={index}
-              style={{ WebkitTapHighlightColor: 'transparent', aspectRatio: '3/4' }}
+              style={{ WebkitTapHighlightColor: 'transparent', aspectRatio: '4/3' }}
             >
               {/* Image — object-contain keeps full infographic visible (no crop) */}
               <div className="absolute inset-0 overflow-hidden bg-neutral-950 flex items-center justify-center p-3">
@@ -395,7 +395,7 @@ export default function ProjectGallery({ onOpenProject }) {
                       cloudinarySrc(project.img, 400) + ' 400w',
                       cloudinarySrc(project.img, 800) + ' 800w',
                     ].join(', ')}
-                    sizes="80vw"
+                    sizes="(max-width: 600px) 80vw, 480px"
                   />
                   <img
                     draggable="false"
