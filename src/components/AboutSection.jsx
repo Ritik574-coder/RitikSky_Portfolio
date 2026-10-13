@@ -1,6 +1,7 @@
 import { memo, useState, lazy, Suspense } from 'react';
 import { Gsap } from '../utils/gsapAnimate';
 import { Trophy, ArrowUpRight, MapPin } from 'lucide-react';
+import SectionEyebrow from './SectionEyebrow';
 
 const HackathonDetailModal = lazy(() => import('./HackathonDetailModal'));
 
@@ -137,19 +138,7 @@ const AboutSection = memo(function AboutSection() {
       <div className="max-w-[1380px] mx-auto px-6 md:px-12 relative z-10">
 
         {/* ── Section Label ── */}
-        <Gsap.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-3 mb-16 md:mb-20"
-        >
-          <span className="w-[6px] h-[6px] rounded-full bg-lime-400 shrink-0" />
-          <span className="font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.24em] text-white/55">
-            01 — About
-          </span>
-          <div className="flex-1 h-px bg-lime-400/12" />
-        </Gsap.div>
+        <SectionEyebrow number="01" label="About" animated className="mb-16 md:mb-20" />
 
         <div className="grid md:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:grid-cols-[400px_1fr] xl:grid-cols-[440px_1fr] gap-8 lg:gap-20 xl:gap-28 items-start">
 

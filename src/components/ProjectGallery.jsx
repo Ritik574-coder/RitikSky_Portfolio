@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Gsap } from "../utils/gsapAnimate";
 import { ArrowUpRight } from "lucide-react";
 import { exponentialEaseOut } from "../utils/easing";
+import SectionEyebrow from './SectionEyebrow';
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -326,13 +327,7 @@ export default function ProjectGallery({ onOpenProject }) {
       <section ref={sectionRef} className="relative bg-neutral-900 overflow-hidden py-16 pb-20">
         {/* Section Header */}
         <div className="px-6 mb-10">
-          <div className="flex items-center gap-4 mb-10">
-            <div className="w-2 h-2 bg-lime-400 rounded-full shadow-[0_0_8px_rgba(163,255,18,0.8)]" />
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
-              02 — Projects
-            </span>
-            <div className="flex-1 h-[1px] bg-white/5" />
-          </div>
+          <SectionEyebrow number="02" label="Projects" className="mb-10" />
 
           <h2 className="text-5xl font-black text-white uppercase leading-[0.92] tracking-tight">
             Past<br />
@@ -450,18 +445,12 @@ export default function ProjectGallery({ onOpenProject }) {
     <section ref={sectionRef} className="relative bg-neutral-900 overflow-hidden h-[100dvh]">
 
       {/* Section Header */}
-      <Gsap.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="absolute top-16 left-24 right-24 flex items-center gap-4 z-20 pointer-events-none"
-      >
-        <div className="w-2 h-2 bg-lime-400 rounded-full shadow-[0_0_8px_rgba(163,255,18,0.8)]" />
-        <span className="font-mono text-xs font-bold uppercase tracking-[0.26em] text-white/40">
-          02 — Projects
-        </span>
-        <div className="flex-1 h-[1px] bg-white/5" />
-      </Gsap.div>
+      <SectionEyebrow
+        number="02"
+        label="Projects"
+        animated
+        className="absolute top-16 left-24 right-24 z-20 pointer-events-none"
+      />
 
       {/* Horizontal scroll track */}
       <div className="flex w-full h-[100dvh] items-center overflow-hidden">
