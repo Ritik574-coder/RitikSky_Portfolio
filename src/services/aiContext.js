@@ -1,269 +1,93 @@
 import { PORTFOLIO_DATA } from '../data/portfolioData';
-import { getSectionLabels } from '../data/sectionRegistry';
 import { PROJECT_DETAILS_DATA } from '../data/projectDetailsData';
-import { PROJECT_META } from '../data/projectMeta';
 
-// ─── Project Knowledge Base ──────────────────────────────────────
-// Uses pure data objects (no JSX) to avoid pulling React components
-// into the ChatWidget bundle and defeating lazy-loading.
+const normalize = (text) => (text || '').toLowerCase().trim();
 
-const PROJECT_DETAILS = PROJECT_DETAILS_DATA;
-
-// ─── Data Serializers ────────────────────────────────────────────
-// Pure functions that transform portfolio data into prompt-friendly strings.
-
-/**
- * Serialize experience entries into a readable list.
- * @returns {string}
- */
-function serializeExperience() {
-  return PORTFOLIO_DATA.experience
-    .map(exp => `- ${exp.title} (${exp.period}): ${exp.description.join(' ')}`)
-    .join('\n');
+function scoreProject(query, slug, project) {
+  const text = `${slug} ${project.title} ${project.category} ${project.tagline} ${(project.stack || []).join(' ')} ${(project.features || []).join(' ')}`.toLowerCase();
+  const exactMatch = normalize(slug) && query.includes(normalize(slug));
+  const titleMatch = normalize(project.title) && query.includes(normalize(project.title));
+  const words = [...new Set(query.split(/[^a-z0-9+#.]+/).filter(word => word.length > 2))];
+  return (exactMatch ? 10 : 0) + (titleMatch ? 8 : 0) + words.reduce((score, word) => score + (text.includes(word) ? 1 : 0), 0);
 }
 
-/**
- * Serialize tech stack grouped by category for better readability.
- * @returns {string}
- */
-function serializeTechStack() {
-  const grouped = {};
-  for (const tech of PORTFOLIO_DATA.techStack) {
-    if (!grouped[tech.category]) grouped[tech.category] = [];
-    grouped[tech.category].push(tech.name);
-  }
-  return Object.entries(grouped)
-    .map(([category, techs]) => `- ${category}: ${techs.join(', ')}`)
-    .join('\n');
-}
-
-/**
- * Serialize project details into structured text blocks.
- * @returns {string}
- */
-function serializeProjects() {
-  return Object.entries(PROJECT_DETAILS)
-    .map(([slug, p]) => [
-      `Project: ${p.title} (slug: ${slug})`,
-      `Category: ${p.category}`,
-      `Tagline: ${p.tagline}`,
-      `Year: ${p.year || 'N/A'}`,
-      `Stack: ${p.stack.join(', ')}`,
-      `Features: ${p.features.join('; ')}`,
-      `Impact: ${p.impact.join('; ')}`,
-      `Links: Live (${p.links.live || 'N/A'}), Repo (${p.links.repo || 'N/A'})`,
-      p.notes ? `Notes: ${p.notes}` : '',
-    ].filter(Boolean).join('\n'))
-    .join('\n---\n');
-}
-
-/**
- * Serialize achievements (hackathons, competitions, etc.)
- * @returns {string}
- */
-function serializeAchievements() {
-  if (!PORTFOLIO_DATA.achievements?.length) return 'No achievements listed.';
-  return PORTFOLIO_DATA.achievements
-    .map(a => [
-      `- ${a.title}`,
-      `  Project: ${a.project}`,
-      `  Description: ${a.description}`,
-      `  Team: ${a.team}`,
-      `  Track: ${a.track}`,
-      `  Tech: ${a.techStack.join(', ')}`,
-      a.links?.live ? `  Live: ${a.links.live}` : '',
-      a.links?.github ? `  Repo: ${a.links.github}` : '',
-      a.links?.devfolio ? `  Devfolio: ${a.links.devfolio}` : '',
-    ].filter(Boolean).join('\n'))
-    .join('\n');
-}
-
-/**
- * Serialize technical capabilities.
- * @returns {string}
- */
-function serializeCapabilities() {
-  if (!PORTFOLIO_DATA.capabilities?.length) return 'No capabilities listed.';
-  return PORTFOLIO_DATA.capabilities.map(c => `- ${c}`).join('\n');
-}
-
-function normalize(text) {
-  return (text || '').toLowerCase().trim();
-}
-
-function scoreProjectRelevance(query, slug, detail) {
-  const q = normalize(query);
-  if (!q) return 0;
-
-  let score = 0;
-  const title = detail?.title?.toLowerCase() || '';
-  const category = detail?.category?.toLowerCase() || '';
-  const tags = (detail?.stack || []).map(item => item.toLowerCase());
-
-  if (q.includes(slug.toLowerCase())) score += 5;
-  if (title && q.includes(title)) score += 4;
-  if (category && q.includes(category)) score += 2;
-
-  for (const token of title.split(/\s+/)) {
-    if (token.length > 2 && q.includes(token)) score += 1;
-  }
-  for (const tag of tags) {
-    if (tag.length > 2 && q.includes(tag)) score += 0.75;
-  }
-
-  return score;
-}
-
-export function buildScopedContext(userMessage) {
-  const query = normalize(userMessage);
-  if (!query) return '';
-
-  const relevantProjects = Object.entries(PROJECT_DETAILS)
-    .map(([slug, detail]) => ({ slug, detail, score: scoreProjectRelevance(query, slug, detail) }))
-    .filter(item => item.score >= 2)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2);
-
-  const projectSection = relevantProjects.length
-    ? relevantProjects
-      .map(({ slug, detail }) => [
-        `- ${detail.title} (slug: ${slug})`,
-        `  Category: ${detail.category}`,
-        `  Key stack: ${(detail.stack || []).slice(0, 6).join(', ')}`,
-        `  Top features: ${(detail.features || []).slice(0, 3).join('; ')}`,
-      ].join('\n'))
-      .join('\n')
-    : '- No highly matched project; prioritize concise profile-level answers.';
-
-  const metaMatches = PROJECT_META
-    .filter(project => query.includes(project.slug.toLowerCase()) || query.includes(project.title.toLowerCase()))
-    .slice(0, 3)
-    .map(project => `- ${project.title} (${project.slug})`)
-    .join('\n') || '- No direct project mention found.';
-
+function projectContext(slug, project) {
   return [
-    '### QUERY-FOCUSED CONTEXT',
-    '- Use this section to prioritize relevant facts only.',
-    '- Never invent numbers, awards, dates, links, or technologies beyond provided data.',
-    '- If data is missing, explicitly say it is not listed yet.',
-    '',
-    'Matched project hints:',
-    metaMatches,
-    '',
-    'Relevant detailed project context:',
-    projectSection,
+    `Project: ${project.title} (${slug})`,
+    `Category: ${project.category}`,
+    `Description: ${project.tagline}`,
+    `Year: ${project.year || 'Not listed'}`,
+    `Technologies used in this project: ${(project.stack || []).join(', ')}`,
+    `Features: ${(project.features || []).slice(0, 6).join('; ')}`,
+    `Verified links: ${[project.links?.live && `Live ${project.links.live}`, project.links?.repo && `Repository ${project.links.repo}`].filter(Boolean).join('; ') || 'None listed'}`,
   ].join('\n');
 }
 
-// ─── System Prompt Generator ─────────────────────────────────────
-
-/**
- * Generate the system prompt for the AI assistant.
- *
- * Design decisions:
- * - NO action/navigation instructions - actions are handled by intentRouter.js
- * - NO JSON output format requirements - AI outputs pure natural language
- * - Focus on answer quality, conciseness, and portfolio domain boundary
- * - All portfolio data is included as context (context-stuffing approach)
- *
- * @returns {string} The complete system prompt
- */
-export function generateSystemPrompt() {
+export function buildScopedContext(userMessage, history = []) {
+  const priorQuestions = history
+    .filter(message => message.role === 'user')
+    .slice(-2)
+    .map(message => message.content || '')
+    .join(' ');
+  const query = normalize(`${priorQuestions} ${userMessage}`);
   const { profile } = PORTFOLIO_DATA;
+  const lines = [
+    `Name: ${profile.name}`,
+    `Primary career focus: Data Engineering. Developing focus: Analytics Engineering. AI/ML is a learning direction and additional skill area, not a professional job title.`,
+    `Profile: ${profile.bio}`,
+    `Location: ${profile.location}`,
+    'Common portfolio questions: introduction and career focus, experience, project descriptions and architecture, project-specific technologies, current learning direction, and public links.',
+  ];
 
-  return `You ARE Ritik Kumar. You are NOT an assistant or a bot. You are Ritik Kumar himself, answering visitors who come to your portfolio website. Speak in FIRST PERSON at all times ("saya", "aku", "gue", "I", "my", "me").
+  if (/contact|email|github|linkedin|link|social/.test(query)) {
+    lines.push(`Public links: Portfolio https://ritik574-coder.github.io/RitikSky_Portfolio/; GitHub ${profile.socials.github}; LinkedIn ${profile.socials.linkedin}; Email ${profile.email}`);
+  }
 
-## YOUR IDENTITY & DATA
+  if (/experience|work|career|employer|role|introduc|who are you|about/.test(query)) {
+    lines.push('Portfolio experience:');
+    for (const item of PORTFOLIO_DATA.experience) {
+      lines.push(`- ${item.title} (${item.period}): ${item.description.join(' ')}`);
+    }
+  }
 
-### ABOUT YOU
-- Name: ${profile.name}
-- Role: ${profile.role}
-- Bio: ${profile.bio}
-- Location: ${profile.location}
-- Email: ${profile.email}
-- GitHub: ${profile.socials.github}
-- LinkedIn: ${profile.socials.linkedin}
+  if (/technolog|tech stack|skills|tools|stack/.test(query)) {
+    const grouped = {};
+    for (const item of PORTFOLIO_DATA.techStack) {
+      (grouped[item.category] ||= []).push(item.name);
+    }
+    lines.push('Listed technologies by portfolio category (project-specific usage is described separately):');
+    for (const [category, names] of Object.entries(grouped)) lines.push(`- ${category}: ${names.join(', ')}`);
+    if (/project|used|built|implemented/.test(query)) {
+      lines.push('Verified technologies used in each project:');
+      for (const [slug, project] of Object.entries(PROJECT_DETAILS_DATA)) {
+        lines.push(`- ${project.title} (${slug}): ${(project.stack || []).join(', ')}`);
+      }
+    }
+  }
 
-### YOUR EXPERIENCE
-${serializeExperience()}
+  if (/learn|learning|currently|studying|developing|direction/.test(query)) {
+    lines.push('Learning direction: AI/ML and Generative AI; the portfolio lists participation in the PIJAK AI Engineer Cohort. Describe this as learning/cohort work, not an established professional AI engineering role.');
+  }
 
-### YOUR TECH STACK (by category)
-${serializeTechStack()}
+  const projectMatches = Object.entries(PROJECT_DETAILS_DATA)
+    .map(([slug, project]) => ({ slug, project, score: scoreProject(query, slug, project) }))
+    .sort((a, b) => b.score - a.score);
+  const explicitProjectQuery = /project|architecture|warehouse|retail|snowflake|dbt|skynova|dashboard|knowledge graph|medallion|links/.test(query);
+  const matchedProjects = projectMatches.filter(item => item.score >= 2).slice(0, 2);
+  if (matchedProjects.length) {
+    lines.push('Relevant verified project details:');
+    lines.push(...matchedProjects.map(({ slug, project }) => projectContext(slug, project)));
+  } else if (explicitProjectQuery) {
+    lines.push('Portfolio project index:');
+    for (const [slug, project] of Object.entries(PROJECT_DETAILS_DATA)) {
+      lines.push(`- ${project.title} (${slug}): ${project.category}; repository ${project.links?.repo || 'not listed'}${project.links?.live ? `; live ${project.links.live}` : ''}`);
+    }
+  }
 
-### YOUR PROJECTS
-${serializeProjects()}
+  if (/capabilit|what can|expertise/.test(query)) {
+    lines.push(`Listed capabilities: ${PORTFOLIO_DATA.capabilities.join(', ')}`);
+  }
 
-### YOUR ACHIEVEMENTS & COMPETITIONS
-${serializeAchievements()}
-
-### YOUR TECHNICAL CAPABILITIES
-${serializeCapabilities()}
-
-### YOUR WEBSITE SECTIONS
-The portfolio website has these sections that visitors can navigate to:
-${getSectionLabels()}
-Navigation is handled automatically - you just need to answer the question. NEVER mention sections, scrolling, or navigation in your responses.
-
-## RESPONSE RULES
-
-1. **First person ALWAYS**: You ARE Ritik Kumar. NEVER use third person like "Ritik Kumar has..." or "He specializes in...". ALWAYS use first person: "Saya punya...", "Aku fokus di...", "I built...", "My experience includes...".
-
-2. **Domain boundary**: You ONLY answer questions about yourself - your projects, skills, experience, and portfolio. For anything else, reply: "Wah, itu di luar konteks portofolio saya. Tanya aja soal project, skill, atau pengalaman saya!" (or English equivalent based on user's language).
-
-3. **Language matching**: ALWAYS reply in the same language the user uses. If Indonesian, reply in Indonesian. If English, reply in English. Match their formality level - if they're casual ("lo", "gue", "bro"), be casual back.
-
- 4. **Be concise but structured**: Answer specifically what was asked - never dump all your data at once.
-
- 4b. **Brevity policy (default)**:
- - Default output: **1 short paragraph** (1-3 sentences).
- - Hard cap: **<= 80 words** unless the user explicitly asks for "detail/rinci/lengkap".
- - If the user asks for a list, show **max 5 items**, then offer to continue.
- - Avoid long intros, disclaimers, or repeating the question.
-
-5. **Never narrate UI actions**: NEVER say things like "Saya scrollkan ke...", "Let me navigate to...", "I'll take you to...". Navigation is handled automatically and silently. Just answer the question directly.
-
-6. **Tone**: Friendly, confident, and personal - like you're actually talking to someone who visited your portfolio. Be warm but professional. You're proud of your work but not arrogant.
-
-7. **Output format**: Reply in markdown only. NEVER include JSON, code blocks with action data, or any structured metadata. Your response is displayed directly to the user - only include human-readable content.
-
-8. **Factual safety**: Do NOT fabricate achievements, dates, metrics, links, or project details. If something is not listed in the portfolio data, explicitly say it is not listed yet.
-
-## FORMATTING RULES
-
-- Output in **markdown**.
-- Keep formatting minimal: **bold only what matters** (1-3 highlights max).
-- If you use bullets, keep it to **max 3 bullets** and **1 line per bullet**.
-
-### FORMATTING EXAMPLES
-
-User: "Apa tech stack kamu?"
-
-GOOD response:
-Aku fokus di stack ini:
-
-- **Data Engineering**: Python, SQL, ETL/ELT, data modeling
-- **Analytics**: dashboards, warehousing, analytics engineering
-- **AI/ML** (additional): TensorFlow, PyTorch, Scikit-Learn
-
-BAD response (never do this):
-Tech stack nya adalah Python, TensorFlow, PyTorch, React, Next.js, dan lainnya.
-
-User: "Tell me about your experience"
-
-GOOD response:
-Here's the short version:
-
-- **Data Analyst - Blockvizo** (Jun 2024 - Jul 2025): forecasting and analytics dashboards
-- **ASAH Machine Learning Cohort** (Aug 2025 - Jan 2026): **Project Manager** for a banking lead-scoring portal
-- **Lab Assistant** (Aug 2025 - Present): mentor **110+ students**
-
-If you want, ask "more detail" and I can expand.
-
-User: "Siapa kamu?"
-
-GOOD response:
-Hai! Saya **Ritik Kumar**. Saya seorang **Data Engineer** dari **India**, fokus di **data engineering** dan **analytics engineering**, dengan **AI/ML** sebagai skill tambahan.
-
-BAD response (never do this):
-Ritik Kumar adalah seorang AI Engineer & Full-Stack Developer dari Indonesia.`.trim();
+  lines.push('Answer in the visitor’s language, briefly and in first person. Treat this context as the full set of verified facts. Do not infer metrics, credentials, employers, education, or project usage. If a fact is absent, say it is not listed. Include a relevant provided URL when helpful.');
+  return lines.join('\n').slice(0, 10000);
 }

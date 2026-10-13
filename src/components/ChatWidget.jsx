@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState, useRef, useEffect, useCallback } from "react";
 import { X, Terminal, Copy, Check } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { streamCerebras } from "../services/cerebras";
+import { askPortfolioAssistant, getAssistantStatus } from "../services/portfolioAssistant";
 import { resolveAction, detectOffTopic, detectLanguage } from "../services/intentRouter";
 import { sanitizeAssistantResponse } from '../services/responseSanitizer';
 import { ACTION_TO_ELEMENT } from "../data/sectionRegistry";
@@ -22,6 +22,10 @@ const COMMANDS = {
             "  help       Show this help menu",
             "  ls         List all projects",
             "  cat <id>   View project details",
+            "  ./stack    Ask about listed technologies",
+            "  ./projects Ask about projects and links",
+            "  ./experience Ask about portfolio experience",
+            "  ./contact  Show public contact links",
             "  neofetch   System info",
             "  whoami     Current user",
             "  date       Current date & time",
@@ -180,7 +184,9 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
+    const [aiAvailable, setAiAvailable] = useState(false);
     const [copiedIdx, setCopiedIdx] = useState(null);
+    const busyRef = useRef(false);
 
     // Command history
     const [commandHistory, setCommandHistory] = useState([]);
@@ -191,6 +197,14 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
     const chatContainerRef = useRef(null);
     const inputRef = useRef(null);
     const scrollRafRef = useRef(null);
+
+    useEffect(() => {
+        let active = true;
+        getAssistantStatus().then(available => {
+            if (active) setAiAvailable(available);
+        });
+        return () => { active = false; };
+    }, []);
 
     // ─── Scroll to bottom ────────────────────────────────────────
     const forceScrollToBottom = useCallback(() => {
@@ -355,8 +369,13 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
     // Flow: Pre-filter -> Resolve action -> LLM call -> Typewrite -> Execute action
     const handleSendMessage = useCallback(async (e, directMsg) => {
         if (e) e.preventDefault();
+        if (busyRef.current) return;
         const userMsg = (directMsg || inputValue).trim();
         if (!userMsg) return;
+        if (userMsg.length > 1200) {
+            setMessages(prev => [...prev, { type: 'bot', text: 'Please keep each message under 1,200 characters.', isError: true }]);
+            return;
+        }
 
         // Save to command history
         setCommandHistory(prev => [...prev, userMsg]);
@@ -366,6 +385,14 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
 
         // Step 0: Check for local terminal commands
         if (handleLocalCommand(userMsg)) return;
+
+        const shortcutPrompts = {
+            './stack': 'Which technologies are listed in my portfolio?',
+            './projects': 'Show me my projects and their verified links.',
+            './experience': 'Summarize my portfolio experience.',
+            './contact': 'Show my public GitHub, LinkedIn, portfolio, and contact links.',
+        };
+        const assistantQuestion = shortcutPrompts[userMsg.toLowerCase()] || userMsg;
 
         // Add user message to chat
         setMessages(prev => [...prev, { type: 'user', text: userMsg }]);
@@ -382,6 +409,7 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
         const { action, params } = resolveAction(userMsg);
 
         // Step 3: Call LLM for a natural language response
+        busyRef.current = true;
         setIsTyping(true);
 
         try {
@@ -393,13 +421,9 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
                     role: m.type === 'bot' ? 'assistant' : 'user',
                     content: m.text
                 }));
-            apiMessages.push({ role: 'user', content: userMsg });
+            apiMessages.push({ role: 'user', content: assistantQuestion });
 
-            // Stream and collect the full response
-            let fullText = "";
-            for await (const chunk of streamCerebras(apiMessages)) {
-                fullText += chunk;
-            }
+            const fullText = await askPortfolioAssistant(apiMessages);
 
             // Step 4: Typewrite the response (clean text, no action metadata)
             setIsTyping(false);
@@ -432,6 +456,8 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
                 text: `${icon} ${errMsg}`,
                 isError: true
             }]);
+        } finally {
+            busyRef.current = false;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [inputValue, messages, executeAction, forceScrollToBottom]);
@@ -482,6 +508,10 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
                                 <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                             </div>
                             <span className="ml-2 text-neutral-400 text-xs">ritik_assistant — bash</span>
+                            <span className="ml-2 inline-flex items-center gap-1 text-[10px] text-neutral-500" aria-label={aiAvailable ? 'AI provider configured' : 'AI unavailable'}>
+                                <span className={`h-1.5 w-1.5 rounded-full ${aiAvailable ? 'bg-green-400' : 'bg-neutral-600'}`} />
+                                {aiAvailable ? 'AI configured' : 'AI offline'}
+                            </span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-neutral-600 text-[10px] hidden md:inline">Ctrl+K</span>
@@ -577,6 +607,7 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={handleKeyDown}
+                            maxLength={1200}
                             placeholder=""
                             className="flex-1 bg-transparent border-none outline-none text-lime-400 text-base font-mono caret-lime-400"
                             disabled={isTyping || isStreaming}

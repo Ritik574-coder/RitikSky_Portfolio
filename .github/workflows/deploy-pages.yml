@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         env:
           VITE_WEB3FORMS_ACCESS_KEY: ${{ secrets.VITE_WEB3FORMS_ACCESS_KEY }}
+          VITE_ASSISTANT_API_URL: ${{ vars.VITE_ASSISTANT_API_URL }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
