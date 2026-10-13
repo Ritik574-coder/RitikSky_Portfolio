@@ -1,5 +1,6 @@
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { PROJECT_DETAILS_DATA } from '../data/projectDetailsData';
+import { ANSWER_MODES } from './questionClassifier';
 
 const normalize = (text) => (text || '').toLowerCase().trim();
 
@@ -23,7 +24,57 @@ function projectContext(slug, project) {
   ].join('\n');
 }
 
-export function buildScopedContext(userMessage, history = []) {
+function profileFocusLines(profile) {
+  return [
+    `Name: ${profile.name}`,
+    'Preferred public name: Ritik',
+    'Primary career focus: Data Engineering.',
+    'Developing focus: Analytics Engineering.',
+    'AI/ML is a learning direction and additional skill area, not an established professional job title.',
+    `Profile: ${profile.bio}`,
+    `Listed role label: ${profile.role}`,
+    `Location: ${profile.location}`,
+  ];
+}
+
+function appendTechStack(lines, query) {
+  const grouped = {};
+  for (const item of PORTFOLIO_DATA.techStack) {
+    (grouped[item.category] ||= []).push(item.name);
+  }
+  lines.push('Listed technologies by portfolio category (project-specific usage is described separately):');
+  for (const [category, names] of Object.entries(grouped)) lines.push(`- ${category}: ${names.join(', ')}`);
+  if (/project|used|built|implemented|use|pakai|pake/.test(query)) {
+    lines.push('Verified technologies used in each project:');
+    for (const [slug, project] of Object.entries(PROJECT_DETAILS_DATA)) {
+      lines.push(`- ${project.title} (${slug}): ${(project.stack || []).join(', ')}`);
+    }
+  }
+}
+
+/**
+ * Build verified portfolio excerpts for portfolio-mode answers.
+ * General technical / greeting modes get minimal or no portfolio dumps.
+ */
+export function buildScopedContext(userMessage, history = [], mode = ANSWER_MODES.PORTFOLIO) {
+  if (mode === ANSWER_MODES.GENERAL_TECHNICAL) {
+    return [
+      'Answer mode: general_technical.',
+      'This question is about a general technical topic, not a claim about Ritik unless the user explicitly asks.',
+      'Do not invent personal facts about Ritik. Portfolio excerpts are intentionally omitted.',
+    ].join('\n');
+  }
+
+  if (mode === ANSWER_MODES.GREETING) {
+    const { profile } = PORTFOLIO_DATA;
+    return [
+      'Answer mode: greeting.',
+      `You are the portfolio assistant for ${profile.name} (Ritik).`,
+      'Primary career focus: Data Engineering. Developing focus: Analytics Engineering. AI/ML is a learning direction.',
+      'Greet briefly, offer help with portfolio questions or general technical topics, and do not dump the full bio.',
+    ].join('\n');
+  }
+
   const priorQuestions = history
     .filter(message => message.role === 'user')
     .slice(-2)
@@ -32,41 +83,41 @@ export function buildScopedContext(userMessage, history = []) {
   const query = normalize(`${priorQuestions} ${userMessage}`);
   const { profile } = PORTFOLIO_DATA;
   const lines = [
-    `Name: ${profile.name}`,
-    `Primary career focus: Data Engineering. Developing focus: Analytics Engineering. AI/ML is a learning direction and additional skill area, not a professional job title.`,
-    `Profile: ${profile.bio}`,
-    `Location: ${profile.location}`,
-    'Common portfolio questions: introduction and career focus, experience, project descriptions and architecture, project-specific technologies, current learning direction, and public links.',
+    'Answer mode: portfolio.',
+    ...profileFocusLines(profile),
+    'Common portfolio questions: introduction and career focus, experience, project descriptions and architecture, project-specific technologies, current learning direction, skills/capabilities, and public links.',
+    'The portfolio does not declare a single “strongest” skill ranking. When asked about strongest/best skills, state the primary focus (Data Engineering) and summarize listed skills/technologies without inventing rankings, metrics, or credentials.',
   ];
 
-  if (/contact|email|github|linkedin|link|social/.test(query)) {
+  if (/contact|email|github|linkedin|link|social|hire|available/.test(query)) {
     lines.push(`Public links: Portfolio https://ritik574-coder.github.io/RitikSky_Portfolio/; GitHub ${profile.socials.github}; LinkedIn ${profile.socials.linkedin}; Email ${profile.email}`);
   }
 
-  if (/experience|work|career|employer|role|introduc|who are you|about/.test(query)) {
+  if (/experience|work|career|employer|role|introduc|who are you|about|focus|background/.test(query)) {
     lines.push('Portfolio experience:');
     for (const item of PORTFOLIO_DATA.experience) {
       lines.push(`- ${item.title} (${item.period}): ${item.description.join(' ')}`);
     }
   }
 
-  if (/technolog|tech stack|skills|tools|stack/.test(query)) {
-    const grouped = {};
-    for (const item of PORTFOLIO_DATA.techStack) {
-      (grouped[item.category] ||= []).push(item.name);
-    }
-    lines.push('Listed technologies by portfolio category (project-specific usage is described separately):');
-    for (const [category, names] of Object.entries(grouped)) lines.push(`- ${category}: ${names.join(', ')}`);
-    if (/project|used|built|implemented/.test(query)) {
-      lines.push('Verified technologies used in each project:');
-      for (const [slug, project] of Object.entries(PROJECT_DETAILS_DATA)) {
-        lines.push(`- ${project.title} (${slug}): ${(project.stack || []).join(', ')}`);
-      }
-    }
+  if (/technolog|tech stack|skills?|tools|stack|strongest|best skill|capability|capabilities|expertise|use|pakai|pake/.test(query)) {
+    appendTechStack(lines, query);
+    lines.push(`Listed capabilities: ${PORTFOLIO_DATA.capabilities.join(', ')}`);
   }
 
   if (/learn|learning|currently|studying|developing|direction/.test(query)) {
     lines.push('Learning direction: AI/ML and Generative AI; the portfolio lists participation in the PIJAK AI Engineer Cohort. Describe this as learning/cohort work, not an established professional AI engineering role.');
+  }
+
+  if (/achievement|award|hackathon|credential|certificat/.test(query)) {
+    if (PORTFOLIO_DATA.achievements?.length) {
+      lines.push('Verified achievements listed in the portfolio:');
+      for (const item of PORTFOLIO_DATA.achievements) {
+        lines.push(`- ${item.title}${item.project ? ` (${item.project})` : ''}: ${item.description}`);
+      }
+    } else {
+      lines.push('No additional achievements are listed beyond what appears elsewhere in these excerpts.');
+    }
   }
 
   const projectMatches = Object.entries(PROJECT_DETAILS_DATA)
@@ -84,10 +135,10 @@ export function buildScopedContext(userMessage, history = []) {
     }
   }
 
-  if (/capabilit|what can|expertise/.test(query)) {
+  if (/capabilit|what can|expertise/.test(query) && !/technolog|tech stack|skills?|tools|stack|strongest|best skill/.test(query)) {
     lines.push(`Listed capabilities: ${PORTFOLIO_DATA.capabilities.join(', ')}`);
   }
 
-  lines.push('Answer in the visitor’s language, briefly and in first person. Treat this context as the full set of verified facts. Do not infer metrics, credentials, employers, education, or project usage. If a fact is absent, say it is not listed. Include a relevant provided URL when helpful.');
+  lines.push('Treat this context as the full set of verified personal facts. Do not infer metrics, credentials, employers, education, or project usage beyond what is written here. If a requested personal fact is absent, say it is not listed.');
   return lines.join('\n').slice(0, 10000);
 }

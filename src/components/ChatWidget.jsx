@@ -2,7 +2,7 @@ import { lazy, Suspense, useState, useRef, useEffect, useCallback } from "react"
 import { X, Terminal, Copy, Check } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { askPortfolioAssistant, getAssistantStatus } from "../services/portfolioAssistant";
-import { resolveAction, detectOffTopic, detectLanguage } from "../services/intentRouter";
+import { resolveAction, detectLanguage, classifyQuestion, ANSWER_MODES } from "../services/intentRouter";
 import { sanitizeAssistantResponse } from '../services/responseSanitizer';
 import { ACTION_TO_ELEMENT } from "../data/sectionRegistry";
 import { PROJECT_META } from "../data/projectMeta";
@@ -397,11 +397,19 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
         // Add user message to chat
         setMessages(prev => [...prev, { type: 'user', text: userMsg }]);
 
-        // Step 1: Pre-filter off-topic messages (no API call needed)
-        const lang = detectLanguage(userMsg);
-        const offTopicMessage = detectOffTopic(userMsg, lang);
-        if (offTopicMessage) {
-            setMessages(prev => [...prev, { type: 'bot', text: offTopicMessage }]);
+        // Step 1: Classify answer mode (portfolio / general technical / greeting / unsupported)
+        const historyForClass = messages
+            .filter(m => m.text && !m.isTerminal)
+            .slice(-6)
+            .map(m => ({
+                role: m.type === 'bot' ? 'assistant' : 'user',
+                content: m.text
+            }));
+        const classification = classifyQuestion(assistantQuestion, historyForClass);
+        const lang = classification.lang || detectLanguage(userMsg);
+
+        if (classification.mode === ANSWER_MODES.UNSUPPORTED) {
+            setMessages(prev => [...prev, { type: 'bot', text: classification.rejectionMessage }]);
             return;
         }
 
@@ -414,16 +422,12 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
 
         try {
             // Build conversation context - limit to last 6 non-terminal messages
-            const apiMessages = messages
-                .filter(m => m.text && !m.isTerminal)
-                .slice(-6)
-                .map(m => ({
-                    role: m.type === 'bot' ? 'assistant' : 'user',
-                    content: m.text
-                }));
-            apiMessages.push({ role: 'user', content: assistantQuestion });
+            const apiMessages = [
+                ...historyForClass,
+                { role: 'user', content: assistantQuestion },
+            ];
 
-            const fullText = await askPortfolioAssistant(apiMessages);
+            const fullText = await askPortfolioAssistant(apiMessages, { classification });
 
             // Step 4: Typewrite the response (clean text, no action metadata)
             setIsTyping(false);
@@ -432,8 +436,8 @@ const ChatWidget = ({ isOpen: controlledIsOpen, onOpenChange }) => {
 
             const safeText = sanitizeAssistantResponse(fullText.trim())
                 || (lang === 'en'
-                    ? 'I can help with my portfolio projects, skills, and experience. Ask me anything there.'
-                    : 'Aku bisa bantu jawab soal portofolio, project, skill, dan pengalaman aku.');
+                    ? 'I can help with Ritik\'s portfolio or general technical topics like data engineering, SQL, Python, and AI/ML.'
+                    : 'Aku bisa bantu soal portofolio Ritik atau topik teknis umum seperti data engineering, SQL, Python, dan AI/ML.');
 
             await typewriteMessage(safeText, setMessages, forceScrollToBottom);
 
