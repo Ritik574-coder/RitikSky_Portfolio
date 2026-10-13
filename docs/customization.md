@@ -144,23 +144,12 @@ These commands run **entirely locally** and require no API key.
 
 ## 8. AI assistant provider
 
-The optional AI chat is powered by Cerebras through
-[`src/services/cerebras.js`](../src/services/cerebras.js), and the assistant's
-persona/system prompt is built in
-[`src/services/aiContext.js`](../src/services/aiContext.js).
-
-- **Persona / tone / rules:** edit `generateSystemPrompt()` in `aiContext.js`.
-- **Provider / model / endpoint:** edit `cerebras.js` (model is `gpt-oss-120b`,
-  endpoint is the Cerebras chat-completions URL).
-- **API key:** set `VITE_CEREBRAS_API_KEY` in a `.env` file (a legacy
-  `REACT_APP_CEREBRAS_API_KEY` is also read).
-
-> ⚠️ Calling the provider directly from the browser exposes your API key in the
-> client bundle. This is **demo-only**. For production, use a serverless proxy — see
-> [`docs/ai-terminal.md`](ai-terminal.md) and [`SECURITY.md`](../SECURITY.md).
-
-To switch providers, point `cerebras.js` at your provider's endpoint and adjust the
-request/stream parsing, or (recommended) call your own proxy endpoint instead.
+The floating terminal uses the optional server-side provider gateway in
+[`assistant-api/`](../assistant-api/README.md). Its portfolio facts come from
+`src/data/portfolioData.js`, `src/data/projectMeta.js`, and
+`src/data/projectDetailsData.js`. Provider secrets are configured in Cloudflare,
+never in frontend environment variables. See [`docs/ai-terminal.md`](ai-terminal.md)
+for the setup and supported free-tier providers.
 
 ## 9. Deployment
 
