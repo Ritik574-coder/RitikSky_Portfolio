@@ -1,4 +1,5 @@
 import { buildScopedContext } from './aiContext';
+import { ANSWER_MODES, classifyQuestion } from './questionClassifier';
 
 const API_BASE_URL = (import.meta.env.VITE_ASSISTANT_API_URL || '').trim().replace(/\/$/, '');
 
@@ -19,7 +20,12 @@ export async function getAssistantStatus() {
   }
 }
 
-export async function askPortfolioAssistant(messages) {
+/**
+ * Ask the portfolio assistant.
+ * Classifies the latest user question into portfolio / general_technical / greeting
+ * so the Worker and scoped context use the correct answer mode.
+ */
+export async function askPortfolioAssistant(messages, options = {}) {
   if (!API_BASE_URL) {
     const error = new Error('AI is not configured yet. Terminal commands are still available.');
     error.type = 'server';
@@ -28,13 +34,19 @@ export async function askPortfolioAssistant(messages) {
 
   const latest = [...messages].reverse().find(message => message.role === 'user')?.content || '';
   const history = messagesFromHistory(messages).slice(0, -1);
+  const classification = options.classification || classifyQuestion(latest, history);
+  const mode = classification.mode === ANSWER_MODES.UNSUPPORTED
+    ? ANSWER_MODES.PORTFOLIO
+    : classification.mode;
+
   const response = await fetch(`${API_BASE_URL}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       message: latest.slice(0, 1200),
       history,
-      context: buildScopedContext(latest, history),
+      mode,
+      context: buildScopedContext(latest, history, mode),
     }),
     signal: AbortSignal.timeout(35000),
   }).catch(() => {

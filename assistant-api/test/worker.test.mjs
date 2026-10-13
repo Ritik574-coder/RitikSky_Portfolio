@@ -126,3 +126,109 @@ test('attributes OpenRouter requests to the portfolio', async () => {
   assert.equal(requestDetails.init.headers['HTTP-Referer'], 'https://ritik574-coder.github.io/RitikSky_Portfolio/');
   assert.equal(requestDetails.init.headers['X-Title'], 'Ritik Kumar Portfolio Assistant');
 });
+
+test('portfolio mode system prompt requires verified facts and forbids invented rankings', async () => {
+  let prompt;
+  const response = await handleRequest(makeRequest('/chat', {
+    message: 'What is your main focus?',
+    context: 'Primary career focus: Data Engineering.',
+    mode: 'portfolio',
+    history: [],
+  }, '198.51.100.14'), {
+    ...env,
+    GEMINI_API_KEY: 'gemini-server-secret',
+  }, {
+    now: 800000,
+    fetch: async (_url, init) => {
+      prompt = JSON.parse(init.body).systemInstruction.parts[0].text;
+      return Response.json({ candidates: [{ content: { parts: [{ text: 'My main focus is Data Engineering.' }] } }] });
+    },
+  });
+  assert.equal(response.status, 200);
+  assert.match(prompt, /Answer mode: portfolio/);
+  assert.match(prompt, /Only state personal claims supported/);
+  assert.match(prompt, /strongest.*do not invent a ranking/i);
+  assert.doesNotMatch(prompt, /outside my portfolio scope/i);
+});
+
+test('general technical mode allows ordinary explanations without portfolio rejection', async () => {
+  let prompt;
+  const response = await handleRequest(makeRequest('/chat', {
+    message: 'Tell me what is AI.',
+    context: 'Answer mode: general_technical.',
+    mode: 'general_technical',
+    history: [],
+  }, '198.51.100.15'), {
+    ...env,
+    GEMINI_API_KEY: 'gemini-server-secret',
+  }, {
+    now: 900000,
+    fetch: async (_url, init) => {
+      prompt = JSON.parse(init.body).systemInstruction.parts[0].text;
+      return Response.json({ candidates: [{ content: { parts: [{ text: 'AI is the field of building systems that perform tasks that typically require human intelligence.' }] } }] });
+    },
+  });
+  assert.equal(response.status, 200);
+  assert.match(prompt, /Answer mode: general_technical/);
+  assert.match(prompt, /Do not reject the question merely because it is not covered/);
+  assert.doesNotMatch(prompt, /Only state personal claims supported/);
+});
+
+test('greeting mode keeps a short welcome prompt', async () => {
+  let prompt;
+  const response = await handleRequest(makeRequest('/chat', {
+    message: 'Hi',
+    context: 'Answer mode: greeting.',
+    mode: 'greeting',
+    history: [],
+  }, '198.51.100.16'), {
+    ...env,
+    GEMINI_API_KEY: 'gemini-server-secret',
+  }, {
+    now: 1000000,
+    fetch: async (_url, init) => {
+      prompt = JSON.parse(init.body).systemInstruction.parts[0].text;
+      return Response.json({ candidates: [{ content: { parts: [{ text: 'Hi! Ask me about my portfolio or a technical topic.' }] } }] });
+    },
+  });
+  assert.equal(response.status, 200);
+  assert.match(prompt, /Answer mode: greeting/);
+  assert.match(prompt, /Do not dump a full biography/);
+});
+
+test('follow-up history is forwarded to the provider', async () => {
+  let body;
+  const response = await handleRequest(makeRequest('/chat', {
+    message: 'How is that different from a data lake?',
+    context: 'Answer mode: general_technical.',
+    mode: 'general_technical',
+    history: [
+      { role: 'user', content: 'What is a data warehouse?' },
+      { role: 'assistant', content: 'A curated analytical store.' },
+    ],
+  }, '198.51.100.17'), {
+    ...env,
+    GEMINI_API_KEY: 'gemini-server-secret',
+  }, {
+    now: 1100000,
+    fetch: async (_url, init) => {
+      body = JSON.parse(init.body);
+      return Response.json({ candidates: [{ content: { parts: [{ text: 'A lake stores raw data more flexibly.' }] } }] });
+    },
+  });
+  assert.equal(response.status, 200);
+  assert.equal(body.contents.length, 3);
+  assert.equal(body.contents[0].parts[0].text, 'What is a data warehouse?');
+  assert.equal(body.contents[2].parts[0].text, 'How is that different from a data lake?');
+});
+
+test('missing credentials fail gracefully without claiming success', async () => {
+  const response = await handleRequest(makeRequest('/chat', {
+    message: 'What technologies do you use?',
+    context: 'Listed technologies: Python.',
+    mode: 'portfolio',
+    history: [],
+  }, '198.51.100.18'), env, { now: 1200000 });
+  assert.equal(response.status, 503);
+  assert.deepEqual(await response.json(), { error: 'All AI providers are temporarily unavailable.' });
+});

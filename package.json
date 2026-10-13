@@ -43,6 +43,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "check": "npm run build && npm audit --omit=dev",
+    "test:assistant": "node --test assistant-api/test/worker.test.mjs && node --import ./scripts/assistant-test-resolve.mjs --test src/services/questionClassifier.test.js src/services/aiContext.test.js src/services/intentRouter.test.js",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

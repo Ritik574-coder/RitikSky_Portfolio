@@ -1,5 +1,8 @@
 import { PROJECT_META } from '../data/projectMeta';
 import { SECTION_REGISTRY } from '../data/sectionRegistry';
+import { classifyQuestion, detectOffTopic, ANSWER_MODES } from './questionClassifier';
+
+export { classifyQuestion, detectOffTopic, ANSWER_MODES };
 
 // ─── Scoring-Based Intent Matching ───────────────────────────────
 //
@@ -22,43 +25,7 @@ const HIGH_CONFIDENCE_SCORE = 2.5;
 const NAVIGATION_TRIGGERS = [
   'buka', 'open', 'lihat', 'show', 'go to', 'ke ', 'scroll', 'arahkan',
   'pindah', 'take me', 'jump to', 'navigate', 'tunjukin', 'tampilkan',
-  'mau ke', 'ingin ke', 'ke bagian', 'ke section',
-];
-
-// ─── Off-Topic Detection ─────────────────────────────────────────
-// Patterns that indicate the user is asking something outside portfolio context.
-// Checked BEFORE sending to the LLM to save API calls.
-
-const OFF_TOPIC_PATTERNS = [
-  // Programming help requests
-  /\b(buatin?|buat(?:kan)?|write|code|tulis(?:kan)?)\s+(script|kode|code|program|function|fungsi|class|api)\b/i,
-  /\b(debug|fix|solve|selesaikan|perbaiki)\s+(bug|error|code|kode)\b/i,
-  // Math / calculations
-  /\b(hitung|calculate|berapa\s+\d|what\s+is\s+\d|\d\s*[+\-*/]\s*\d)/i,
-  // General knowledge / trivia
-  /\b(siapa\s+presiden|who\s+is\s+the\s+president|capital\s+of|ibu\s*kota)\b/i,
-  /\b(apa\s+itu|what\s+is)\s+(?!ritik|portofolio|portfolio|project|projek)/i,
-  // Weather, news, etc.
-  /\b(cuaca|weather|berita|news|gosip)\b/i,
-  // Translation / language tasks
-  /\b(translate|terjemahkan|artikan)\b/i,
-  // Creative writing unrelated to portfolio
-  /\b(cerita|story|puisi|poem|lagu|song|essay)\b/i,
-  // Explicit off-topic
-  /\b(game|movie|film|musik|music|resep|recipe|masak|cook)\b/i,
-];
-
-// Whitelist - if matched, the message is always considered on-topic,
-// even if it also matches an off-topic pattern.
-// (e.g., "apa itu LeadsUp" should NOT be blocked)
-const ON_TOPIC_OVERRIDES = [
-  /ritik/i,
-  /portofolio|portfolio/i,
-  /project|projek|proyek/i,
-  ...PROJECT_META.flatMap(p => [
-    new RegExp(escapeRegex(p.slug), 'i'),
-    new RegExp(escapeRegex(p.title), 'i'),
-  ]),
+  'mau ke', 'langsung ke', 'ke bagian', 'ke section',
 ];
 
 // ─── Project Matching ────────────────────────────────────────────
@@ -83,10 +50,6 @@ const PROJECT_REFERENCE_TRIGGERS = [
 ];
 
 // ─── Utility Functions ───────────────────────────────────────────
-
-function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
 
 /**
  * Normalize user input for consistent matching.
@@ -233,29 +196,6 @@ function matchSectionIntent(normalizedMsg) {
 }
 
 // ─── Public API ──────────────────────────────────────────────────
-
-/**
- * Detect if a message is off-topic (outside portfolio context).
- * Returns a rejection message string if off-topic, or null if on-topic.
- *
- * @param {string} userMessage - Raw user input
- * @param {string} [lang='id'] - Detected language ('id' or 'en')
- * @returns {string | null}
- */
-export function detectOffTopic(userMessage, lang = 'id') {
-  const msg = normalize(userMessage);
-
-  // On-topic overrides take priority
-  const isOverridden = ON_TOPIC_OVERRIDES.some(pattern => pattern.test(msg));
-  if (isOverridden) return null;
-
-  const isOffTopic = OFF_TOPIC_PATTERNS.some(pattern => pattern.test(msg));
-  if (!isOffTopic) return null;
-
-  return lang === 'en'
-    ? "Hey, that's outside my portfolio scope! Feel free to ask about my projects, skills, or experience."
-    : "Wah, itu di luar konteks portofolio saya. Tanya aja soal project, skill, atau pengalaman saya!";
-}
 
 /**
  * Detect the language of the user's message.
