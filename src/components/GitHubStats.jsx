@@ -1,6 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Gsap } from '../utils/gsapAnimate';
 import { Activity, CalendarDays, CircleAlert, Code2, ExternalLink, RefreshCw, Users } from 'lucide-react';
+import SectionEyebrow from './SectionEyebrow';
 
 const GITHUB_USERNAME = 'Ritik574-coder';
 const GITHUB_PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
@@ -247,15 +248,15 @@ const GitHubStats = memo(function GitHubStats() {
     return (
         <section id="github-stats-section" className="relative w-full overflow-hidden bg-[#171817] pt-20 pb-6 md:pt-24 md:pb-10">
             <div className="relative z-10 mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-12">
-                <div className="mb-4 flex items-center gap-3 sm:mb-5">
-                    <span className="h-2 w-2 shrink-0 rounded-full bg-lime-400" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/55 sm:text-xs">05 — GitHub Activity</span>
-                    <span className="h-px flex-1 bg-lime-400/15" />
-                    <span className={`inline-flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-[0.12em] sm:text-[9px] ${hasError ? 'text-white/45' : 'text-lime-300/70'}`} role="status" aria-live="polite">
+                <SectionEyebrow
+                    number="05"
+                    label="GitHub Activity"
+                    className="mb-4 sm:mb-5"
+                    trailing={<span className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap font-mono text-[8px] uppercase tracking-[0.12em] sm:text-[9px] ${hasError ? 'text-white/45' : 'text-lime-300/70'}`} role="status" aria-live="polite">
                         <span className={`h-1.5 w-1.5 rounded-full ${isLoading ? 'animate-pulse bg-white/45' : hasError ? 'bg-white/35' : 'bg-lime-400'}`} />
                         {statusLabel}
-                    </span>
-                </div>
+                    </span>}
+                />
 
                 <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-7">
                     <Gsap.h2

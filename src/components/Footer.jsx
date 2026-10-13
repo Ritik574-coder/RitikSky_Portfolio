@@ -2,6 +2,7 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { Gsap } from '../utils/gsapAnimate';
 import { Github, Linkedin, Mail, ArrowUpRight } from 'lucide-react';
 import { exponentialEaseOut } from '../utils/easing';
+import SectionEyebrow from './SectionEyebrow';
 
 const DiscordIcon = ({ className = '', size = 16 }) => (
   <svg
@@ -139,18 +140,7 @@ const Footer = memo(function Footer() {
       <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-[1400px] flex-1 flex-col px-5 pb-5 pt-[clamp(7rem,14svh,8rem)] sm:px-8 md:px-12">
 
         {/* ── SECTION HEADER ── */}
-        <Gsap.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-6 flex items-center gap-3 sm:mb-7 sm:gap-4"
-        >
-          <div className="h-2 w-2 animate-pulse rounded-full bg-lime-400" />
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/65 md:text-xs md:tracking-[0.26em]">
-            {'// INITIALIZE_CONTACT'}
-          </span>
-          <div className="h-[1px] flex-1 bg-white/10" />
-        </Gsap.div>
+        <SectionEyebrow number="07" label="Contact" animated className="mb-6 sm:mb-7 sm:gap-4" />
 
         {/* ── MAIN GRID ──
             <md   1 column:  intro / form / links

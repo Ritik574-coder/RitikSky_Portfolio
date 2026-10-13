@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Gsap } from '../utils/gsapAnimate';
 import { Boxes, BrainCircuit, Cloud, Code2, Database, Network, ShieldCheck, Workflow } from 'lucide-react';
+import SectionEyebrow from './SectionEyebrow';
 
 const CAPABILITIES = [
   {
@@ -59,16 +60,12 @@ const TechnicalCapabilities = memo(function TechnicalCapabilities() {
   return (
     <section id="capabilities-section" className="relative w-full overflow-hidden bg-[#171817] pb-14 pt-24 sm:pb-16 md:pt-28">
       <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
-        <div className="mb-6 flex items-center gap-3 sm:mb-8">
-          <span className="h-2 w-2 rounded-full bg-lime-400" />
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/55 sm:text-xs">
-            06 — Capabilities
-          </span>
-          <span className="h-px flex-1 bg-lime-400/15" />
-          <span className="hidden font-mono text-[9px] uppercase tracking-[0.14em] text-lime-300/65 sm:block">
-            Data Engineering / Analytics Engineering
-          </span>
-        </div>
+        <SectionEyebrow
+          number="06"
+          label="Capabilities"
+          className="mb-6 sm:mb-8"
+          trailing={<span className="hidden shrink-0 whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.14em] text-lime-300/65 sm:block">Data Engineering / Analytics Engineering</span>}
+        />
 
         <div className="mb-6 grid gap-3 sm:mb-8 md:grid-cols-[1.1fr_0.9fr] md:items-end md:gap-8">
           <Gsap.h2

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Gsap } from "../utils/gsapAnimate";
+import SectionEyebrow from './SectionEyebrow';
 
 import {
     SiPython,
@@ -146,8 +147,7 @@ const TechStack = () => {
     const ActiveCategoryIcon = activeCategory.icon;
 
     return (
-        <section id="tech-stack-section" className="relative w-full overflow-hidden bg-[#171817] py-8 sm:py-10 lg:min-h-screen lg:py-12">
-            <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.8)_1px,transparent_1px)] [background-size:48px_48px]" />
+        <section id="tech-stack-section" className="relative w-full overflow-hidden bg-neutral-900 py-8 sm:py-10 lg:min-h-screen lg:py-12">
             <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-6 md:px-12">
                 <Gsap.div
                     initial={{ opacity: 0, y: 12 }}
@@ -155,12 +155,13 @@ const TechStack = () => {
                     viewport={{ once: true }}
                     className="mb-4 md:mb-6"
                 >
-                    <div className="mb-4 flex items-center gap-3 sm:mb-5 sm:gap-4">
-                        <span className="h-2 w-2 rounded-full bg-lime-400" />
-                        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/55 md:text-xs">04 — Technology Stack</span>
-                        <span className="h-px flex-1 bg-lime-400/15" />
-                        <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-lime-400/70 sm:block">Project work + learning</span>
-                    </div>
+                    <SectionEyebrow
+                        number="04"
+                        label="Technology Stack"
+                        animated={false}
+                        className="mb-4 sm:mb-5 sm:gap-4"
+                        trailing={<span className="hidden shrink-0 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.16em] text-lime-400/70 sm:block">Project work + learning</span>}
+                    />
 
                     <div className="grid gap-2 md:grid-cols-[1.05fr_0.95fr] md:items-end md:gap-6">
                         <div>
