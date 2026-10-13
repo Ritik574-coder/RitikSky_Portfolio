@@ -17,7 +17,7 @@ NVIDIA API Catalog access is trial/evaluation access and is not configured as a 
 1. Install Wrangler and authenticate a Cloudflare account with Workers enabled.
 2. From this directory, run `npx wrangler deploy`.
 3. Add at least one eligible provider key as a Cloudflare secret. For example: `npx wrangler secret put GEMINI_API_KEY`. Supported names are `GEMINI_API_KEY`, `MISTRAL_API_KEY`, and `OPENROUTER_API_KEY`. Never put keys in `[vars]`, frontend `VITE_*` variables, or Git.
-4. Set `ALLOWED_ORIGINS` in `wrangler.toml` to the exact deployed portfolio origins, comma-separated, with no paths or trailing slashes. The defaults cover the portfolio's listed custom domains, its GitHub Pages origin, and Vite's local origin. CORS is not authentication.
+4. Set `ALLOWED_ORIGINS` in `wrangler.toml` to the exact deployed portfolio origins, comma-separated, with no paths or trailing slashes. The defaults cover the portfolio's GitHub Pages origin and Vite's local origin. CORS is not authentication.
 5. Add the public Worker base URL as the GitHub Actions repository variable `VITE_ASSISTANT_API_URL` (for example `https://ritik-portfolio-assistant.<account>.workers.dev`) so the Pages build can call the Worker. This URL is public and is not a secret. Re-run the Pages workflow to publish the configured frontend.
 
 The frontend reads `VITE_ASSISTANT_API_URL` at build time. If it is absent or the API has no configured keys, AI is shown as offline and terminal commands continue to work.

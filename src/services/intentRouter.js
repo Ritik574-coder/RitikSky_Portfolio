@@ -37,7 +37,7 @@ const OFF_TOPIC_PATTERNS = [
   /\b(hitung|calculate|berapa\s+\d|what\s+is\s+\d|\d\s*[+\-*/]\s*\d)/i,
   // General knowledge / trivia
   /\b(siapa\s+presiden|who\s+is\s+the\s+president|capital\s+of|ibu\s*kota)\b/i,
-  /\b(apa\s+itu|what\s+is)\s+(?!zickrian|portofolio|portfolio|project|projek)/i,
+  /\b(apa\s+itu|what\s+is)\s+(?!ritik|portofolio|portfolio|project|projek)/i,
   // Weather, news, etc.
   /\b(cuaca|weather|berita|news|gosip)\b/i,
   // Translation / language tasks
@@ -52,7 +52,7 @@ const OFF_TOPIC_PATTERNS = [
 // even if it also matches an off-topic pattern.
 // (e.g., "apa itu LeadsUp" should NOT be blocked)
 const ON_TOPIC_OVERRIDES = [
-  /zickrian/i,
+  /ritik/i,
   /portofolio|portfolio/i,
   /project|projek|proyek/i,
   ...PROJECT_META.flatMap(p => [

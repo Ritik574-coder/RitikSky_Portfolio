@@ -40,7 +40,7 @@ export function buildScopedContext(userMessage, history = []) {
   ];
 
   if (/contact|email|github|linkedin|link|social/.test(query)) {
-    lines.push(`Public links: Portfolio https://zickrian.dev; GitHub ${profile.socials.github}; LinkedIn ${profile.socials.linkedin}; Email ${profile.email}`);
+    lines.push(`Public links: Portfolio https://ritik574-coder.github.io/RitikSky_Portfolio/; GitHub ${profile.socials.github}; LinkedIn ${profile.socials.linkedin}; Email ${profile.email}`);
   }
 
   if (/experience|work|career|employer|role|introduc|who are you|about/.test(query)) {

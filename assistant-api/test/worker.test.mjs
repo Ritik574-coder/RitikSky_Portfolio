@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { handleRequest } from '../worker.mjs';
 
-const origin = 'https://ritik574-coder.github.io/RitikSky_Portfolio/';
+const origin = 'https://ritik574-coder.github.io';
 const env = { ALLOWED_ORIGINS: origin };
 
 function makeRequest(path, body, ip = '198.51.100.7') {
@@ -107,4 +107,22 @@ test('uses Gemini generateContent format and extracts its text response', async 
   assert.match(requestDetails.url, /gemini-3\.5-flash-lite:generateContent$/);
   assert.equal(requestDetails.init.headers['x-goog-api-key'], 'gemini-server-secret');
   assert.equal(requestDetails.body.generationConfig.maxOutputTokens, 320);
+});
+
+test('attributes OpenRouter requests to the portfolio', async () => {
+  let requestDetails;
+  const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.13'), {
+    ...env,
+    OPENROUTER_API_KEY: 'openrouter-server-secret',
+  }, {
+    now: 700000,
+    fetch: async (url, init) => {
+      requestDetails = { url: String(url), init };
+      return Response.json({ choices: [{ message: { content: 'OpenRouter answer.' } }] });
+    },
+  });
+  assert.equal(response.status, 200);
+  assert.match(requestDetails.url, /openrouter\.ai\/api\/v1\/chat\/completions$/);
+  assert.equal(requestDetails.init.headers['HTTP-Referer'], 'https://ritik574-coder.github.io/RitikSky_Portfolio/');
+  assert.equal(requestDetails.init.headers['X-Title'], 'Ritik Kumar Portfolio Assistant');
 });

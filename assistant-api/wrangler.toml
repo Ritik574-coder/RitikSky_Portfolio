@@ -4,7 +4,7 @@ compatibility_date = "2026-10-13"
 workers_dev = true
 
 [vars]
-ALLOWED_ORIGINS = "https://zickrian.dev,https://zickrian.com,https://ritik574-coder.github.io,http://localhost:5173"
+ALLOWED_ORIGINS = "https://ritik574-coder.github.io,http://localhost:5173"
 
 [limits]
 cpu_ms = 10

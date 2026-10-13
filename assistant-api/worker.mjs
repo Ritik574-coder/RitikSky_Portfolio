@@ -124,7 +124,7 @@ async function requestProvider(provider, key, conversation, context, fetchFn) {
   if (provider.format === 'gemini') headers['x-goog-api-key'] = key;
   else headers.Authorization = `Bearer ${key}`;
   if (provider.id === 'openrouter') {
-    headers['HTTP-Referer'] = 'https://zickrian.dev';
+    headers['HTTP-Referer'] = 'https://ritik574-coder.github.io/RitikSky_Portfolio/';
     headers['X-Title'] = 'Ritik Kumar Portfolio Assistant';
   }
 
