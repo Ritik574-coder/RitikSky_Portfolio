@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { label: 'About', sectionId: 'about-section' },
   { label: 'Projects', sectionId: 'project-section' },
   { label: 'Experience', sectionId: 'experience-section' },
-  { label: 'Tech Stack', sectionId: 'tech-stack-section' },
+  { label: 'TECH STACK', sectionId: 'tech-stack-section' },
   { label: 'Stats', sectionId: 'github-stats-section' },
   { label: 'Capabilities', sectionId: 'capabilities-section' },
 ];
@@ -229,7 +229,7 @@ const Navbar = memo(function Navbar() {
                 onClick={() => scrollTo(item.sectionId)}
                 className={`relative px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] md:tracking-[0.16em] transition-colors ${isOnDarkSection ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'}`}
               >
-                <span className="relative z-10">{item.label}</span>
+                <span className="relative z-10 whitespace-nowrap">{item.label}</span>
                 {hoveredIndex === index && (
                   <Gsap.div
                     layoutId="navbar-pill"
