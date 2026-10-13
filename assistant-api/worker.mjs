@@ -189,8 +189,17 @@ async function requestProvider(provider, key, conversation, context, mode, fetch
     signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
   if (!response.ok) {
+    let providerError = '';
+    try {
+      const payload = await response.json();
+      providerError = typeof payload?.error?.message === 'string' ? payload.error.message : '';
+      if (typeof payload?.error?.status === 'string') providerError += ` ${payload.error.status}`;
+    } catch {
+      // Provider error bodies are optional and are never logged directly.
+    }
     const error = new Error('Provider request failed');
     error.status = response.status;
+    error.providerError = providerError;
     throw error;
   }
   const answer = extractAnswer(provider, await response.json());
@@ -200,6 +209,40 @@ async function requestProvider(provider, key, conversation, context, mode, fetch
     throw error;
   }
   return answer.slice(0, 5000);
+}
+
+function providerFailure(error) {
+  const providerError = typeof error?.providerError === 'string' ? error.providerError.toLowerCase() : '';
+  const errorName = typeof error?.name === 'string' ? error.name : '';
+  const status = Number(error?.status) || 0;
+
+  if ([401, 403].includes(status) || /api.?key|unauthori[sz]ed|permission denied|forbidden/.test(providerError)) {
+    return { category: 'authentication_or_configuration', message: 'Provider rejected credentials or project configuration.' };
+  }
+  if (status === 429) return { category: 'rate_limited', message: 'Provider rate limit reached.' };
+  if (status === 404 || /model.{0,30}(not found|does not exist|unsupported)|unknown model/.test(providerError)) {
+    return { category: 'invalid_model', message: 'Provider rejected the configured model.' };
+  }
+  if (status === 400) return { category: 'invalid_request', message: 'Provider rejected the request format or parameters.' };
+  if (errorName === 'TimeoutError' || errorName === 'AbortError') {
+    return { category: 'timeout', message: 'Provider request timed out.' };
+  }
+  if (status >= 500) return { category: 'temporary_provider_failure', message: 'Provider returned a temporary server error.' };
+  if (status === 0) return { category: 'network_failure', message: 'Could not connect to the provider.' };
+  if (status === 502 && error?.message === 'Provider returned an empty response') {
+    return { category: 'empty_response', message: 'Provider returned no usable answer.' };
+  }
+  return { category: 'provider_failure', message: 'Provider request failed.' };
+}
+
+function logProviderFailure(provider, error) {
+  const diagnostic = providerFailure(error);
+  console.warn('[assistant-api] provider failure', JSON.stringify({
+    provider: provider.id,
+    status: Number(error?.status) || null,
+    category: diagnostic.category,
+    message: diagnostic.message,
+  }));
 }
 
 function checkRateLimit(request, now) {
@@ -288,6 +331,7 @@ export async function handleRequest(request, env, options = {}) {
       cooldownUntil.delete(provider.id);
       return json({ answer }, 200, headers);
     } catch (error) {
+      logProviderFailure(provider, error);
       cooldown(provider, Number(error?.status) || 0, now);
     }
   }

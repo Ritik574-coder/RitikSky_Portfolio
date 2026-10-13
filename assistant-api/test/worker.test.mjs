@@ -69,15 +69,53 @@ test('falls through a rate-limited provider and returns only a generated answer'
 });
 
 test('returns a graceful unavailable response when configured providers fail', async () => {
-  const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.9'), {
-    ...env,
-    GEMINI_API_KEY: 'temporary-key',
-  }, {
-    now: 300000,
-    fetch: async () => new Response('{}', { status: 503 }),
-  });
-  assert.equal(response.status, 503);
-  assert.deepEqual(await response.json(), { error: 'All AI providers are temporarily unavailable.' });
+  const diagnostics = [];
+  const originalWarn = console.warn;
+  console.warn = (...values) => diagnostics.push(values.join(' '));
+  try {
+    const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.9'), {
+      ...env,
+      GEMINI_API_KEY: 'temporary-key',
+    }, {
+      now: 300000,
+      fetch: async () => Response.json({
+        error: { code: 503, status: 'UNAVAILABLE', message: 'Upstream details including user content must not be logged.' },
+      }, { status: 503 }),
+    });
+    assert.equal(response.status, 503);
+    assert.deepEqual(await response.json(), { error: 'All AI providers are temporarily unavailable.' });
+    assert.equal(diagnostics.length, 1);
+    assert.match(diagnostics[0], /"provider":"gemini"/);
+    assert.match(diagnostics[0], /"status":503/);
+    assert.match(diagnostics[0], /"category":"temporary_provider_failure"/);
+    assert.doesNotMatch(diagnostics[0], /temporary-key|user content|authorization/i);
+  } finally {
+    console.warn = originalWarn;
+  }
+});
+
+test('classifies Gemini authentication errors without logging provider response details', async () => {
+  const diagnostics = [];
+  const originalWarn = console.warn;
+  console.warn = (...values) => diagnostics.push(values.join(' '));
+  try {
+    const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.19'), {
+      ...env,
+      GEMINI_API_KEY: 'never-log-this-key',
+    }, {
+      now: 350000,
+      fetch: async () => Response.json({
+        error: { code: 400, status: 'INVALID_ARGUMENT', message: 'API key not valid. sensitive request text' },
+      }, { status: 400 }),
+    });
+    assert.equal(response.status, 503);
+    assert.match(diagnostics[0], /"status":400/);
+    assert.match(diagnostics[0], /"category":"authentication_or_configuration"/);
+    assert.match(diagnostics[0], /Provider rejected credentials or project configuration/);
+    assert.doesNotMatch(diagnostics[0], /never-log-this-key|sensitive request text|API key not valid/i);
+  } finally {
+    console.warn = originalWarn;
+  }
 });
 
 test('reports unconfigured state and enforces the per-isolate request cap', async () => {
@@ -107,6 +145,9 @@ test('uses Gemini generateContent format and extracts its text response', async 
   assert.match(requestDetails.url, /gemini-3\.5-flash-lite:generateContent$/);
   assert.equal(requestDetails.init.headers['x-goog-api-key'], 'gemini-server-secret');
   assert.equal(requestDetails.body.generationConfig.maxOutputTokens, 320);
+  assert.equal(requestDetails.body.contents[0].role, 'user');
+  assert.equal(requestDetails.body.contents[0].parts[0].text, validBody.message);
+  assert.equal(typeof requestDetails.body.systemInstruction.parts[0].text, 'string');
 });
 
 test('attributes OpenRouter requests to the portfolio', async () => {
