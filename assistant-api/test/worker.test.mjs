@@ -152,10 +152,13 @@ test('uses Gemini generateContent format and extracts its text response', async 
 
 test('attributes OpenRouter requests to the portfolio', async () => {
   let requestDetails;
-  const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.13'), {
+  const configuredEnv = {
     ...env,
     OPENROUTER_API_KEY: 'openrouter-server-secret',
-  }, {
+  };
+  const health = await handleRequest(makeRequest('/health'), configuredEnv, { now: 680000 });
+  assert.deepEqual(await health.json(), { available: true });
+  const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.13'), configuredEnv, {
     now: 700000,
     fetch: async (url, init) => {
       requestDetails = { url: String(url), init };
@@ -272,4 +275,83 @@ test('missing credentials fail gracefully without claiming success', async () =>
   }, '198.51.100.18'), env, { now: 1200000 });
   assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), { error: 'All AI providers are temporarily unavailable.' });
+});
+
+test('falls back from Gemini timeout, 503, and 429 to configured OpenRouter', async () => {
+  const failures = [
+    {
+      label: 'timeout',
+      fail: async () => { throw new DOMException('Provider timed out', 'TimeoutError'); },
+    },
+    {
+      label: 'HTTP 503',
+      fail: async () => new Response('{}', { status: 503 }),
+    },
+    {
+      label: 'HTTP 429',
+      fail: async () => new Response('{}', { status: 429 }),
+    },
+  ];
+
+  for (let index = 0; index < failures.length; index += 1) {
+    const failure = failures[index];
+    const attempts = [];
+    const response = await handleRequest(makeRequest('/chat', validBody, `198.51.100.${30 + index}`), {
+      ...env,
+      GEMINI_API_KEY: 'gemini-server-key',
+      OPENROUTER_API_KEY: 'openrouter-server-key',
+    }, {
+      now: 2000000 + index * 100000,
+      fetch: async (url, init) => {
+        attempts.push({ url: String(url), init, body: JSON.parse(init.body) });
+        if (attempts.length === 1) return failure.fail();
+        return Response.json({ choices: [{ message: { content: `OpenRouter handled ${failure.label}.` } }] });
+      },
+    });
+
+    assert.equal(response.status, 200, failure.label);
+    assert.deepEqual(await response.json(), { answer: `OpenRouter handled ${failure.label}.` });
+    assert.equal(attempts.length, 2, `${failure.label}: one attempt per provider`);
+    assert.match(attempts[0].url, /generativelanguage\.googleapis\.com/);
+    assert.equal(attempts[0].init.headers['x-goog-api-key'], 'gemini-server-key');
+    assert.equal(attempts[1].url, 'https://openrouter.ai/api/v1/chat/completions');
+    assert.equal(attempts[1].init.headers.Authorization, 'Bearer openrouter-server-key');
+    assert.equal(attempts[1].init.headers['Content-Type'], 'application/json');
+    assert.equal(attempts[1].body.model, 'openrouter/free');
+    assert.equal(attempts[1].body.messages.at(-1).role, 'user');
+    assert.equal(attempts[1].body.messages.at(-1).content, validBody.message);
+    assert.equal(attempts[1].body.stream, false);
+  }
+});
+
+test('returns the existing safe unavailable response when Gemini and OpenRouter both fail', async () => {
+  const attempts = [];
+  const diagnostics = [];
+  const originalWarn = console.warn;
+  console.warn = (...values) => diagnostics.push(values.join(' '));
+  try {
+    const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.34'), {
+      ...env,
+      GEMINI_API_KEY: 'gemini-server-key',
+      OPENROUTER_API_KEY: 'openrouter-server-key',
+    }, {
+      now: 2400000,
+      fetch: async (url, init) => {
+        attempts.push({ url: String(url), init });
+        return new Response('{}', { status: attempts.length === 1 ? 503 : 429 });
+      },
+    });
+
+    assert.equal(response.status, 503);
+    assert.deepEqual(await response.json(), { error: 'All AI providers are temporarily unavailable.' });
+    assert.equal(attempts.length, 2);
+    assert.match(attempts[0].url, /generativelanguage\.googleapis\.com/);
+    assert.equal(attempts[1].url, 'https://openrouter.ai/api/v1/chat/completions');
+    assert.equal(diagnostics.length, 2);
+    assert.match(diagnostics[0], /"provider":"gemini"/);
+    assert.match(diagnostics[1], /"provider":"openrouter"/);
+    assert.doesNotMatch(diagnostics.join(' '), /gemini-server-key|openrouter-server-key|Bearer|authorization/i);
+  } finally {
+    console.warn = originalWarn;
+  }
 });
