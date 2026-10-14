@@ -256,14 +256,25 @@ function providerFailure(error) {
   return { category: 'provider_failure', message: 'Provider request failed.' };
 }
 
-function logProviderFailure(provider, error) {
+function logProviderEvent(event, details, level = 'info') {
+  const log = level === 'warn' ? console.warn : console.info;
+  log(`[assistant-api] ${event}`, JSON.stringify({
+    event,
+    timestamp: new Date().toISOString(),
+    ...details,
+  }));
+}
+
+function logProviderFailure(provider, error, attempt, durationMs) {
   const diagnostic = providerFailure(error);
-  console.warn('[assistant-api] provider failure', JSON.stringify({
+  logProviderEvent('provider_failure', {
     provider: provider.id,
+    attempt,
     status: Number(error?.status) || null,
+    duration_ms: durationMs,
     category: diagnostic.category,
     message: diagnostic.message,
-  }));
+  }, 'warn');
 }
 
 function checkRateLimit(request, now) {
@@ -344,16 +355,33 @@ export async function handleRequest(request, env, options = {}) {
 
   const mode = normalizeMode(typeof body.mode === 'string' ? body.mode : 'portfolio');
   const conversation = boundedConversation(body);
+  let attempt = 0;
+  let fallbackFrom = null;
   for (const provider of PROVIDERS) {
     const key = env[provider.key];
     if (!key || (cooldownUntil.get(provider.id) || 0) > now) continue;
+    attempt += 1;
+    if (fallbackFrom) {
+      logProviderEvent('provider_fallback', {
+        from_provider: fallbackFrom,
+        to_provider: provider.id,
+        attempt,
+      });
+    }
+    logProviderEvent('provider_attempt', { provider: provider.id, attempt });
+    const startedAt = Date.now();
     try {
       const answer = await requestProvider(provider, key, conversation, body.context, mode, fetchFn, env);
       cooldownUntil.delete(provider.id);
+      const durationMs = Date.now() - startedAt;
+      logProviderEvent('provider_success', { provider: provider.id, attempt, duration_ms: durationMs });
+      logProviderEvent('provider_final', { provider: provider.id, attempt });
       return json({ answer }, 200, headers);
     } catch (error) {
-      logProviderFailure(provider, error);
+      const durationMs = Date.now() - startedAt;
+      logProviderFailure(provider, error, attempt, durationMs);
       cooldown(provider, Number(error?.status) || 0, now);
+      fallbackFrom = provider.id;
     }
   }
   return json({ error: 'All AI providers are temporarily unavailable.' }, 503, headers);
