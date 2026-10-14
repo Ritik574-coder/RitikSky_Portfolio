@@ -19,6 +19,14 @@ const PROVIDERS = [
     model: 'openrouter/free',
     format: 'openai',
   },
+  {
+    id: 'groq',
+    key: 'GROQ_API_KEY',
+    endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+    model: 'openai/gpt-oss-20b',
+    modelEnv: 'GROQ_MODEL',
+    format: 'openai',
+  },
 ];
 
 const cooldownUntil = new Map();
@@ -132,7 +140,7 @@ function boundedConversation(body) {
   return messages;
 }
 
-function providerPayload(provider, conversation, context, mode) {
+function providerPayload(provider, conversation, context, mode, env) {
   const prompt = systemPrompt(context, mode);
   if (provider.format === 'gemini') {
     return {
@@ -145,7 +153,9 @@ function providerPayload(provider, conversation, context, mode) {
     };
   }
   return {
-    model: provider.model,
+    model: provider.modelEnv && typeof env[provider.modelEnv] === 'string' && env[provider.modelEnv].trim()
+      ? env[provider.modelEnv].trim()
+      : provider.model,
     messages: [{ role: 'system', content: prompt }, ...conversation],
     max_tokens: 320,
     temperature: 0.35,
@@ -172,7 +182,7 @@ function cooldown(provider, status, now) {
   cooldownUntil.set(provider.id, now + duration);
 }
 
-async function requestProvider(provider, key, conversation, context, mode, fetchFn) {
+async function requestProvider(provider, key, conversation, context, mode, fetchFn, env) {
   const headers = { 'Content-Type': 'application/json' };
   let url = provider.endpoint;
   if (provider.format === 'gemini') headers['x-goog-api-key'] = key;
@@ -185,7 +195,7 @@ async function requestProvider(provider, key, conversation, context, mode, fetch
   const response = await fetchFn(url, {
     method: 'POST',
     headers,
-    body: JSON.stringify(providerPayload(provider, conversation, context, mode)),
+    body: JSON.stringify(providerPayload(provider, conversation, context, mode, env)),
     signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
   if (!response.ok) {
@@ -202,7 +212,15 @@ async function requestProvider(provider, key, conversation, context, mode, fetch
     error.providerError = providerError;
     throw error;
   }
-  const answer = extractAnswer(provider, await response.json());
+  let payload;
+  try {
+    payload = await response.json();
+  } catch {
+    const error = new Error('Provider returned a malformed response');
+    error.status = 502;
+    throw error;
+  }
+  const answer = extractAnswer(provider, payload);
   if (!answer) {
     const error = new Error('Provider returned an empty response');
     error.status = 502;
@@ -224,6 +242,9 @@ function providerFailure(error) {
     return { category: 'invalid_model', message: 'Provider rejected the configured model.' };
   }
   if (status === 400) return { category: 'invalid_request', message: 'Provider rejected the request format or parameters.' };
+  if (status === 502 && error?.message === 'Provider returned a malformed response') {
+    return { category: 'malformed_response', message: 'Provider returned an unreadable response.' };
+  }
   if (errorName === 'TimeoutError' || errorName === 'AbortError') {
     return { category: 'timeout', message: 'Provider request timed out.' };
   }
@@ -327,7 +348,7 @@ export async function handleRequest(request, env, options = {}) {
     const key = env[provider.key];
     if (!key || (cooldownUntil.get(provider.id) || 0) > now) continue;
     try {
-      const answer = await requestProvider(provider, key, conversation, body.context, mode, fetchFn);
+      const answer = await requestProvider(provider, key, conversation, body.context, mode, fetchFn, env);
       cooldownUntil.delete(provider.id);
       return json({ answer }, 200, headers);
     } catch (error) {
