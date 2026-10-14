@@ -7,6 +7,7 @@ import { contentApi, isContentApiConfigured } from '../services/contentApi';
 
 const ContentContext = createContext(null);
 const CONTENT_TYPES = ['blog', 'paper', 'certificate', 'demo'];
+const EMPTY_PUBLIC_STATE = { entries: [], loading: true, error: '' };
 const TYPE_META = {
   blog: { title: 'Engineering Blog', short: 'Blog', description: 'Notes from projects, experiments, and engineering work.', icon: BookOpen },
   paper: { title: 'Research Papers', short: 'Papers', description: 'Research worth reading, with personal context.', icon: FileText },
@@ -241,7 +242,7 @@ function useContentOwner() {
 }
 
 export function AboutContentProvider({ children }) {
-  const [publicEntries, setPublicEntries] = useState({});
+  const [publicStates, setPublicStates] = useState(() => Object.fromEntries(CONTENT_TYPES.map(type => [type, EMPTY_PUBLIC_STATE])));
   const [ownerEntries, setOwnerEntries] = useState([]);
   const [token, setToken] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
@@ -250,24 +251,25 @@ export function AboutContentProvider({ children }) {
   const [activeEntry, setActiveEntry] = useState(null);
   const [collectionType, setCollectionType] = useState('');
   const [notice, setNotice] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [publicError, setPublicError] = useState('');
-
-  const refreshPublic = useCallback(async () => {
+  const refreshPublic = useCallback(async (onlyType = '') => {
+    const types = onlyType ? [onlyType] : CONTENT_TYPES;
     if (!isContentApiConfigured()) {
-      setLoading(false);
-      setPublicError('Content service is not configured yet.');
+      setPublicStates(current => Object.fromEntries(Object.entries(current).map(([type, state]) => [
+        type,
+        types.includes(type) ? { ...state, loading: false, error: 'Content service is not configured yet.' } : state,
+      ])));
       return;
     }
-    try {
-      const results = await Promise.all(CONTENT_TYPES.map(type => contentApi.publicEntries(type)));
-      setPublicEntries(Object.fromEntries(CONTENT_TYPES.map((type, index) => [type, results[index].entries || []])));
-      setPublicError('');
-    } catch (error) {
-      setPublicError(error.message || 'Content could not be loaded.');
-    } finally {
-      setLoading(false);
-    }
+    await Promise.all(types.map(async type => {
+      setPublicStates(current => ({ ...current, [type]: { ...current[type], loading: true, error: '' } }));
+      try {
+        const result = await contentApi.publicEntries(type);
+        if (!Array.isArray(result?.entries)) throw new Error('The content service returned an invalid response.');
+        setPublicStates(current => ({ ...current, [type]: { entries: result.entries, loading: false, error: '' } }));
+      } catch (error) {
+        setPublicStates(current => ({ ...current, [type]: { ...current[type], loading: false, error: error.message || 'Content could not be loaded.' } }));
+      }
+    }));
   }, []);
 
   useEffect(() => { refreshPublic(); }, [refreshPublic]);
@@ -347,22 +349,21 @@ export function AboutContentProvider({ children }) {
   };
 
   const context = useMemo(() => ({
-    publicEntries,
+    publicStates,
     ownerEntries,
     token,
-    loading,
-    publicError,
     notice,
     setNotice,
     setLoginOpen,
     setEditorEntry,
     setActiveEntry,
     setCollectionType,
+    refreshPublic,
     login,
     lockOwner,
     removeEntry,
     saveEntry,
-  }), [publicEntries, ownerEntries, token, loading, publicError, notice, lockOwner]);
+  }), [publicStates, ownerEntries, token, notice, lockOwner, refreshPublic]);
 
   return (
     <ContentContext.Provider value={context}>
@@ -370,7 +371,7 @@ export function AboutContentProvider({ children }) {
       {loginOpen && <OwnerLoginModal onClose={() => setLoginOpen(false)} onLogin={login} />}
       {editorEntry && <EditorValue key={`${editorEntry.type}-${editorEntry.id || 'new'}`} entry={editorEntry} onClose={() => setEditorEntry(null)} />}
       {activeEntry && <EntryModal entry={activeEntry} onClose={() => setActiveEntry(null)} onEdit={entry => { setActiveEntry(null); setEditorEntry(entry); }} />}
-      {collectionType && <CollectionModal type={collectionType} onClose={() => setCollectionType('')} onSelect={entry => { setCollectionType(''); setActiveEntry(entry); }} />}
+      {collectionType && <CollectionModal type={collectionType} onClose={() => setCollectionType('')} onSelect={entry => { setCollectionType(''); setActiveEntry(entry); }} onRetry={() => refreshPublic(collectionType)} />}
       {notice && !loginOpen && !editorEntry && !activeEntry && <div className="fixed bottom-4 right-4 z-[90] max-w-sm rounded border border-lime-400/20 bg-[#101610] px-4 py-3 text-sm text-white shadow-lg" role="status">{notice}<button type="button" className="ml-3 text-lime-400" onClick={() => setNotice('')}>Dismiss</button></div>}
     </ContentContext.Provider>
   );
@@ -438,21 +439,32 @@ function EntryModal({ entry, onClose, onEdit }) {
   );
 }
 
-function CollectionModal({ type, onClose, onSelect }) {
-  const { publicEntries, ownerEntries, token } = useContentOwner();
-  const entries = token ? ownerEntries.filter(entry => entry.type === type) : (publicEntries[type] || []);
+function CollectionModal({ type, onClose, onSelect, onRetry }) {
+  const { publicStates, ownerEntries, token } = useContentOwner();
+  const publicState = publicStates[type] || EMPTY_PUBLIC_STATE;
+  const entries = token ? ownerEntries.filter(entry => entry.type === type) : publicState.entries;
+  const meta = TYPE_META[type];
+  const emptyMessage = { blog: 'No published posts yet.', paper: 'No published papers yet.', certificate: 'No published certificates yet.', demo: 'No published project demos yet.' }[type];
+  useEffect(() => {
+    const handleKeyDown = event => { if (event.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}>
       <div className="w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-[6px] border border-lime-400/25 bg-[#101610] p-5 shadow-[0_20px_80px_rgba(0,0,0,0.55)]" role="dialog" aria-modal="true" aria-labelledby="content-list-title">
-        <div className="mb-4 flex items-center justify-between"><div><p className="font-mono text-[9px] uppercase tracking-[0.2em] text-lime-400">{TYPE_META[type].title}</p><h3 id="content-list-title" className="mt-1 text-lg font-bold text-white">Entries</h3></div><button type="button" onClick={onClose} className="text-white/60 hover:text-lime-400" aria-label="Close list"><X size={17} /></button></div>
-        <div className="divide-y divide-lime-400/10">{entries.map(entry => <button type="button" key={entry.id} onClick={() => onSelect(entry)} className="block w-full py-3 text-left"><span className="block text-sm text-white hover:text-lime-400">{entry.title}</span><span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.1em] text-white/40">{entry.status === 'draft' ? 'Draft' : 'Published'}{entry.updatedAt ? ` · Updated ${entry.updatedAt.slice(0, 10)}` : ''}</span></button>)}</div>
+        <div className="mb-4 flex items-center justify-between"><div><p className="font-mono text-[9px] uppercase tracking-[0.2em] text-lime-400">{meta.title}</p><h3 id="content-list-title" className="mt-1 text-lg font-bold text-white">Entries</h3></div><button type="button" onClick={onClose} className="text-white/60 hover:text-lime-400" aria-label="Close list"><X size={17} /></button></div>
+        {!token && publicState.loading && <p className="py-8 text-center text-sm text-white/55" role="status">Loading {meta.short.toLowerCase()}…</p>}
+        {!token && publicState.error && <div className="space-y-3 py-4 text-center"><p role="alert" className="text-sm text-red-200">{publicState.error}</p><button type="button" onClick={onRetry} className="owner-secondary mx-auto">Retry</button></div>}
+        {(token || (!publicState.loading && !publicState.error)) && entries.length === 0 && <p className="py-8 text-center font-mono text-[10px] text-white/45" role="status">{token ? 'No entries yet.' : emptyMessage}</p>}
+        {(token || (!publicState.loading && !publicState.error)) && entries.length > 0 && <div className="divide-y divide-lime-400/10">{entries.map(entry => <button type="button" key={entry.id} onClick={() => onSelect(entry)} className="block w-full py-3 text-left"><span className="block text-sm text-white hover:text-lime-400">{entry.title}</span><span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.1em] text-white/40">{entry.status === 'draft' ? 'Draft' : 'Published'}{entry.updatedAt ? ` · Updated ${entry.updatedAt.slice(0, 10)}` : ''}</span></button>)}</div>}
       </div>
     </div>
   );
 }
 
 export function AboutContentCards({ slot, className = '' }) {
-  const { publicEntries, ownerEntries, token, loading, publicError, notice, setLoginOpen, setEditorEntry, setActiveEntry, setCollectionType, lockOwner } = useContentOwner();
+  const { publicStates, ownerEntries, token, notice, setLoginOpen, setEditorEntry, setActiveEntry, setCollectionType, refreshPublic, lockOwner } = useContentOwner();
   const types = slot === 'profile' ? ['blog', 'paper'] : ['certificate', 'demo'];
   const owner = Boolean(token);
   return (
@@ -465,18 +477,23 @@ export function AboutContentCards({ slot, className = '' }) {
         {types.map(type => {
           const meta = TYPE_META[type];
           const Icon = meta.icon;
-          const entries = owner ? ownerEntries.filter(entry => entry.type === type) : (publicEntries[type] || []);
+          const publicState = publicStates[type] || EMPTY_PUBLIC_STATE;
+          const entries = owner ? ownerEntries.filter(entry => entry.type === type) : publicState.entries;
           return (
             <article key={type} className="group relative flex min-h-[164px] h-full min-w-0 flex-col overflow-hidden rounded-[4px] border border-lime-400/15 bg-[#101610] p-3.5 transition-colors hover:border-lime-400/30 sm:p-4">
-              <div className="mb-3 flex items-start justify-between gap-2"><div className="flex min-w-0 items-center gap-2"><Icon size={14} className="shrink-0 text-lime-400" /><h3 className="truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/75 sm:text-[10px]">{meta.short}</h3></div>{owner && <button type="button" onClick={() => setEditorEntry({ type, data: blankData(type), status: 'draft' })} aria-label={`Add ${meta.short}`} className="shrink-0 rounded border border-lime-400/20 p-1 text-lime-400 hover:bg-lime-400 hover:text-[#171817]"><Plus size={12} /></button>}</div>
-              <p className="mb-3 min-h-8 text-[11px] leading-relaxed text-white/45">{meta.description}</p>
-              <div className="mt-auto space-y-1.5">
-                {loading && <p className="font-mono text-[9px] text-white/40">Loading…</p>}
-                {!loading && entries.slice(0, 2).map(entry => <button type="button" key={entry.id} onClick={() => setActiveEntry(entry)} className="block w-full truncate text-left text-xs text-lime-100/80 transition-colors hover:text-lime-400">{entry.status === 'draft' && <span className="mr-1 font-mono text-[8px] text-amber-300">DRAFT</span>}{entry.title}</button>)}
-                {!loading && entries.length === 0 && <p className="font-mono text-[9px] text-white/35">{owner ? 'No entries yet.' : publicError ? 'Content is unavailable.' : 'No published entries yet.'}</p>}
-                {entries.length > 2 && <button type="button" onClick={() => setCollectionType(type)} className="font-mono text-[9px] uppercase tracking-[0.1em] text-lime-400/70">View all {entries.length}</button>}
+              <button type="button" onClick={() => setCollectionType(type)} aria-label={`Open ${meta.title}`} className="absolute -inset-px z-0 cursor-pointer rounded-[4px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-lime-400" />
+              <div className="relative z-10 flex h-full min-h-[128px] flex-col pointer-events-none">
+                <div className="mb-3 flex items-start justify-between gap-2"><div className="flex min-w-0 items-center gap-2"><Icon size={14} className="shrink-0 text-lime-400" /><h3 className="truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/75 sm:text-[10px]">{meta.short}</h3></div>{owner && <button type="button" onClick={() => setEditorEntry({ type, data: blankData(type), status: 'draft' })} aria-label={`Add ${meta.short}`} className="pointer-events-auto shrink-0 rounded border border-lime-400/20 p-1 text-lime-400 hover:bg-lime-400 hover:text-[#171817]"><Plus size={12} /></button>}</div>
+                <p className="mb-3 min-h-8 text-[11px] leading-relaxed text-white/45">{meta.description}</p>
+                <div className="mt-auto space-y-1.5">
+                  {!owner && publicState.loading && <p className="font-mono text-[9px] text-white/40" role="status">Loading…</p>}
+                  {entries.slice(0, 2).map(entry => <button type="button" key={entry.id} onClick={() => setActiveEntry(entry)} className="pointer-events-auto block w-full truncate text-left text-xs text-lime-100/80 transition-colors hover:text-lime-400">{entry.status === 'draft' && <span className="mr-1 font-mono text-[8px] text-amber-300">DRAFT</span>}{entry.title}</button>)}
+                  {!owner && !publicState.loading && publicState.error && <div className="pointer-events-auto flex items-center justify-between gap-2"><p className="truncate font-mono text-[9px] text-red-200" title={publicState.error}>Content unavailable.</p><button type="button" onClick={() => refreshPublic(type)} className="font-mono text-[9px] uppercase text-lime-400 hover:text-lime-300">Retry</button></div>}
+                  {!owner && !publicState.loading && !publicState.error && entries.length === 0 && <p className="font-mono text-[9px] text-white/35">No published entries yet.</p>}
+                  {owner && entries.length === 0 && <p className="font-mono text-[9px] text-white/35">No entries yet.</p>}
+                  {entries.length > 2 && <button type="button" onClick={() => setCollectionType(type)} className="pointer-events-auto font-mono text-[9px] uppercase tracking-[0.1em] text-lime-400/70">View all {entries.length}</button>}
+                </div>
               </div>
-              {!owner && publicError && !loading && <span className="sr-only">{publicError}</span>}
             </article>
           );
         })}

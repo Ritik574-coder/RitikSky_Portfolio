@@ -41,3 +41,6 @@ secret*.json
 
 # deploy/platform artifacts
 .vercel/
+*.agents
+*.aws
+*.codex
