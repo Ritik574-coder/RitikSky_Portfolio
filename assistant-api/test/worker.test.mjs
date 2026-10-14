@@ -464,3 +464,69 @@ test('falls through a malformed Groq response without exposing provider details'
     console.warn = originalWarn;
   }
 });
+
+test('logs safe provider attempts, failure, fallback, success, and final provider events', async () => {
+  const events = [];
+  const originalInfo = console.info;
+  const originalWarn = console.warn;
+  console.info = (_label, entry) => events.push(JSON.parse(entry));
+  console.warn = (_label, entry) => events.push(JSON.parse(entry));
+  try {
+    const sensitivePrompt = 'SENSITIVE_PROMPT_DO_NOT_LOG';
+    const response = await handleRequest(makeRequest('/chat', {
+      ...validBody,
+      message: sensitivePrompt,
+      context: 'SENSITIVE_CONTEXT_DO_NOT_LOG',
+    }, '198.51.100.45'), {
+      ...env,
+      GEMINI_API_KEY: 'gemini-secret-do-not-log',
+      MISTRAL_API_KEY: 'mistral-secret-do-not-log',
+    }, {
+      now: 10000000,
+      fetch: async () => {
+        if (events.some(event => event.event === 'provider_failure')) {
+          return Response.json({ choices: [{ message: { content: 'Successful generated answer.' } }] });
+        }
+        return Response.json({
+          error: { message: 'SENSITIVE_UPSTREAM_DETAILS_DO_NOT_LOG' },
+        }, { status: 503 });
+      },
+    });
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { answer: 'Successful generated answer.' });
+    assert.deepEqual(events.map(event => event.event), [
+      'provider_attempt',
+      'provider_failure',
+      'provider_fallback',
+      'provider_attempt',
+      'provider_success',
+      'provider_final',
+    ]);
+    assert.deepEqual(events.map(event => event.provider || event.to_provider), [
+      'gemini',
+      'gemini',
+      'mistral',
+      'mistral',
+      'mistral',
+      'mistral',
+    ]);
+    assert.equal(events[0].attempt, 1);
+    assert.equal(events[1].attempt, 1);
+    assert.equal(events[1].status, 503);
+    assert.equal(events[1].category, 'temporary_provider_failure');
+    assert.equal(typeof events[1].duration_ms, 'number');
+    assert.equal(events[2].from_provider, 'gemini');
+    assert.equal(events[2].attempt, 2);
+    assert.equal(events[3].attempt, 2);
+    assert.equal(typeof events[4].duration_ms, 'number');
+    assert.equal(events[5].provider, 'mistral');
+    for (const event of events) {
+      assert.match(event.timestamp, /^\d{4}-\d\d-\d\dT.*Z$/);
+    }
+    assert.doesNotMatch(JSON.stringify(events), /gemini-secret|mistral-secret|SENSITIVE_|Successful generated answer/);
+  } finally {
+    console.info = originalInfo;
+    console.warn = originalWarn;
+  }
+});
