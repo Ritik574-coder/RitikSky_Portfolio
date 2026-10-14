@@ -2,6 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+.content-field {
+  display: block;
+  width: 100%;
+  border: 1px solid rgb(163 255 18 / 18%);
+  border-radius: 3px;
+  background: #171817;
+  padding: 0.65rem 0.75rem;
+  color: white;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.content-field:focus {
+  border-color: rgb(163 255 18 / 60%);
+}
+
+.content-field option {
+  background: #171817;
+  color: white;
+}
+
+.owner-primary,
+.owner-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgb(163 255 18 / 25%);
+  border-radius: 3px;
+  padding: 0.55rem 0.75rem;
+  color: #a3ff12;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.owner-primary {
+  background: #a3ff12;
+  color: #171817;
+  font-weight: 700;
+}
+
+.owner-primary:disabled,
+.owner-secondary:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
+.owner-secondary:hover {
+  border-color: rgb(163 255 18 / 60%);
+}
+
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

@@ -1,0 +1,13 @@
+name = "ritik-portfolio-content"
+main = "worker.mjs"
+compatibility_date = "2026-10-14"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://ritik574-coder.github.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ritik-portfolio-content"
+database_id = "bdd83621-41c1-4323-9a40-0920a49bab72"
+migrations_dir = "migrations"
