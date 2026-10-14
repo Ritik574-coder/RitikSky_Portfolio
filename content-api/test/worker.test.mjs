@@ -210,3 +210,30 @@ test('accepts each content type and extensible demo category labels', async () =
   assert.equal(env.DB.entries.size, 3);
   assert.equal((await (await handleRequest(makeRequest('/api/public/demo'), env, { now: now + 2000 })).json()).entries[0].data.category, 'Streaming systems');
 });
+
+test('serves published entries from all four public content endpoints without authentication', async () => {
+  const env = configuredEnv();
+  const types = ['blog', 'paper', 'certificate', 'demo'];
+  types.forEach((type, index) => {
+    const id = `published-${type}`;
+    const data = { title: `Published ${type}` };
+    env.DB.entries.set(id, {
+      id, type, title: data.title, data_json: JSON.stringify(data), status: 'published',
+      created_at: new Date(now + index).toISOString(), updated_at: new Date(now + index).toISOString(),
+    });
+    const draftId = `draft-${type}`;
+    env.DB.entries.set(draftId, {
+      id: draftId, type, title: `Draft ${type}`, data_json: JSON.stringify({ title: `Draft ${type}` }), status: 'draft',
+      created_at: new Date(now + index).toISOString(), updated_at: new Date(now + index).toISOString(),
+    });
+  });
+
+  for (const type of types) {
+    const response = await handleRequest(makeRequest(`/api/public/${type}`), env, { now });
+    assert.equal(response.status, 200, `${type} should be public`);
+    const payload = await response.json();
+    assert.equal(payload.entries.length, 1);
+    assert.equal(payload.entries[0].id, `published-${type}`);
+    assert.equal(payload.entries[0].status, 'published');
+  }
+});
