@@ -355,3 +355,112 @@ test('returns the existing safe unavailable response when Gemini and OpenRouter 
     console.warn = originalWarn;
   }
 });
+
+test('sends Groq requests with the server secret, configured model, and preserved conversation', async () => {
+  let requestDetails;
+  const response = await handleRequest(makeRequest('/chat', {
+    ...validBody,
+    mode: 'general_technical',
+    history: [{ role: 'assistant', content: 'Earlier answer.' }],
+  }, '198.51.100.41'), {
+    ...env,
+    GROQ_API_KEY: 'groq-server-secret',
+    GROQ_MODEL: 'openai/gpt-oss-120b',
+  }, {
+    now: 4000000,
+    fetch: async (url, init) => {
+      requestDetails = { url: String(url), init, body: JSON.parse(init.body) };
+      return Response.json({ choices: [{ message: { content: 'Groq answer.' } }] });
+    },
+  });
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { answer: 'Groq answer.' });
+  assert.equal(requestDetails.url, 'https://api.groq.com/openai/v1/chat/completions');
+  assert.equal(requestDetails.init.headers.Authorization, 'Bearer groq-server-secret');
+  assert.equal(requestDetails.body.model, 'openai/gpt-oss-120b');
+  assert.equal(requestDetails.body.messages[0].role, 'system');
+  assert.match(requestDetails.body.messages[0].content, /Answer mode: general_technical/);
+  assert.deepEqual(requestDetails.body.messages.slice(-2), [
+    { role: 'assistant', content: 'Earlier answer.' },
+    { role: 'user', content: validBody.message },
+  ]);
+  assert.equal(requestDetails.body.stream, false);
+  assert.doesNotMatch(JSON.stringify(requestDetails.body), /groq-server-secret/);
+});
+
+test('falls back to Groq after earlier providers fail', async () => {
+  const attempts = [];
+  const diagnostics = [];
+  const originalWarn = console.warn;
+  console.warn = (...values) => diagnostics.push(values.join(' '));
+  try {
+    const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.42'), {
+      ...env,
+      GEMINI_API_KEY: 'gemini-server-key',
+      OPENROUTER_API_KEY: 'openrouter-server-key',
+      GROQ_API_KEY: 'groq-server-key',
+    }, {
+      now: 4100000,
+      fetch: async url => {
+        attempts.push(String(url));
+        if (attempts.length === 3) return Response.json({ choices: [{ message: { content: 'Groq fallback answer.' } }] });
+        return new Response('{}', { status: attempts.length === 1 ? 503 : 429 });
+      },
+    });
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { answer: 'Groq fallback answer.' });
+    assert.deepEqual(attempts, [
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent',
+      'https://openrouter.ai/api/v1/chat/completions',
+      'https://api.groq.com/openai/v1/chat/completions',
+    ]);
+    assert.equal(diagnostics.length, 2);
+    assert.doesNotMatch(diagnostics.join(' '), /gemini-server-key|openrouter-server-key|groq-server-key|Bearer/i);
+  } finally {
+    console.warn = originalWarn;
+  }
+});
+
+test('handles a Groq rate limit with a safe unavailable response', async () => {
+  const diagnostics = [];
+  const originalWarn = console.warn;
+  console.warn = (...values) => diagnostics.push(values.join(' '));
+  try {
+    const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.44'), {
+      ...env,
+      GROQ_API_KEY: 'groq-server-key',
+    }, {
+      now: 4150000,
+      fetch: async () => new Response('{}', { status: 429 }),
+    });
+    assert.equal(response.status, 503);
+    assert.deepEqual(await response.json(), { error: 'All AI providers are temporarily unavailable.' });
+    assert.match(diagnostics[0], /"category":"rate_limited"/);
+    assert.doesNotMatch(diagnostics[0], /groq-server-key|Bearer/i);
+  } finally {
+    console.warn = originalWarn;
+  }
+});
+
+test('falls through a malformed Groq response without exposing provider details', async () => {
+  const diagnostics = [];
+  const originalWarn = console.warn;
+  console.warn = (...values) => diagnostics.push(values.join(' '));
+  try {
+    const response = await handleRequest(makeRequest('/chat', validBody, '198.51.100.43'), {
+      ...env,
+      GROQ_API_KEY: 'groq-server-key',
+    }, {
+      now: 4300000,
+      fetch: async () => new Response('upstream body must not be logged', { status: 200 }),
+    });
+    assert.equal(response.status, 503);
+    assert.deepEqual(await response.json(), { error: 'All AI providers are temporarily unavailable.' });
+    assert.match(diagnostics[0], /"provider":"groq"/);
+    assert.match(diagnostics[0], /"category":"malformed_response"/);
+    assert.doesNotMatch(diagnostics[0], /groq-server-key|upstream body/);
+  } finally {
+    console.warn = originalWarn;
+  }
+});
