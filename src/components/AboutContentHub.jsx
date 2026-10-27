@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -217,21 +225,47 @@ function EditorValue({ entry, onEdit, onClose }) {
     status,
   };
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+      window.lenisInstance.stop();
+    }
+
+    const onEscape = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+        window.lenisInstance.start();
+      }
+      window.removeEventListener("keydown", onEscape);
+    };
+  }, [onClose]);
+
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-5 md:p-6 overscroll-contain"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-[6px] border border-lime-400/25 bg-[#101610] shadow-[0_20px_80px_rgba(0,0,0,0.55)]"
+        data-lenis-prevent
+        className="w-full max-w-3xl h-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[90dvh] flex flex-col rounded-[6px] border border-lime-400/25 bg-[#101610] shadow-[0_20px_80px_rgba(0,0,0,0.55)] overflow-hidden overscroll-contain"
         role="dialog"
         aria-modal="true"
         aria-labelledby="content-editor-title"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-lime-400/15 bg-[#101610] px-5 py-4">
+        <div className="shrink-0 flex items-center justify-between border-b border-lime-400/15 bg-[#101610] px-5 py-4 z-10">
           <div>
             <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-lime-400">
               {entry.id ? "Edit entry" : "New entry"} · {TYPE_META[entry.type].short}
@@ -243,7 +277,7 @@ function EditorValue({ entry, onEdit, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded border border-white/15 p-2 text-white/70 hover:border-lime-400/40 hover:text-lime-400"
+            className="rounded border border-white/15 p-2 text-white/70 hover:border-lime-400/40 hover:text-lime-400 focus:outline-none focus-visible:ring-1 focus-visible:ring-lime-400"
             aria-label="Close editor"
           >
             <X size={16} />
@@ -251,7 +285,7 @@ function EditorValue({ entry, onEdit, onClose }) {
         </div>
 
         <form
-          className="space-y-4 p-5"
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 pb-8 space-y-4 modal-scroll focus:outline-none"
           onSubmit={(event) => {
             event.preventDefault();
             submit(status);
@@ -714,6 +748,32 @@ function OwnerLoginModal({ onClose, onLogin }) {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+      window.lenisInstance.stop();
+    }
+
+    const onEscape = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+        window.lenisInstance.start();
+      }
+      window.removeEventListener("keydown", onEscape);
+    };
+  }, [onClose]);
+
   const submit = async (event) => {
     event.preventDefault();
     setBusy(true);
@@ -732,12 +792,16 @@ function OwnerLoginModal({ onClose, onLogin }) {
   };
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overscroll-contain"
       role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
     >
       <form
+        data-lenis-prevent
         onSubmit={submit}
-        className="w-full max-w-sm space-y-4 rounded-[6px] border border-lime-400/25 bg-[#101610] p-5 shadow-[0_20px_80px_rgba(0,0,0,0.55)]"
+        className="w-full max-w-sm space-y-4 rounded-[6px] border border-lime-400/25 bg-[#101610] p-5 shadow-[0_20px_80px_rgba(0,0,0,0.55)] overscroll-contain"
         role="dialog"
         aria-modal="true"
         aria-labelledby="owner-login-title"
@@ -793,6 +857,32 @@ function EntryModal({ entry, onClose, onEdit }) {
   const [actionError, setActionError] = useState("");
   const owner = Boolean(token);
   const status = entry.status === "draft" ? "Draft preview" : "Published";
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+      window.lenisInstance.stop();
+    }
+
+    const onEscape = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+        window.lenisInstance.start();
+      }
+      window.removeEventListener("keydown", onEscape);
+    };
+  }, [onClose]);
+
   const togglePublish = () => {
     setEditorEntry({
       ...entry,
@@ -811,19 +901,20 @@ function EntryModal({ entry, onClose, onEdit }) {
   };
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-5 md:p-6 overscroll-contain"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[6px] border border-lime-400/25 bg-[#101610] shadow-[0_20px_80px_rgba(0,0,0,0.55)]"
+        data-lenis-prevent
+        className="w-full max-w-2xl h-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[88dvh] flex flex-col rounded-[6px] border border-lime-400/25 bg-[#101610] shadow-[0_20px_80px_rgba(0,0,0,0.55)] overflow-hidden overscroll-contain"
         role="dialog"
         aria-modal="true"
         aria-labelledby="content-details-title"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-lime-400/15 bg-[#101610] px-5 py-4">
+        <div className="shrink-0 flex items-center justify-between border-b border-lime-400/15 bg-[#101610] px-5 py-4 z-10">
           <div>
             <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-lime-400">
               {TYPE_META[entry.type].title} · {status}
@@ -835,13 +926,16 @@ function EntryModal({ entry, onClose, onEdit }) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded border border-white/15 p-2 text-white/70 hover:text-lime-400"
+            className="rounded border border-white/15 p-2 text-white/70 hover:text-lime-400 focus:outline-none focus-visible:ring-1 focus-visible:ring-lime-400"
             aria-label="Close details"
           >
             <X size={16} />
           </button>
         </div>
-        <div className="space-y-5 p-5">
+        <div
+          tabIndex={0}
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 pb-8 space-y-5 modal-scroll focus:outline-none"
+        >
           <EntryDetails entry={entry} />
           {actionError && (
             <p
@@ -1474,6 +1568,7 @@ function DemoCard({ entry, onEdit, onDelete, owner }) {
 function CollectionModal({ type, onClose, onRetry }) {
   const { publicStates, ownerEntries, token, setEditorEntry, removeEntry } = useContentOwner();
   const [activeBlogEntry, setActiveBlogEntry] = useState(null);
+  const contentRef = useRef(null);
   const publicState = publicStates[type] || EMPTY_PUBLIC_STATE;
   const entries = token ? ownerEntries.filter((entry) => entry.type === type) : publicState.entries;
   const meta = TYPE_META[type];
@@ -1482,12 +1577,29 @@ function CollectionModal({ type, onClose, onRetry }) {
   const sortedEntries = useMemo(() => sortEntriesNewestFirst(entries), [entries]);
 
   useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+      window.lenisInstance.stop();
+    }
+
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      if (window.lenisInstance && !window.lenisInstance.isDestroyed) {
+        window.lenisInstance.start();
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [activeBlogEntry]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -1515,20 +1627,21 @@ function CollectionModal({ type, onClose, onRetry }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6 md:p-8"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-5 md:p-6 lg:p-8 overscroll-contain"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full max-w-4xl max-h-[88vh] flex flex-col rounded-[6px] border border-lime-400/25 bg-[#101610] shadow-[0_25px_90px_rgba(0,0,0,0.7)] overflow-hidden"
+        data-lenis-prevent
+        className="w-full max-w-4xl h-[calc(100dvh-1.5rem)] sm:h-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2.5rem)] md:max-h-[88dvh] flex flex-col rounded-[6px] border border-lime-400/25 bg-[#101610] shadow-[0_25px_90px_rgba(0,0,0,0.7)] overflow-hidden overscroll-contain"
         role="dialog"
         aria-modal="true"
         aria-labelledby="collection-modal-title"
       >
         {/* Sticky Header */}
-        <div className="shrink-0 flex items-center justify-between border-b border-lime-400/15 bg-[#101610] px-5 sm:px-6 py-4">
+        <div className="shrink-0 flex items-center justify-between border-b border-lime-400/15 bg-[#101610] px-5 sm:px-6 py-4 z-10">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[3px] border border-lime-400/20 bg-lime-400/10 text-lime-400">
               <Icon size={16} />
@@ -1569,7 +1682,13 @@ function CollectionModal({ type, onClose, onRetry }) {
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-7">
+        <div
+          ref={contentRef}
+          tabIndex={0}
+          role="region"
+          aria-label={`${meta.title} collection content`}
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 sm:p-7 pb-10 sm:pb-12 focus:outline-none focus-visible:ring-1 focus-visible:ring-lime-400/40 modal-scroll"
+        >
           {!owner && publicState.loading && (
             <div
               className="py-20 flex flex-col items-center justify-center gap-3 text-center"
