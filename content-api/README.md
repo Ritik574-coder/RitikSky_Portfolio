@@ -16,7 +16,7 @@ npx wrangler secret put OWNER_PASSWORD_HASH
 npx wrangler deploy
 ```
 
-The password hash helper prompts without echo. Use a unique password with at least 14 characters; copy only the `pbkdf2-sha256$...` value it prints, then paste that value into Wrangler's prompt. The Worker verifies it with PBKDF2-SHA-256 (210,000 iterations). Do not commit the generated hash or put the password/hash in `[vars]`, `.env`, or frontend variables.
+The password hash helper prompts without echo. Use a unique password with at least 14 characters; copy only the `pbkdf2-sha256$...` value it prints, then paste that value into Wrangler's prompt. The Worker verifies it with PBKDF2-SHA-256 (100,000 iterations, the maximum supported by Cloudflare Workers). Do not commit the generated hash or put the password/hash in `[vars]`, `.env`, or frontend variables.
 
 After deploy, set the GitHub repository Actions variable `VITE_CONTENT_API_URL` to the Worker origin Wrangler assigned, for example `https://ritik-portfolio-content.<account>.workers.dev`:
 
