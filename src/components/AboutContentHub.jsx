@@ -33,7 +33,7 @@ const TYPE_META = {
   blog: {
     title: "Engineering Blog",
     short: "Blog",
-    description: "Notes from projects, experiments, and engineering work.",
+    description: "Engineering articles, project progress, and technical learnings.",
     icon: BookOpen,
     action: "Read Articles",
     unit: "articles",
@@ -43,7 +43,7 @@ const TYPE_META = {
   paper: {
     title: "Research Papers",
     short: "Papers",
-    description: "Research worth reading, with personal context.",
+    description: "Research papers, reading notes, and technical insights.",
     icon: FileText,
     action: "Explore Library",
     unit: "papers",
@@ -53,7 +53,7 @@ const TYPE_META = {
   certificate: {
     title: "Certificates",
     short: "Certificates",
-    description: "Credentials and verified certifications.",
+    description: "Credentials and certificate verification.",
     icon: Award,
     action: "View Certificates",
     unit: "credentials",
@@ -64,7 +64,7 @@ const TYPE_META = {
   demo: {
     title: "Recent Project Demos",
     short: "Project Demos",
-    description: "Small builds, experiments, and working demos.",
+    description: "Prototypes, experiments, and working demonstrations.",
     icon: FlaskConical,
     action: "Explore Demos",
     unit: "demos",
@@ -1801,15 +1801,23 @@ function CollectionModal({ type, onClose, onRetry }) {
 export function AboutContentCards({ slot, className = "" }) {
   const { publicStates, ownerEntries, token, notice, setLoginOpen, setCollectionType, lockOwner } =
     useContentOwner();
-  const types = slot === "profile" ? ["blog", "paper"] : ["certificate", "demo"];
+  const types =
+    slot === "profile"
+      ? ["blog", "paper"]
+      : slot === "highlight"
+      ? ["certificate", "demo"]
+      : ["blog", "paper", "certificate", "demo"];
   const owner = Boolean(token);
 
   return (
     <div className={className}>
-      {slot === "profile" && (
-        <div className="mb-2 flex min-h-7 items-center justify-end gap-2">
+      <div className="mb-2.5 flex min-h-6 items-center justify-between gap-2">
+        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">
+          Collections
+        </span>
+        <div className="flex items-center gap-2">
           {notice && (
-            <span role="status" className="mr-auto truncate font-mono text-[9px] text-lime-400/75">
+            <span role="status" className="truncate font-mono text-[9px] text-lime-400/75">
               {notice}
             </span>
           )}
@@ -1833,7 +1841,7 @@ export function AboutContentCards({ slot, className = "" }) {
             </button>
           )}
         </div>
-      )}
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5 items-stretch">
         {types.map((type) => {
@@ -1857,7 +1865,7 @@ export function AboutContentCards({ slot, className = "" }) {
           return (
             <article
               key={type}
-              className="group relative flex flex-col justify-between h-full min-h-[148px] rounded-[4px] border border-lime-400/15 bg-[#101610] p-4 transition-all duration-200 hover:border-lime-400/35 hover:bg-[#121912] focus-within:border-lime-400/50"
+              className="group relative flex flex-col justify-between h-full min-h-[140px] rounded-[4px] border border-lime-400/15 bg-[#101610] p-3.5 sm:p-4 transition-all duration-200 hover:border-lime-400/35 hover:bg-[#121912] focus-within:border-lime-400/50"
             >
               <button
                 type="button"
@@ -1867,8 +1875,8 @@ export function AboutContentCards({ slot, className = "" }) {
               />
 
               <div className="relative z-10 pointer-events-none">
-                <div className="flex items-center justify-between gap-2 mb-2.5">
-                  <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5">
+                  <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
                     <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[3px] border border-lime-400/20 bg-lime-400/10 text-lime-400">
                       <Icon size={14} />
                     </div>
@@ -1881,13 +1889,13 @@ export function AboutContentCards({ slot, className = "" }) {
                   </span>
                 </div>
 
-                <p className="text-[12px] text-white/55 leading-relaxed line-clamp-2">
+                <p className="text-[11.5px] sm:text-[12px] text-white/55 leading-relaxed line-clamp-2 min-h-[34px]">
                   {meta.description}
                 </p>
               </div>
 
-              <div className="relative z-10 pointer-events-none mt-3.5 pt-2.5 border-t border-lime-400/10 flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-lime-400 font-medium group-hover:text-lime-300 transition-colors">
+              <div className="relative z-10 pointer-events-none mt-3 pt-2.5 border-t border-lime-400/10 flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.14em] text-lime-400 font-medium group-hover:text-lime-300 transition-colors">
                   <span>{meta.action}</span>
                   <ArrowUpRight
                     size={12}

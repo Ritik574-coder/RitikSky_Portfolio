@@ -151,15 +151,15 @@ const ProfessionalExperience = () => {
       <div className="max-w-[1280px] mx-auto px-6 md:px-10 relative z-10">
         <SectionEyebrow number="03" label="Experience" className="mb-10 md:mb-12" />
 
-        <div className="grid lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] gap-8 lg:gap-16 items-start min-w-0">
+        <div className="grid lg:grid-cols-[340px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)] gap-8 lg:gap-12 xl:gap-16 items-start min-w-0">
           <aside className="lg:sticky lg:top-24 min-w-0">
-            <h2 className="max-w-[280px] text-[30px] sm:text-[38px] lg:text-[40px] font-black uppercase tracking-[-0.03em] leading-[0.9] text-white">
+            <h2 className="text-[30px] sm:text-[36px] lg:text-[38px] font-black uppercase tracking-[-0.03em] leading-[0.92] text-white">
               Professional
               <br />
               Experience
             </h2>
 
-            <p className="mt-5 text-[14px] md:text-[15px] font-light leading-[1.8] text-white/70 max-w-[320px]">
+            <p className="mt-5 text-[14px] md:text-[15px] font-light leading-[1.8] text-white/70 max-w-none">
               My primary focus is Data Engineering, with practical work spanning data pipelines, data warehousing, data transformation, and data quality. I strengthen my engineering approach through hands-on projects, technical research, and established industry practices, while developing further in Analytics Engineering and expanding my knowledge of AI/ML Engineering.
             </p>
 
@@ -178,7 +178,7 @@ const ProfessionalExperience = () => {
             </div>
           </aside>
 
-          <div className="relative space-y-2 min-w-0 overflow-x-clip">
+          <div className="relative space-y-3.5 min-w-0 overflow-x-clip">
             {experiences.map((experience, index) => (
               <ExperienceItem
                 key={experience.role}
