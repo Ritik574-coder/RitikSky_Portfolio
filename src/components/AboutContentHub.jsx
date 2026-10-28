@@ -1801,49 +1801,60 @@ function CollectionModal({ type, onClose, onRetry }) {
 export function AboutContentCards({ slot, className = "" }) {
   const { publicStates, ownerEntries, token, notice, setLoginOpen, setCollectionType, lockOwner } =
     useContentOwner();
-  const types =
-    slot === "profile"
-      ? ["blog", "paper"]
-      : slot === "highlight"
+  const isLeft = slot === "left" || slot === "profile";
+  const isRight = slot === "right" || slot === "highlights";
+  const types = isLeft
+    ? ["blog", "paper"]
+    : isRight
       ? ["certificate", "demo"]
       : ["blog", "paper", "certificate", "demo"];
   const owner = Boolean(token);
+
+  const headerTitle = isLeft
+    ? "Articles & Research"
+    : isRight
+      ? "Credentials & Demos"
+      : "Collections";
 
   return (
     <div className={className}>
       <div className="mb-2.5 flex min-h-6 items-center justify-between gap-2">
         <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">
-          Collections
+          {headerTitle}
         </span>
-        <div className="flex items-center gap-2">
-          {notice && (
-            <span role="status" className="truncate font-mono text-[9px] text-lime-400/75">
-              {notice}
-            </span>
-          )}
-          {owner ? (
-            <button
-              type="button"
-              onClick={() => lockOwner()}
-              className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-white/45 hover:text-lime-400 transition-colors"
-            >
-              <UnlockKeyhole size={12} />
-              Lock editor
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setLoginOpen(true)}
-              className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-white/45 transition-colors hover:text-lime-400"
-            >
-              <LockKeyhole size={12} />
-              Owner edit
-            </button>
-          )}
-        </div>
+        {!isLeft && (
+          <div className="flex items-center gap-2">
+            {notice && (
+              <span role="status" className="truncate font-mono text-[9px] text-lime-400/75">
+                {notice}
+              </span>
+            )}
+            {owner ? (
+              <button
+                type="button"
+                onClick={() => lockOwner()}
+                className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-white/45 hover:text-lime-400 transition-colors"
+              >
+                <UnlockKeyhole size={12} />
+                Lock editor
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setLoginOpen(true)}
+                className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-white/45 transition-colors hover:text-lime-400"
+              >
+                <LockKeyhole size={12} />
+                Owner edit
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5 items-stretch">
+      <div
+        className={`grid grid-cols-1 sm:grid-cols-2 ${isLeft ? "gap-2.5" : "gap-3 sm:gap-3.5"} items-stretch`}
+      >
         {types.map((type) => {
           const meta = TYPE_META[type];
           const Icon = meta.icon;
