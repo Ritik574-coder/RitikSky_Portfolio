@@ -219,7 +219,7 @@ const AboutSection = memo(function AboutSection() {
                 </div>
               </Gsap.div>
 
-              {/* Articles & Research (Blog & Papers) */}
+              {/* Credentials & Demos (Certificates & Project Demos) */}
               <Gsap.div
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
