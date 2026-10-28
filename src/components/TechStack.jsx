@@ -147,7 +147,7 @@ const TechStack = () => {
     const ActiveCategoryIcon = activeCategory.icon;
 
     return (
-        <section id="tech-stack-section" className="relative w-full overflow-hidden bg-neutral-900 py-8 sm:py-10 lg:min-h-screen lg:py-12">
+        <section id="tech-stack-section" className="relative w-full overflow-hidden bg-neutral-900 py-16 sm:py-20 lg:py-24">
             <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-6 md:px-12">
                 <Gsap.div
                     initial={{ opacity: 0, y: 12 }}
@@ -183,7 +183,7 @@ const TechStack = () => {
                     </div>
                 </Gsap.div>
 
-                <div className="grid min-w-0 gap-2 lg:grid-cols-[245px_minmax(0,1fr)] lg:gap-4">
+                <div className="grid min-w-0 gap-3 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)] lg:gap-5 xl:gap-6 items-stretch">
                     <label className="relative block lg:hidden">
                         <span className="sr-only">Technology category</span>
                         <select
@@ -200,7 +200,7 @@ const TechStack = () => {
                         <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-lime-300" />
                     </label>
 
-                    <nav aria-label="Technology categories" className="hidden gap-1.5 lg:grid lg:grid-cols-1 lg:content-start">
+                    <nav aria-label="Technology categories" className="hidden gap-1.5 lg:flex lg:flex-col lg:justify-between h-full">
                         {stackCategories.map((category, index) => {
                             const CategoryIcon = category.icon;
                             const isActive = activeCategoryIndex === index;
@@ -229,9 +229,9 @@ const TechStack = () => {
                         })}
                     </nav>
 
-                    <div aria-live="polite" className="relative min-w-0 overflow-hidden border border-lime-400/20 bg-[#111411]">
+                    <div aria-live="polite" className="relative min-w-0 overflow-hidden border border-lime-400/20 bg-[#111411] flex flex-col h-full">
                         <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-lime-400/[0.055] to-transparent" />
-                        <div className="relative border-b border-white/[0.08] px-3 py-3 sm:px-5 sm:py-4 lg:px-6">
+                        <div className="relative border-b border-white/[0.08] px-3 py-3 sm:px-5 sm:py-4 lg:px-6 shrink-0">
                             <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-4">
                                 <div className="flex min-w-0 items-start gap-3">
                                     <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center border border-lime-400/30 bg-lime-400/10 text-lime-300 sm:h-9 sm:w-9">
@@ -255,7 +255,7 @@ const TechStack = () => {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-1.5 p-1.5 sm:gap-2 sm:p-3 lg:grid-cols-3 lg:gap-2.5 lg:p-4">
+                        <div className="flex-1 grid grid-cols-2 gap-1.5 p-1.5 sm:gap-2 sm:p-3 lg:grid-cols-3 lg:gap-2.5 lg:p-4 content-start">
                             {activeCategory.skills.map((skill) => {
                                 const SkillIcon = skill.icon;
 

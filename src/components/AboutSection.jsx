@@ -41,7 +41,7 @@ const AboutSection = memo(function AboutSection() {
         {/* ── Section Label ── */}
         <SectionEyebrow number="01" label="About" animated className="mb-16 md:mb-20" />
 
-        <div className="grid md:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:grid-cols-[400px_1fr] xl:grid-cols-[440px_1fr] gap-8 lg:gap-20 xl:gap-28 items-start">
+        <div className="grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:grid-cols-[380px_1fr] xl:grid-cols-[420px_1fr] gap-8 lg:gap-12 xl:gap-16 items-start">
 
           {/* ══════════════════════════════
               LEFT COLUMN — Image & Meta
@@ -113,7 +113,6 @@ const AboutSection = memo(function AboutSection() {
 
             {/* Voice Introduction */}
             <VoiceIntroCard />
-            <AboutContentCards slot="profile" className="mt-2.5" />
           </Gsap.div>
 
           {/* ══════════════════════════════
@@ -166,7 +165,7 @@ const AboutSection = memo(function AboutSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.14, duration: 0.75, ease: 'easeOut' }}
-              className="space-y-4 text-[15px] md:text-[15.5px] font-light text-white/70 leading-[1.88] max-w-[580px]"
+              className="space-y-4 text-[15px] md:text-[15.5px] font-light text-white/70 leading-[1.88] max-w-2xl"
             >
               <p>
                 I'm <strong className="text-lime-400 font-semibold">Ritik Kumar</strong>, a Data Engineer focused on data engineering and analytics engineering, with AI and Machine Learning as additional skills.
@@ -177,7 +176,7 @@ const AboutSection = memo(function AboutSection() {
             </Gsap.div>
 
             {/* Divider */}
-            <div className="mt-10 md:mt-12 mb-10 md:mb-12 h-px bg-lime-400/10 max-w-[580px]" />
+            <div className="mt-8 md:mt-10 mb-8 md:mt-10 h-px bg-lime-400/10 max-w-2xl" />
 
             {/* Core Capabilities */}
             <Gsap.div
@@ -201,7 +200,16 @@ const AboutSection = memo(function AboutSection() {
               </div>
             </Gsap.div>
 
-            <AboutContentCards slot="highlights" className="mt-14 md:mt-16" />
+            {/* Collections: 4 compact cards in 2x2 grid */}
+            <Gsap.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.22, duration: 0.75 }}
+              className="mt-8 md:mt-10 max-w-2xl"
+            >
+              <AboutContentCards />
+            </Gsap.div>
 
           </div>
         </div>
