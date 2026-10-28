@@ -365,10 +365,19 @@ html.lenis body {
 }
 
 .scene__photo,
+.scene__video,
 .scene__scrim,
 .scene__glow {
   position: absolute;
   inset: 0;
+}
+
+.scene__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
 }
 
 .scene__photo {
@@ -391,9 +400,13 @@ html.lenis body {
   background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgb(var(--ink-rgb) / 0.55) 100%);
 }
 
-/* ── Hero ── subject sits in the right half of the photo */
+/* ── Hero ── subject sits in the right half of the photo/video */
 .scene--hero .scene__photo {
   background-position: 76% 14%;
+}
+
+.scene--hero .scene__video {
+  object-position: 70% 30%;
 }
 
 .scene--hero .scene__scrim {
@@ -418,6 +431,10 @@ html.lenis body {
 @media (min-width: 1024px) {
   .scene--hero .scene__photo {
     background-position: 70% center;
+  }
+
+  .scene--hero .scene__video {
+    object-position: 70% center;
   }
 
   .scene--hero .scene__scrim {
